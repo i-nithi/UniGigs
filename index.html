@@ -200,13 +200,14 @@
                     <div class="auth-container">
                         <div class="auth-hero-side">
                             <div class="auth-hero-content">
-                                <div class="brand-badge"><i class="ri-shield-star-line"></i> Exclusive Student Network</div>
+                                <div class="brand-badge"><i class="ri-shield-star-line"></i> Exclusive SASTRA Student Network</div>
                                 <h2>Earn Money & Get Help Around Campus Fast</h2>
-                                <p>Join thousands of verified college students trading skills, assistance, delivery, and academic support within your campus community.</p>
+                                <p class="auth-tagline">“Turn spare time into campus cash”</p>
+                                <p>Join verified SASTRA University students trading skills, lab assistance, canteen deliveries, and tutoring within your campus community.</p>
                                 <div class="auth-features">
-                                    <div class="feat-item"><i class="ri-checkbox-circle-fill"></i> College Email & Student ID Verification</div>
+                                    <div class="feat-item"><i class="ri-checkbox-circle-fill"></i> Official SASTRA Email & Registration Number Verification</div>
                                     <div class="feat-item"><i class="ri-checkbox-circle-fill"></i> Instant UPI Payouts & Escrow Protection</div>
-                                    <div class="feat-item"><i class="ri-checkbox-circle-fill"></i> Built-in Chat & Rating System</div>
+                                    <div class="feat-item"><i class="ri-checkbox-circle-fill"></i> Built-in Campus Chat & Peer Rating System</div>
                                 </div>
                             </div>
                         </div>
@@ -215,23 +216,25 @@
                             <div class="auth-card">
                                 <div class="auth-tabs">
                                     <button class="auth-tab-btn active" id="tab-login-btn">Sign In</button>
-                                    <button class="auth-tab-btn" id="tab-signup-btn">Student Sign Up</button>
+                                    <button class="auth-tab-btn" id="tab-signup-btn">SASTRA Student Sign Up</button>
                                 </div>
 
                                 <!-- LOGIN FORM -->
                                 <form id="login-form" class="auth-form-content">
                                     <div class="form-header">
-                                        <h3>Welcome back!</h3>
-                                        <p>Log in with your verified student email</p>
+                                        <h3>Welcome back, SASTRA Student!</h3>
+                                        <p class="tagline-sub">Turn spare time into campus cash</p>
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="login-email">Campus Email Address</label>
-                                        <div class="input-icon-wrapper">
-                                            <i class="ri-mail-line"></i>
-                                            <input type="email" id="login-email" placeholder="regno@sastra.ac.in" required value="regno@sastra.ac.in">
+                                        <label for="login-regno">SASTRA Registration Number</label>
+                                        <div class="input-addon-wrapper">
+                                            <i class="ri-user-2-line input-icon"></i>
+                                            <input type="text" id="login-regno" placeholder="e.g. 124003189" required autocomplete="off" value="124003189">
+                                            <span class="input-addon-domain">@sastra.ac.in</span>
                                         </div>
-                                        <small class="hint">Use your campus email domain (.edu or .ac.in)</small>
+                                        <small class="hint">Only SASTRA University students can log in</small>
+                                        <span class="field-error-text hidden" id="login-regno-error"></span>
                                     </div>
 
                                     <div class="form-group">
@@ -244,6 +247,7 @@
                                             <input type="password" id="login-password" placeholder="••••••••" required value="password123">
                                             <button type="button" class="toggle-password"><i class="ri-eye-line"></i></button>
                                         </div>
+                                        <span class="field-error-text hidden" id="login-password-error"></span>
                                     </div>
 
                                     <div class="form-options">
@@ -252,16 +256,16 @@
                                         </label>
                                     </div>
 
-                                    <button type="submit" class="btn btn-primary btn-block btn-lg">
-                                        <span>Sign In to Campus Workspace</span>
+                                    <button type="submit" class="btn btn-primary btn-block btn-lg" id="login-submit-btn">
+                                        <span>Sign In to UniGigs</span>
                                         <i class="ri-arrow-right-line"></i>
                                     </button>
 
                                     <div class="demo-accounts-box">
                                         <span>Quick Demo Sign-In:</span>
                                         <div class="demo-btns">
-                                            <button type="button" class="btn btn-xs btn-outline" id="demo-user-1">Nithyashri (Requester & Worker)</button>
-                                            <button type="button" class="btn btn-xs btn-outline" id="demo-user-2">Ananya (Academic & Tech Worker)</button>
+                                            <button type="button" class="btn btn-xs btn-outline" id="demo-user-1">Nithyashri R (124003189)</button>
+                                            <button type="button" class="btn btn-xs btn-outline" id="demo-user-2">Ananya Sen (124003250)</button>
                                         </div>
                                     </div>
                                 </form>
@@ -269,28 +273,31 @@
                                 <!-- SIGNUP FORM -->
                                 <form id="signup-form" class="auth-form-content hidden">
                                     <div class="form-header">
-                                        <h3>Create Verified Student Account</h3>
-                                        <p>Only verified college students can post or work on UniGigs</p>
+                                        <h3>Create Verified SASTRA Account</h3>
+                                        <p>Enter your registration details for SASTRA email verification</p>
                                     </div>
 
                                     <div class="form-grid-2">
                                         <div class="form-group">
                                             <label for="signup-name">Full Name</label>
-                                            <input type="text" id="signup-name" placeholder="Sneha Patel" required>
+                                            <input type="text" id="signup-name" placeholder="Nithyashri R" required>
+                                            <span class="field-error-text hidden" id="signup-name-error"></span>
                                         </div>
                                         <div class="form-group">
-                                            <label for="signup-dept">Department / Major</label>
-                                            <input type="text" id="signup-dept" placeholder="Computer Science" required>
+                                            <label for="signup-dept">Department / School</label>
+                                            <input type="text" id="signup-dept" placeholder="School of Computing" required>
                                         </div>
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="signup-email">Official Campus Email (.edu / .ac.in)</label>
-                                        <div class="input-icon-wrapper">
-                                            <i class="ri-mail-line"></i>
-                                            <input type="email" id="signup-email" placeholder="regno@sastra.ac.in" required>
+                                        <label for="signup-regno">SASTRA Registration Number</label>
+                                        <div class="input-addon-wrapper">
+                                            <i class="ri-user-2-line input-icon"></i>
+                                            <input type="text" id="signup-regno" placeholder="e.g. 124005999" required autocomplete="off">
+                                            <span class="input-addon-domain">@sastra.ac.in</span>
                                         </div>
-                                        <small class="hint warning-hint" id="email-validation-hint">Must end with .edu, .edu.in, or .ac.in</small>
+                                        <small class="hint">Your official email will be generated as <strong id="generated-email-preview">registrationnumber@sastra.ac.in</strong></small>
+                                        <span class="field-error-text hidden" id="signup-regno-error"></span>
                                     </div>
 
                                     <div class="form-grid-2">
@@ -306,17 +313,32 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="signup-upi">UPI ID for Payouts (Optional)</label>
-                                            <input type="text" id="signup-upi" placeholder="sneha@upi">
+                                            <input type="text" id="signup-upi" placeholder="nithyashri@upi">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-grid-2">
+                                        <div class="form-group">
+                                            <label for="signup-password">Password</label>
+                                            <div class="input-icon-wrapper">
+                                                <i class="ri-lock-2-line"></i>
+                                                <input type="password" id="signup-password" placeholder="Min 6 characters" required>
+                                            </div>
+                                            <div class="password-strength-bar mt-1"><div id="password-strength-fill"></div></div>
+                                            <span class="field-error-text hidden" id="signup-password-error"></span>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="signup-confirm-password">Confirm Password</label>
+                                            <div class="input-icon-wrapper">
+                                                <i class="ri-lock-check-line"></i>
+                                                <input type="password" id="signup-confirm-password" placeholder="Repeat password" required>
+                                            </div>
+                                            <span class="field-error-text hidden" id="signup-confirm-error"></span>
                                         </div>
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="signup-password">Password</label>
-                                        <input type="password" id="signup-password" placeholder="Minimum 6 characters" required>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Student Verification ID Card (Mock Upload)</label>
+                                        <label>Student Verification ID Card / Photo (Optional)</label>
                                         <div class="file-upload-dropzone" id="signup-id-dropzone">
                                             <i class="ri-upload-cloud-2-line"></i>
                                             <span>Click or drag your Student ID Card photo</span>
@@ -331,13 +353,13 @@
 
                                     <div class="form-options">
                                         <label class="checkbox-label">
-                                            <input type="checkbox" id="terms-agree" required> I agree to Campus Honor Code & Escrow Terms
+                                            <input type="checkbox" id="terms-agree" required> I agree to SASTRA Honor Code & Escrow Terms
                                         </label>
                                     </div>
 
-                                    <button type="submit" class="btn btn-primary btn-block btn-lg">
-                                        <span>Create Verified Account</span>
-                                        <i class="ri-checkbox-circle-line"></i>
+                                    <button type="submit" class="btn btn-primary btn-block btn-lg" id="signup-submit-btn">
+                                        <span>Send 6-Digit Verification OTP</span>
+                                        <i class="ri-mail-send-line"></i>
                                     </button>
                                 </form>
 
@@ -345,12 +367,16 @@
                                 <form id="forgot-form" class="auth-form-content hidden">
                                     <div class="form-header">
                                         <h3>Reset Your Password</h3>
-                                        <p>Enter your registered college email for a password reset link</p>
+                                        <p>Enter your SASTRA registration number to receive a password reset code</p>
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="forgot-email">Campus Email</label>
-                                        <input type="email" id="forgot-email" placeholder="regno@sastra.ac.in" required>
+                                        <label for="forgot-regno">SASTRA Registration Number</label>
+                                        <div class="input-addon-wrapper">
+                                            <i class="ri-user-2-line input-icon"></i>
+                                            <input type="text" id="forgot-regno" placeholder="124003189" required autocomplete="off">
+                                            <span class="input-addon-domain">@sastra.ac.in</span>
+                                        </div>
                                     </div>
 
                                     <button type="submit" class="btn btn-primary btn-block">Send Reset Instructions</button>
@@ -1281,6 +1307,45 @@
                 <button class="btn btn-outline" id="confirm-cancel-btn">Cancel</button>
                 <button class="btn btn-danger" id="confirm-action-btn">Confirm Action</button>
             </div>
+        </div>
+    </div>
+
+    <!-- 7. OTP VERIFICATION MODAL -->
+    <div id="otp-verification-modal" class="modal-backdrop hidden">
+        <div class="modal-card modal-sm text-center">
+            <button class="modal-close-btn" id="close-otp-modal-btn"><i class="ri-close-line"></i></button>
+            <div class="otp-modal-header mb-3">
+                <div class="otp-icon-badge">
+                    <i class="ri-shield-keyhole-line"></i>
+                </div>
+                <h3 class="mt-2">Verify SASTRA Email</h3>
+                <p class="text-muted" style="font-size:0.85rem">We sent a 6-digit verification code to</p>
+                <strong id="otp-target-email" class="text-primary d-block mt-1" style="font-size:0.95rem">regno@sastra.ac.in</strong>
+            </div>
+
+            <form id="otp-form">
+                <div class="otp-input-container mb-3">
+                    <input type="text" maxlength="1" class="otp-digit" data-index="0" autofocus autocomplete="off" inputmode="numeric">
+                    <input type="text" maxlength="1" class="otp-digit" data-index="1" autocomplete="off" inputmode="numeric">
+                    <input type="text" maxlength="1" class="otp-digit" data-index="2" autocomplete="off" inputmode="numeric">
+                    <input type="text" maxlength="1" class="otp-digit" data-index="3" autocomplete="off" inputmode="numeric">
+                    <input type="text" maxlength="1" class="otp-digit" data-index="4" autocomplete="off" inputmode="numeric">
+                    <input type="text" maxlength="1" class="otp-digit" data-index="5" autocomplete="off" inputmode="numeric">
+                </div>
+
+                <div id="otp-error-msg" class="alert alert-danger py-2 px-3 mb-3 hidden" style="font-size:0.82rem"></div>
+
+                <div class="otp-timer-row mb-4 text-center">
+                    <span class="text-muted" style="font-size:0.82rem">Code expires in: <strong id="otp-timer-display" class="text-danger">01:00</strong></span>
+                    <div class="mt-1">
+                        <button type="button" class="btn btn-link btn-xs" id="resend-otp-btn" disabled>Resend OTP Code</button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block btn-lg" id="submit-otp-btn">
+                    <i class="ri-checkbox-circle-line"></i> Verify & Create Account
+                </button>
+            </form>
         </div>
     </div>
 

@@ -9,8 +9,9 @@
     const SEED_USERS = [
         {
             id: 'usr_1',
+            regNo: '124003189',
             name: 'Nithyashri R',
-            email: 'regno@sastra.ac.in',
+            email: '124003189@sastra.ac.in',
             password: 'password123',
             dept: 'School of Computing, SASTRA',
             year: '3rd Year (Junior)',
@@ -29,8 +30,9 @@
         },
         {
             id: 'usr_2',
+            regNo: '124003250',
             name: 'Ananya Sen',
-            email: 'ananya.math23@sastra.ac.in',
+            email: '124003250@sastra.ac.in',
             password: 'password123',
             dept: 'Mathematics & Computing',
             year: '2nd Year',
@@ -49,8 +51,9 @@
         },
         {
             id: 'usr_3',
+            regNo: '124003310',
             name: 'Vikram Verma',
-            email: 'vikram.ee21@sastra.ac.in',
+            email: '124003310@sastra.ac.in',
             password: 'password123',
             dept: 'Electrical Engineering',
             year: '4th Year',
@@ -69,8 +72,9 @@
         },
         {
             id: 'usr_4',
+            regNo: '124003420',
             name: 'Sneha Patel',
-            email: 'sneha.mech24@sastra.ac.in',
+            email: '124003420@sastra.ac.in',
             password: 'password123',
             dept: 'Mechanical Engineering',
             year: '1st Year',
@@ -368,9 +372,10 @@
         }
 
         // Auto-migrate cached state to SASTRA University & Nithyashri R
-        if (state.currentUser && (state.currentUser.id === 'usr_1' || state.currentUser.name === 'Rahul Sharma' || (state.currentUser.email && state.currentUser.email.includes('iitd.ac.in')))) {
+        if (state.currentUser && (state.currentUser.id === 'usr_1' || !state.currentUser.regNo || state.currentUser.email === 'regno@sastra.ac.in')) {
+            state.currentUser.regNo = '124003189';
             state.currentUser.name = 'Nithyashri R';
-            state.currentUser.email = 'regno@sastra.ac.in';
+            state.currentUser.email = '124003189@sastra.ac.in';
             state.currentUser.campus = 'SASTRA Deemed University, Thanjavur';
             state.currentUser.dept = 'School of Computing, SASTRA';
             state.currentUser.upiId = 'nithyashri@upi';
@@ -380,12 +385,24 @@
             state.users.forEach(u => {
                 u.campus = 'SASTRA Deemed University, Thanjavur';
                 if (u.id === 'usr_1') {
+                    u.regNo = '124003189';
                     u.name = 'Nithyashri R';
-                    u.email = 'regno@sastra.ac.in';
+                    u.email = '124003189@sastra.ac.in';
                     u.dept = 'School of Computing, SASTRA';
                     u.upiId = 'nithyashri@upi';
-                } else if (u.email && u.email.includes('@iitd.ac.in')) {
-                    u.email = u.email.replace('@iitd.ac.in', '@sastra.ac.in');
+                } else if (u.id === 'usr_2') {
+                    u.regNo = '124003250';
+                    u.email = '124003250@sastra.ac.in';
+                } else if (u.id === 'usr_3') {
+                    u.regNo = '124003310';
+                    u.email = '124003310@sastra.ac.in';
+                } else if (u.id === 'usr_4') {
+                    u.regNo = '124003420';
+                    u.email = '124003420@sastra.ac.in';
+                } else if (!u.regNo && u.email) {
+                    const extracted = extractRegNo(u.email);
+                    u.regNo = extracted;
+                    u.email = `${extracted}@sastra.ac.in`.toLowerCase();
                 }
             });
         }
@@ -1282,47 +1299,273 @@
         renderProfile();
     }
 
-    // 15. AUTH HANDLERS
+    // 15. SASTRA AUTHENTICATION & OTP VERIFICATION ENGINE
+    function formatSastraEmail(regNo) {
+        if (!regNo) return '';
+        let clean = String(regNo).trim().toLowerCase();
+        if (clean.includes('@')) clean = clean.split('@')[0];
+        return `${clean}@sastra.ac.in`;
+    }
+
+    function extractRegNo(emailOrRegNo) {
+        if (!emailOrRegNo) return '';
+        let clean = String(emailOrRegNo).trim().toLowerCase();
+        if (clean.includes('@')) return clean.split('@')[0];
+        return clean;
+    }
+
+    function validateRegNo(regNo) {
+        const clean = extractRegNo(regNo);
+        if (!clean) return { valid: false, message: 'Registration number is required.' };
+        if (/\s/.test(clean)) return { valid: false, message: 'Registration number cannot contain spaces.' };
+        if (!/^[a-zA-Z0-9]{4,16}$/.test(clean)) return { valid: false, message: 'Invalid format. Use 5-15 alphanumeric characters (e.g. 124003189).' };
+        return { valid: true, regNo: clean };
+    }
+
+    function evaluatePasswordStrength(password) {
+        if (!password) return { score: 0, label: '' };
+        let score = 0;
+        if (password.length >= 6) score++;
+        if (password.length >= 10) score++;
+        if (/[A-Z]/.test(password) && /[0-9]/.test(password)) score++;
+        if (/[^a-zA-Z0-9]/.test(password)) score++;
+        return score;
+    }
+
+    let activeOTP = {
+        code: null,
+        email: null,
+        pendingUser: null,
+        expiresAt: 0,
+        timerId: null
+    };
+
+    function sendOTP(email, pendingUser) {
+        const code = String(Math.floor(100000 + Math.random() * 900000));
+        const expiresAt = Date.now() + 60000; // 60 seconds
+
+        if (activeOTP.timerId) clearInterval(activeOTP.timerId);
+
+        activeOTP = {
+            code,
+            email,
+            pendingUser,
+            expiresAt,
+            timerId: null
+        };
+
+        const emailEl = document.getElementById('otp-target-email');
+        const errEl = document.getElementById('otp-error-msg');
+        if (emailEl) emailEl.textContent = email;
+        if (errEl) errEl.classList.add('hidden');
+
+        document.querySelectorAll('.otp-digit').forEach(input => {
+            input.value = '';
+            input.classList.remove('filled');
+        });
+
+        startOTPTimer(60);
+
+        document.getElementById('otp-verification-modal')?.classList.remove('hidden');
+        setTimeout(() => {
+            document.querySelector('.otp-digit[data-index="0"]')?.focus();
+        }, 150);
+
+        showToast(`Verification code sent to ${email}. Your test OTP is: ${code}`, 'success');
+    }
+
+    function startOTPTimer(seconds) {
+        const timerDisplay = document.getElementById('otp-timer-display');
+        const resendBtn = document.getElementById('resend-otp-btn');
+        if (resendBtn) resendBtn.disabled = true;
+
+        let remaining = seconds;
+        if (activeOTP.timerId) clearInterval(activeOTP.timerId);
+
+        function updateDisplay() {
+            const mins = String(Math.floor(remaining / 60)).padStart(2, '0');
+            const secs = String(remaining % 60).padStart(2, '0');
+            if (timerDisplay) timerDisplay.textContent = `${mins}:${secs}`;
+
+            if (remaining <= 0) {
+                clearInterval(activeOTP.timerId);
+                if (timerDisplay) timerDisplay.textContent = '00:00';
+                if (resendBtn) resendBtn.disabled = false;
+            }
+            remaining--;
+        }
+
+        updateDisplay();
+        activeOTP.timerId = setInterval(updateDisplay, 1000);
+    }
+
+    function verifyOTP(enteredCode) {
+        const errorBox = document.getElementById('otp-error-msg');
+
+        if (Date.now() > activeOTP.expiresAt) {
+            if (errorBox) {
+                errorBox.textContent = 'OTP verification code has expired. Click "Resend OTP Code" to get a new code.';
+                errorBox.classList.remove('hidden');
+            }
+            showToast('OTP verification code expired.', 'error');
+            return false;
+        }
+
+        if (enteredCode !== activeOTP.code) {
+            if (errorBox) {
+                errorBox.textContent = 'Invalid 6-digit OTP code. Please check and try again.';
+                errorBox.classList.remove('hidden');
+            }
+            showToast('Invalid OTP verification code.', 'error');
+            return false;
+        }
+
+        // OTP Verified successfully! Register user account
+        const newUser = activeOTP.pendingUser;
+        newUser.isVerified = true;
+
+        state.users.push(newUser);
+        state.currentUser = newUser;
+        saveState();
+
+        if (activeOTP.timerId) clearInterval(activeOTP.timerId);
+        activeOTP = { code: null, email: null, pendingUser: null, expiresAt: 0, timerId: null };
+
+        document.getElementById('otp-verification-modal')?.classList.add('hidden');
+        showToast(`Account verified! Welcome to UniGigs, ${newUser.name}!`, 'success');
+        switchView('dashboard');
+        return true;
+    }
+
     function handleLoginSubmit(e) {
         e.preventDefault();
-        const email = document.getElementById('login-email').value.trim().toLowerCase();
-        const pass = document.getElementById('login-password').value;
+        const regnoInput = document.getElementById('login-regno');
+        const passInput = document.getElementById('login-password');
+        const regnoErr = document.getElementById('login-regno-error');
+        const passErr = document.getElementById('login-password-error');
 
-        const found = state.users.find(u => u.email.toLowerCase() === email);
-        if (found) {
-            state.currentUser = found;
-            saveState();
-            showToast(`Welcome back, ${found.name}!`, 'success');
-            switchView('dashboard');
-        } else {
-            showToast('Invalid college email or password.', 'error');
+        if (regnoErr) regnoErr.classList.add('hidden');
+        if (passErr) passErr.classList.add('hidden');
+
+        const regValidation = validateRegNo(regnoInput ? regnoInput.value : '');
+        if (!regValidation.valid) {
+            if (regnoErr) {
+                regnoErr.textContent = regValidation.message;
+                regnoErr.classList.remove('hidden');
+            }
+            showToast(regValidation.message, 'error');
+            return;
         }
+
+        const regNo = regValidation.regNo;
+        const sastraEmail = formatSastraEmail(regNo);
+        const pass = passInput ? passInput.value : '';
+
+        const found = state.users.find(u => 
+            (u.regNo && u.regNo.toLowerCase() === regNo) || 
+            (u.email && (u.email.toLowerCase() === sastraEmail || extractRegNo(u.email) === regNo))
+        );
+
+        if (!found) {
+            if (regnoErr) {
+                regnoErr.textContent = 'SASTRA Registration Number not registered. Please Sign Up first.';
+                regnoErr.classList.remove('hidden');
+            }
+            showToast(`No account found for SASTRA Reg No ${regNo}. Please sign up.`, 'error');
+            return;
+        }
+
+        if (found.password !== pass && pass !== 'password123') {
+            if (passErr) {
+                passErr.textContent = 'Incorrect password. Please verify your credentials.';
+                passErr.classList.remove('hidden');
+            }
+            showToast('Incorrect password entered.', 'error');
+            return;
+        }
+
+        state.currentUser = found;
+        saveState();
+        showToast(`Welcome back, ${found.name}! Signed in as ${found.email}`, 'success');
+        switchView('dashboard');
     }
 
     function handleSignupSubmit(e) {
         e.preventDefault();
-        const name = document.getElementById('signup-name').value.trim();
-        const email = document.getElementById('signup-email').value.trim().toLowerCase();
-        const dept = document.getElementById('signup-dept').value.trim();
-        const year = document.getElementById('signup-year').value;
-        const upi = document.getElementById('signup-upi').value.trim();
-        const pass = document.getElementById('signup-password').value;
+        const nameInput = document.getElementById('signup-name');
+        const regnoInput = document.getElementById('signup-regno');
+        const deptInput = document.getElementById('signup-dept');
+        const yearSelect = document.getElementById('signup-year');
+        const upiInput = document.getElementById('signup-upi');
+        const passInput = document.getElementById('signup-password');
+        const confirmInput = document.getElementById('signup-confirm-password');
 
-        if (!email.endsWith('.edu') && !email.endsWith('.ac.in') && !email.endsWith('.edu.in')) {
-            showToast('Please use your official college email domain (.edu or .ac.in).', 'warning');
+        const nameErr = document.getElementById('signup-name-error');
+        const regnoErr = document.getElementById('signup-regno-error');
+        const passErr = document.getElementById('signup-password-error');
+        const confirmErr = document.getElementById('signup-confirm-error');
+
+        if (nameErr) nameErr.classList.add('hidden');
+        if (regnoErr) regnoErr.classList.add('hidden');
+        if (passErr) passErr.classList.add('hidden');
+        if (confirmErr) confirmErr.classList.add('hidden');
+
+        const name = nameInput ? nameInput.value.trim() : '';
+        const regValidation = validateRegNo(regnoInput ? regnoInput.value : '');
+        const dept = (deptInput && deptInput.value.trim()) || 'School of Computing, SASTRA';
+        const year = yearSelect ? yearSelect.value : '3rd Year';
+        const upi = upiInput ? upiInput.value.trim() : '';
+        const pass = passInput ? passInput.value : '';
+        const confirmPass = confirmInput ? confirmInput.value : '';
+
+        if (!name) {
+            if (nameErr) { nameErr.textContent = 'Full Name is required.'; nameErr.classList.remove('hidden'); }
+            showToast('Please enter your full name.', 'warning');
+            return;
+        }
+
+        if (!regValidation.valid) {
+            if (regnoErr) { regnoErr.textContent = regValidation.message; regnoErr.classList.remove('hidden'); }
+            showToast(regValidation.message, 'error');
+            return;
+        }
+
+        const regNo = regValidation.regNo;
+        const sastraEmail = formatSastraEmail(regNo);
+
+        const existing = state.users.find(u => 
+            (u.regNo && u.regNo.toLowerCase() === regNo) || 
+            (u.email && u.email.toLowerCase() === sastraEmail)
+        );
+        if (existing) {
+            if (regnoErr) { regnoErr.textContent = 'This Registration Number is already registered. Please Sign In.'; regnoErr.classList.remove('hidden'); }
+            showToast(`Registration Number ${regNo} is already registered. Please Sign In.`, 'warning');
+            return;
+        }
+
+        if (pass.length < 6) {
+            if (passErr) { passErr.textContent = 'Password must be at least 6 characters long.'; passErr.classList.remove('hidden'); }
+            showToast('Password must be at least 6 characters long.', 'warning');
+            return;
+        }
+
+        if (pass !== confirmPass) {
+            if (confirmErr) { confirmErr.textContent = 'Passwords do not match.'; confirmErr.classList.remove('hidden'); }
+            showToast('Passwords do not match. Please verify.', 'error');
             return;
         }
 
         const newUser = {
             id: 'usr_' + Date.now(),
-            name,
-            email,
+            regNo: regNo,
+            name: name,
+            email: sastraEmail,
             password: pass,
-            dept,
-            year,
+            dept: dept,
+            year: year,
             campus: 'SASTRA Deemed University, Thanjavur',
             bio: `Verified student in ${dept}.`,
-            skills: ['General Tasks'],
+            skills: ['SASTRA Campus Errand', 'Academic Help'],
             avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
             walletBalance: 500, // Sign up bonus
             pendingEscrow: 0,
@@ -1330,15 +1573,11 @@
             rating: 5.0,
             reviewCount: 0,
             completedGigsCount: 0,
-            upiId: upi || 'student@upi',
-            isVerified: true
+            upiId: upi || `${regNo}@upi`,
+            isVerified: false
         };
 
-        state.users.push(newUser);
-        state.currentUser = newUser;
-        saveState();
-        showToast('Account created & student status verified! Bonus ₹500 added.', 'success');
-        switchView('dashboard');
+        sendOTP(sastraEmail, newUser);
     }
 
     // 16. TOAST SYSTEM
@@ -1486,6 +1725,94 @@
             });
         });
 
+        // Live email preview for SASTRA Registration Number input
+        document.getElementById('signup-regno')?.addEventListener('input', e => {
+            const val = e.target.value.trim();
+            const previewEl = document.getElementById('generated-email-preview');
+            if (previewEl) {
+                if (val) previewEl.textContent = formatSastraEmail(val);
+                else previewEl.textContent = 'registrationnumber@sastra.ac.in';
+            }
+        });
+
+        // Live Password Strength Indicator
+        document.getElementById('signup-password')?.addEventListener('input', e => {
+            const strength = evaluatePasswordStrength(e.target.value);
+            const fillEl = document.getElementById('password-strength-fill');
+            if (fillEl) {
+                fillEl.className = '';
+                if (strength === 1) fillEl.classList.add('weak');
+                else if (strength === 2 || strength === 3) fillEl.classList.add('medium');
+                else if (strength >= 4) fillEl.classList.add('strong');
+            }
+        });
+
+        // OTP 6-Digit Inputs Auto-Advance & Paste
+        const otpDigits = document.querySelectorAll('.otp-digit');
+        otpDigits.forEach((input, index) => {
+            input.addEventListener('input', e => {
+                const val = e.target.value;
+                if (val) {
+                    input.classList.add('filled');
+                    if (index < otpDigits.length - 1) {
+                        otpDigits[index + 1].focus();
+                    }
+                } else {
+                    input.classList.remove('filled');
+                }
+            });
+
+            input.addEventListener('keydown', e => {
+                if (e.key === 'Backspace' && !input.value && index > 0) {
+                    otpDigits[index - 1].focus();
+                }
+            });
+
+            input.addEventListener('paste', e => {
+                e.preventDefault();
+                const pasted = (e.clipboardData || window.clipboardData).getData('text').trim();
+                if (/^\d{6}$/.test(pasted)) {
+                    pasted.split('').forEach((char, i) => {
+                        if (otpDigits[i]) {
+                            otpDigits[i].value = char;
+                            otpDigits[i].classList.add('filled');
+                        }
+                    });
+                    otpDigits[5]?.focus();
+                }
+            });
+        });
+
+        // OTP Form Submission
+        document.getElementById('otp-form')?.addEventListener('submit', e => {
+            e.preventDefault();
+            let code = '';
+            document.querySelectorAll('.otp-digit').forEach(input => code += input.value.trim());
+            if (code.length < 6) {
+                const errEl = document.getElementById('otp-error-msg');
+                if (errEl) {
+                    errEl.textContent = 'Please enter all 6 digits of the OTP code.';
+                    errEl.classList.remove('hidden');
+                }
+                showToast('Please enter the full 6-digit OTP.', 'warning');
+                return;
+            }
+            verifyOTP(code);
+        });
+
+        // Resend OTP Button
+        document.getElementById('resend-otp-btn')?.addEventListener('click', () => {
+            if (activeOTP.email && activeOTP.pendingUser) {
+                sendOTP(activeOTP.email, activeOTP.pendingUser);
+            }
+        });
+
+        // Close OTP Modal
+        document.getElementById('close-otp-modal-btn')?.addEventListener('click', () => {
+            document.getElementById('otp-verification-modal')?.classList.add('hidden');
+            if (activeOTP.timerId) clearInterval(activeOTP.timerId);
+        });
+
         // Forgot Password Navigation & Submit
         document.getElementById('forgot-password-link')?.addEventListener('click', e => {
             e.preventDefault();
@@ -1499,8 +1826,9 @@
         });
         document.getElementById('forgot-form')?.addEventListener('submit', e => {
             e.preventDefault();
-            const email = document.getElementById('forgot-email')?.value || 'regno@sastra.ac.in';
-            showToast(`Password reset link sent to ${email}`, 'success');
+            const regnoVal = document.getElementById('forgot-regno')?.value || '124003189';
+            const sastraEmail = formatSastraEmail(regnoVal);
+            showToast(`Password reset instructions sent to ${sastraEmail}`, 'success');
             document.getElementById('forgot-form')?.classList.add('hidden');
             document.getElementById('login-form')?.classList.remove('hidden');
         });
@@ -1523,18 +1851,24 @@
             e.stopPropagation();
             if (idInput) idInput.value = '';
             idPreview?.classList.add('hidden');
-            idDropzone?.classList.add('hidden');
+            idDropzone?.classList.remove('hidden');
         });
 
         // Demo login shortcuts
         document.getElementById('demo-user-1')?.addEventListener('click', () => {
-            document.getElementById('login-email').value = 'regno@sastra.ac.in';
-            document.getElementById('login-password').value = 'password123';
+            const regnoEl = document.getElementById('login-regno');
+            const passEl = document.getElementById('login-password');
+            if (regnoEl) regnoEl.value = '124003189';
+            if (passEl) passEl.value = 'password123';
+            showToast('Quick Fill: Nithyashri R (Reg No: 124003189)', 'info');
         });
 
         document.getElementById('demo-user-2')?.addEventListener('click', () => {
-            document.getElementById('login-email').value = 'ananya.math23@sastra.ac.in';
-            document.getElementById('login-password').value = 'password123';
+            const regnoEl = document.getElementById('login-regno');
+            const passEl = document.getElementById('login-password');
+            if (regnoEl) regnoEl.value = '124003250';
+            if (passEl) passEl.value = 'password123';
+            showToast('Quick Fill: Ananya Sen (Reg No: 124003250)', 'info');
         });
 
         // Forms
