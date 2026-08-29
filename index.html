@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniGigs - Campus Student Gig Marketplace & Micro-Earnings Platform</title>
+    <!-- Meta tags for SEO -->
+    <meta name="description" content="UniGigs is a student-to-student campus gig marketplace where verified college students post tasks, accept gigs, earn money, and build trust through ratings.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- RemixIcon for rich icon set -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="light-theme">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+    <!-- MAIN APP CONTAINER -->
+    <div id="app-root" class="app-root">
+
+        <!-- HEADER BAR -->
+        <header id="main-header" class="main-header">
+            <div class="header-left">
+                <button id="sidebar-toggle-btn" class="icon-btn mobile-only" aria-label="Toggle navigation menu">
+                    <i class="ri-menu-line"></i>
+                </button>
+                <a href="#dashboard" class="logo-brand nav-link" data-target="dashboard">
+                    <div class="logo-icon">
+                        <i class="ri-flashlight-fill"></i>
+                    </div>
+                    <span class="logo-text">Uni<span class="highlight">Gigs</span></span>
+                    <span class="campus-badge" id="header-campus-tag"><i class="ri-building-4-line"></i> SASTRA Deemed University, Thanjavur</span>
+                </a>
+            </div>
+
+            <div class="header-center">
+                <div class="global-search-bar">
+                    <i class="ri-search-line search-icon"></i>
+                    <input type="text" id="global-search-input" placeholder="Search gigs, skills, campus locations..." autocomplete="off">
+                    <button id="global-search-clear" class="clear-btn hidden"><i class="ri-close-line"></i></button>
+                </div>
+            </div>
+
+            <div class="header-right" id="header-auth-controls">
+                <!-- Logged in state controls -->
+                <div class="user-controls logged-in-only hidden" id="user-controls">
+                    <button class="wallet-badge-btn nav-link" data-target="payments" title="View Escrow Wallet">
+                        <i class="ri-wallet-3-line"></i>
+                        <span class="wallet-amount" id="header-wallet-amount">₹0</span>
+                    </button>
+
+                    <button class="icon-btn nav-link position-relative" data-target="notifications" title="Notifications" id="header-notif-btn">
+                        <i class="ri-notification-3-line"></i>
+                        <span class="unread-dot hidden" id="header-notif-badge"></span>
+                    </button>
+
+                    <button class="icon-btn nav-link position-relative" data-target="messages" title="Messages" id="header-msg-btn">
+                        <i class="ri-chat-3-line"></i>
+                        <span class="unread-dot hidden" id="header-msg-badge"></span>
+                    </button>
+
+                    <div class="user-avatar-menu" id="user-avatar-trigger">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" alt="User Avatar" class="header-avatar" id="header-user-avatar">
+                        <span class="status-indicator online"></span>
+                        <div class="dropdown-menu hidden" id="avatar-dropdown">
+                            <div class="dropdown-header">
+                                <strong id="dropdown-user-name">Nithyashri R</strong>
+                                <span id="dropdown-user-email">regno@sastra.ac.in</span>
+                                <span class="verification-pill verified"><i class="ri-checkbox-circle-fill"></i> Verified Student</span>
+                            </div>
+                            <hr>
+                            <a href="#profile" class="dropdown-item nav-link" data-target="profile"><i class="ri-user-3-line"></i> View My Profile</a>
+                            <a href="#my-gigs" class="dropdown-item nav-link" data-target="my-gigs"><i class="ri-briefcase-line"></i> My Posted & Working Gigs</a>
+                            <a href="#payments" class="dropdown-item nav-link" data-target="payments"><i class="ri-wallet-line"></i> Earnings & UPI Escrow</a>
+                            <button id="theme-toggle-btn" class="dropdown-item"><i class="ri-moon-line" id="theme-icon"></i> Switch Theme Mode</button>
+                            <hr>
+                            <button id="logout-btn" class="dropdown-item danger"><i class="ri-logout-box-r-line"></i> Sign Out</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Logged out state controls -->
+                <div class="auth-buttons logged-out-only" id="auth-buttons">
+                    <button class="btn btn-outline" id="header-login-btn">Log In</button>
+                    <button class="btn btn-primary" id="header-signup-btn">Sign Up (.edu)</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN LAYOUT WRAPPER -->
+        <div class="app-body">
+
+            <!-- SIDEBAR NAVIGATION -->
+            <aside id="app-sidebar" class="app-sidebar">
+                <div class="sidebar-nav-container">
+                    <ul class="sidebar-menu">
+                        <li class="menu-label">Main Navigation</li>
+                        <li>
+                            <a href="#dashboard" class="sidebar-item nav-link active" data-target="dashboard">
+                                <i class="ri-dashboard-3-line"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#marketplace" class="sidebar-item nav-link" data-target="marketplace">
+                                <i class="ri-compass-3-line"></i>
+                                <span>Find Campus Gigs</span>
+                                <span class="nav-count-badge" id="marketplace-total-badge">12</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#post-gig" class="sidebar-item nav-link highlight-menu" data-target="post-gig">
+                                <i class="ri-add-circle-fill"></i>
+                                <span>Post a Gig</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#my-gigs" class="sidebar-item nav-link" data-target="my-gigs">
+                                <i class="ri-task-line"></i>
+                                <span>My Gigs</span>
+                                <span class="nav-count-badge" id="mygigs-count-badge">0</span>
+                            </a>
+                        </li>
+                        
+                        <li class="menu-label">Communication & Funds</li>
+                        <li>
+                            <a href="#messages" class="sidebar-item nav-link" data-target="messages">
+                                <i class="ri-chat-3-line"></i>
+                                <span>Messages</span>
+                                <span class="nav-count-badge warning" id="messages-count-badge">2</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#payments" class="sidebar-item nav-link" data-target="payments">
+                                <i class="ri-wallet-3-line"></i>
+                                <span>Payments & Escrow</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#notifications" class="sidebar-item nav-link" data-target="notifications">
+                                <i class="ri-notification-3-line"></i>
+                                <span>Notifications</span>
+                                <span class="nav-count-badge info" id="notif-count-badge">3</span>
+                            </a>
+                        </li>
+
+                        <li class="menu-label">Account & Trust</li>
+                        <li>
+                            <a href="#profile" class="sidebar-item nav-link" data-target="profile">
+                                <i class="ri-user-settings-line"></i>
+                                <span>Profile & Ratings</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- SIDEBAR FOOTER CARD -->
+                <div class="sidebar-escrow-card">
+                    <div class="escrow-icon"><i class="ri-shield-check-fill"></i></div>
+                    <div class="escrow-text">
+                        <strong>100% Student Guarantee</strong>
+                        <p>Funds held in secure campus escrow until task completion confirmed.</p>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- MOBILE BOTTOM NAV BAR -->
+            <nav class="mobile-bottom-nav">
+                <a href="#dashboard" class="mobile-nav-item nav-link active" data-target="dashboard">
+                    <i class="ri-dashboard-3-line"></i>
+                    <span>Home</span>
+                </a>
+                <a href="#marketplace" class="mobile-nav-item nav-link" data-target="marketplace">
+                    <i class="ri-compass-3-line"></i>
+                    <span>Explore</span>
+                </a>
+                <a href="#post-gig" class="mobile-nav-item nav-link special" data-target="post-gig">
+                    <i class="ri-add-line"></i>
+                    <span>Post</span>
+                </a>
+                <a href="#messages" class="mobile-nav-item nav-link" data-target="messages">
+                    <i class="ri-chat-3-line"></i>
+                    <span>Chat</span>
+                </a>
+                <a href="#profile" class="mobile-nav-item nav-link" data-target="profile">
+                    <i class="ri-user-3-line"></i>
+                    <span>Profile</span>
+                </a>
+            </nav>
+
+            <!-- MAIN CONTENT AREA -->
+            <main id="main-content" class="main-content">
+
+                <!-- 1. AUTH VIEW (Login / Signup / Forgot Password) -->
+                <section id="auth-view" class="view-section hidden">
+                    <div class="auth-container">
+                        <div class="auth-hero-side">
+                            <div class="auth-hero-content">
+                                <div class="brand-badge"><i class="ri-shield-star-line"></i> Exclusive Student Network</div>
+                                <h2>Earn Money & Get Help Around Campus Fast</h2>
+                                <p>Join thousands of verified college students trading skills, assistance, delivery, and academic support within your campus community.</p>
+                                <div class="auth-features">
+                                    <div class="feat-item"><i class="ri-checkbox-circle-fill"></i> College Email & Student ID Verification</div>
+                                    <div class="feat-item"><i class="ri-checkbox-circle-fill"></i> Instant UPI Payouts & Escrow Protection</div>
+                                    <div class="feat-item"><i class="ri-checkbox-circle-fill"></i> Built-in Chat & Rating System</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="auth-form-side">
+                            <div class="auth-card">
+                                <div class="auth-tabs">
+                                    <button class="auth-tab-btn active" id="tab-login-btn">Sign In</button>
+                                    <button class="auth-tab-btn" id="tab-signup-btn">Student Sign Up</button>
+                                </div>
+
+                                <!-- LOGIN FORM -->
+                                <form id="login-form" class="auth-form-content">
+                                    <div class="form-header">
+                                        <h3>Welcome back!</h3>
+                                        <p>Log in with your verified student email</p>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="login-email">Campus Email Address</label>
+                                        <div class="input-icon-wrapper">
+                                            <i class="ri-mail-line"></i>
+                                            <input type="email" id="login-email" placeholder="regno@sastra.ac.in" required value="regno@sastra.ac.in">
+                                        </div>
+                                        <small class="hint">Use your campus email domain (.edu or .ac.in)</small>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="label-row">
+                                            <label for="login-password">Password</label>
+                                            <a href="#" id="forgot-password-link" class="forgot-link">Forgot password?</a>
+                                        </div>
+                                        <div class="input-icon-wrapper">
+                                            <i class="ri-lock-2-line"></i>
+                                            <input type="password" id="login-password" placeholder="••••••••" required value="password123">
+                                            <button type="button" class="toggle-password"><i class="ri-eye-line"></i></button>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-options">
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" id="remember-me" checked> Remember me on this device
+                                        </label>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary btn-block btn-lg">
+                                        <span>Sign In to Campus Workspace</span>
+                                        <i class="ri-arrow-right-line"></i>
+                                    </button>
+
+                                    <div class="demo-accounts-box">
+                                        <span>Quick Demo Sign-In:</span>
+                                        <div class="demo-btns">
+                                            <button type="button" class="btn btn-xs btn-outline" id="demo-user-1">Nithyashri (Requester & Worker)</button>
+                                            <button type="button" class="btn btn-xs btn-outline" id="demo-user-2">Ananya (Academic & Tech Worker)</button>
+                                        </div>
+                                    </div>
+                                </form>
+
+                                <!-- SIGNUP FORM -->
+                                <form id="signup-form" class="auth-form-content hidden">
+                                    <div class="form-header">
+                                        <h3>Create Verified Student Account</h3>
+                                        <p>Only verified college students can post or work on UniGigs</p>
+                                    </div>
+
+                                    <div class="form-grid-2">
+                                        <div class="form-group">
+                                            <label for="signup-name">Full Name</label>
+                                            <input type="text" id="signup-name" placeholder="Sneha Patel" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="signup-dept">Department / Major</label>
+                                            <input type="text" id="signup-dept" placeholder="Computer Science" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="signup-email">Official Campus Email (.edu / .ac.in)</label>
+                                        <div class="input-icon-wrapper">
+                                            <i class="ri-mail-line"></i>
+                                            <input type="email" id="signup-email" placeholder="regno@sastra.ac.in" required>
+                                        </div>
+                                        <small class="hint warning-hint" id="email-validation-hint">Must end with .edu, .edu.in, or .ac.in</small>
+                                    </div>
+
+                                    <div class="form-grid-2">
+                                        <div class="form-group">
+                                            <label for="signup-year">Academic Year</label>
+                                            <select id="signup-year" required>
+                                                <option value="1st Year">1st Year / Freshman</option>
+                                                <option value="2nd Year">2nd Year / Sophomore</option>
+                                                <option value="3rd Year" selected>3rd Year / Junior</option>
+                                                <option value="4th Year">4th Year / Senior</option>
+                                                <option value="Postgrad">Postgraduate / Masters</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="signup-upi">UPI ID for Payouts (Optional)</label>
+                                            <input type="text" id="signup-upi" placeholder="sneha@upi">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="signup-password">Password</label>
+                                        <input type="password" id="signup-password" placeholder="Minimum 6 characters" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Student Verification ID Card (Mock Upload)</label>
+                                        <div class="file-upload-dropzone" id="signup-id-dropzone">
+                                            <i class="ri-upload-cloud-2-line"></i>
+                                            <span>Click or drag your Student ID Card photo</span>
+                                            <small>Formats: JPG, PNG (Max 5MB)</small>
+                                            <input type="file" id="signup-id-input" accept="image/*" class="hidden">
+                                        </div>
+                                        <div id="signup-id-preview" class="file-preview-pill hidden">
+                                            <i class="ri-image-line"></i> <span id="id-filename">student_id_card.jpg</span>
+                                            <button type="button" id="remove-id-preview"><i class="ri-close-line"></i></button>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-options">
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" id="terms-agree" required> I agree to Campus Honor Code & Escrow Terms
+                                        </label>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary btn-block btn-lg">
+                                        <span>Create Verified Account</span>
+                                        <i class="ri-checkbox-circle-line"></i>
+                                    </button>
+                                </form>
+
+                                <!-- FORGOT PASSWORD FORM -->
+                                <form id="forgot-form" class="auth-form-content hidden">
+                                    <div class="form-header">
+                                        <h3>Reset Your Password</h3>
+                                        <p>Enter your registered college email for a password reset link</p>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="forgot-email">Campus Email</label>
+                                        <input type="email" id="forgot-email" placeholder="regno@sastra.ac.in" required>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary btn-block">Send Reset Instructions</button>
+                                    <button type="button" class="btn btn-link btn-block" id="back-to-login">Back to Sign In</button>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. DASHBOARD VIEW -->
+                <section id="dashboard-view" class="view-section active">
+                    <!-- DASHBOARD HERO BANNER -->
+                    <div class="dashboard-hero">
+                        <div class="hero-text">
+                            <div class="welcome-tag">
+                                <span class="badge badge-success" id="dash-verification-pill"><i class="ri-shield-check-fill"></i> Verified Student</span>
+                                <span class="timestamp-tag" id="dash-current-date">Today, 29 Aug</span>
+                            </div>
+                            <h1 id="dash-greeting-text">Welcome back, Nithyashri! 👋</h1>
+                            <p>Here is what is happening across campus today. You have <strong id="dash-active-count-text">2 active gigs</strong> in progress.</p>
+                        </div>
+                        <div class="hero-actions">
+                            <button class="btn btn-primary nav-link" data-target="post-gig">
+                                <i class="ri-add-line"></i> Post New Task
+                            </button>
+                            <button class="btn btn-outline-light nav-link" data-target="marketplace">
+                                <i class="ri-compass-line"></i> Browse Gigs
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- STATS GRID -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon earnings"><i class="ri-money-rupee-circle-line"></i></div>
+                            <div class="stat-info">
+                                <span class="stat-label">Total Earnings</span>
+                                <h3 class="stat-value" id="dash-total-earnings">₹4,250</h3>
+                                <span class="stat-subtext positive"><i class="ri-arrow-up-line"></i> ₹850 this week</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon active-gig"><i class="ri-flashlight-line"></i></div>
+                            <div class="stat-info">
+                                <span class="stat-label">Active Gigs</span>
+                                <h3 class="stat-value" id="dash-active-gigs-count">2</h3>
+                                <span class="stat-subtext">1 Posted • 1 Working</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon completed"><i class="ri-checkbox-circle-line"></i></div>
+                            <div class="stat-info">
+                                <span class="stat-label">Completed Tasks</span>
+                                <h3 class="stat-value" id="dash-completed-count">14</h3>
+                                <span class="stat-subtext">100% Completion rate</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon pending"><i class="ri-time-line"></i></div>
+                            <div class="stat-info">
+                                <span class="stat-label">Pending Escrow</span>
+                                <h3 class="stat-value" id="dash-pending-payouts">₹650</h3>
+                                <span class="stat-subtext text-muted">Protected in Escrow</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DASHBOARD MAIN TWO COLUMNS -->
+                    <div class="dashboard-columns">
+                        <!-- LEFT COLUMN: QUICK ACTIONS + ACTIVE GIGS -->
+                        <div class="dash-left">
+
+                            <!-- ACTIVE & MY GIGS SNAPSHOT CARD -->
+                            <div class="content-card">
+                                <div class="card-header">
+                                    <h3><i class="ri-time-fill highlight-icon"></i> Your Active Campus Tasks</h3>
+                                    <a href="#my-gigs" class="card-link nav-link" data-target="my-gigs">View All My Gigs →</a>
+                                </div>
+                                <div class="active-gigs-list" id="dash-active-gigs-container">
+                                    <!-- Dynamic Active Gigs render here -->
+                                </div>
+                            </div>
+
+                            <!-- RECOMMENDED / URGENT GIGS NEARBY -->
+                            <div class="content-card">
+                                <div class="card-header">
+                                    <h3><i class="ri-fire-fill highlight-icon"></i> Recommended Gigs Near You</h3>
+                                    <a href="#marketplace" class="card-link nav-link" data-target="marketplace">Explore Marketplace →</a>
+                                </div>
+                                <div class="gigs-grid-mini" id="dash-recommended-gigs">
+                                    <!-- Dynamic recommended cards -->
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- RIGHT COLUMN: NOTIFICATIONS SNAPSHOT + RECENT ACTIVITY + PROFILE CARD -->
+                        <div class="dash-right">
+                            
+                            <!-- QUICK WALLET / ESCROW SNAPSHOT -->
+                            <div class="content-card wallet-quick-card">
+                                <div class="wallet-balance-row">
+                                    <div>
+                                        <span class="label">Escrow Wallet Balance</span>
+                                        <h2 id="dash-card-wallet-bal">₹1,200</h2>
+                                    </div>
+                                    <button class="btn btn-sm btn-light nav-link" data-target="payments">
+                                        <i class="ri-add-line"></i> Add Funds
+                                    </button>
+                                </div>
+                                <div class="upi-tag">
+                                    <i class="ri-qr-code-line"></i> Instant UPI Withdrawals (GPay, PhonePe, Paytm)
+                                </div>
+                            </div>
+
+                            <!-- RECENT NOTIFICATIONS WIDGET -->
+                            <div class="content-card">
+                                <div class="card-header">
+                                    <h3><i class="ri-notification-3-fill highlight-icon"></i> Recent Alerts</h3>
+                                    <a href="#notifications" class="card-link nav-link" data-target="notifications">All Notifications</a>
+                                </div>
+                                <div class="notif-widget-list" id="dash-notif-widget">
+                                    <!-- Dynamic list -->
+                                </div>
+                            </div>
+
+                            <!-- TOP RATED CAMPUS WORKERS -->
+                            <div class="content-card">
+                                <div class="card-header">
+                                    <h3><i class="ri-medal-fill highlight-icon"></i> Top Campus Hustlers</h3>
+                                </div>
+                                <div class="top-workers-list" id="dash-top-workers">
+                                    <!-- Dynamic list of workers -->
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. MARKETPLACE ("FIND GIGS") VIEW -->
+                <section id="marketplace-view" class="view-section hidden">
+                    <div class="page-header">
+                        <div class="header-titles">
+                            <h1>Find Campus Gigs</h1>
+                            <p>Browse open tasks from fellow students across your university campus</p>
+                        </div>
+                        <div class="header-actions">
+                            <button class="btn btn-primary nav-link" data-target="post-gig">
+                                <i class="ri-add-line"></i> Post a Gig (Earn/Get Help)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- SEARCH & FILTER BAR -->
+                    <div class="filter-wrapper-card">
+                        <!-- SEARCH ROW -->
+                        <div class="search-sort-row">
+                            <div class="market-search-input">
+                                <i class="ri-search-2-line"></i>
+                                <input type="text" id="market-search-field" placeholder="Search by title, keywords (e.g. 'Lab Report', 'Biryani', 'Printing')...">
+                            </div>
+
+                            <div class="market-sort-select">
+                                <label for="market-sort-by">Sort By:</label>
+                                <select id="market-sort-by">
+                                    <option value="newest">Newest First</option>
+                                    <option value="reward-high">Highest Reward (₹)</option>
+                                    <option value="reward-low">Lowest Reward (₹)</option>
+                                    <option value="deadline">Urgent Deadline</option>
+                                </select>
+                            </div>
+
+                            <button class="btn btn-outline filter-toggle-btn" id="open-filter-modal-btn">
+                                <i class="ri-filter-3-line"></i> <span>Filters</span>
+                                <span class="filter-count-badge hidden" id="active-filter-badge">0</span>
+                            </button>
+                        </div>
+
+                        <!-- CATEGORY CHIPS SCROLLABLE -->
+                        <div class="category-chips-row" id="category-chips-container">
+                            <button class="cat-chip active" data-category="all">
+                                <i class="ri-apps-2-line"></i> All Categories <span class="count">12</span>
+                            </button>
+                            <button class="cat-chip" data-category="Delivery">
+                                <i class="ri-truck-line"></i> Delivery <span class="count">2</span>
+                            </button>
+                            <button class="cat-chip" data-category="Food">
+                                <i class="ri-restaurant-line"></i> Food <span class="count">3</span>
+                            </button>
+                            <button class="cat-chip" data-category="Printing">
+                                <i class="ri-printer-line"></i> Printing <span class="count">2</span>
+                            </button>
+                            <button class="cat-chip" data-category="Academic Help">
+                                <i class="ri-book-read-line"></i> Academic Help <span class="count">2</span>
+                            </button>
+                            <button class="cat-chip" data-category="Errands">
+                                <i class="ri-walk-line"></i> Errands <span class="count">1</span>
+                            </button>
+                            <button class="cat-chip" data-category="Events">
+                                <i class="ri-camera-3-line"></i> Events <span class="count">1</span>
+                            </button>
+                            <button class="cat-chip" data-category="Technical Help">
+                                <i class="ri-code-s-slash-line"></i> Technical Help <span class="count">1</span>
+                            </button>
+                        </div>
+
+                        <!-- RECENT SEARCH CHIPS & ACTIVE FILTERS -->
+                        <div class="active-filter-tags-row hidden" id="active-filters-summary">
+                            <span class="label">Active Filters:</span>
+                            <div class="tags-list" id="active-filter-tags-list"></div>
+                            <button class="btn btn-link btn-xs" id="clear-all-filters-btn">Clear All Filters</button>
+                        </div>
+                    </div>
+
+                    <!-- GIGS GRID CONTAINER -->
+                    <div class="gigs-main-grid" id="marketplace-gigs-grid">
+                        <!-- Dynamic Gig Cards Render Here -->
+                    </div>
+
+                    <!-- EMPTY STATE -->
+                    <div id="marketplace-empty-state" class="empty-state-box hidden">
+                        <div class="empty-icon"><i class="ri-search-eye-line"></i></div>
+                        <h3>No campus gigs match your current criteria</h3>
+                        <p>Try adjusting your search query, reward range, or category filter.</p>
+                        <button class="btn btn-outline" id="reset-marketplace-search-btn">Reset All Filters</button>
+                    </div>
+                </section>
+
+                <!-- 4. POST A GIG VIEW -->
+                <section id="post-gig-view" class="view-section hidden">
+                    <div class="form-container-centered">
+                        <div class="form-card-lg">
+                            <div class="form-card-header">
+                                <div class="header-icon"><i class="ri-add-circle-fill"></i></div>
+                                <div>
+                                    <h2>Post a New Campus Gig</h2>
+                                    <p>Find a verified fellow student to get tasks done quickly on campus</p>
+                                </div>
+                            </div>
+
+                            <form id="post-gig-form">
+                                <!-- STEP 1: TITLE & CATEGORY -->
+                                <div class="form-section-block">
+                                    <h4 class="section-title"><span class="step-num">1</span> Gig Overview</h4>
+                                    
+                                    <div class="form-group">
+                                        <label for="gig-post-title">Gig Title <span class="required">*</span></label>
+                                        <input type="text" id="gig-post-title" placeholder="e.g. Need 40 pages notes printed & bound urgently before 3 PM" required maxlength="100">
+                                        <small class="hint">Be specific about the task, location, or item needed.</small>
+                                    </div>
+
+                                    <div class="form-grid-2">
+                                        <div class="form-group">
+                                            <label for="gig-post-category">Category <span class="required">*</span></label>
+                                            <select id="gig-post-category" required>
+                                                <option value="" disabled selected>Select category...</option>
+                                                <option value="Delivery">🚀 Delivery (Hostels/Blocks)</option>
+                                                <option value="Food">🍲 Food Pickup & Canteen</option>
+                                                <option value="Printing">🖨️ Printing & Binding</option>
+                                                <option value="Academic Help">📚 Academic & Lab Help</option>
+                                                <option value="Errands">🏃 Errands & Queue Holding</option>
+                                                <option value="Events">📸 Events & Photography</option>
+                                                <option value="Technical Help">💻 Technical & Coding Help</option>
+                                                <option value="Other">✨ Other Campus Task</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="gig-post-location">Campus Location <span class="required">*</span></label>
+                                            <select id="gig-post-location" required>
+                                                <option value="Hostel 4 / Block B">Hostel 4 / Block B</option>
+                                                <option value="Central Library & Reading Hall">Central Library & Reading Hall</option>
+                                                <option value="Main Canteen & Food Court">Main Canteen & Food Court</option>
+                                                <option value="Science Block A">Science Block A</option>
+                                                <option value="Tech Park & Computer Labs">Tech Park & Computer Labs</option>
+                                                <option value="Sports Complex & Gymnasium">Sports Complex & Gymnasium</option>
+                                                <option value="Main Gate / Off-Campus Delivery">Main Gate / Off-Campus Delivery</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="gig-post-desc">Detailed Description & Instructions <span class="required">*</span></label>
+                                        <textarea id="gig-post-desc" rows="4" placeholder="Describe exact requirements, room numbers, contact info, or special notes for the worker..." required></textarea>
+                                    </div>
+                                </div>
+
+                                <!-- STEP 2: REWARD & DEADLINE -->
+                                <div class="form-section-block">
+                                    <h4 class="section-title"><span class="step-num">2</span> Compensation & Timeline</h4>
+
+                                    <div class="form-grid-2">
+                                        <div class="form-group">
+                                            <label for="gig-post-reward">Reward Amount (₹ INR) <span class="required">*</span></label>
+                                            <div class="input-prefix-wrapper">
+                                                <span class="prefix">₹</span>
+                                                <input type="number" id="gig-post-reward" placeholder="350" min="50" max="10000" step="10" required>
+                                            </div>
+                                            <small class="hint positive-hint" id="post-reward-suggestion"><i class="ri-information-line"></i> Recommended: ₹150 - ₹350 for campus tasks</small>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="gig-post-deadline">Task Completion Deadline <span class="required">*</span></label>
+                                            <input type="datetime-local" id="gig-post-deadline" required>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- STEP 3: REQUIREMENTS & ATTACHMENT -->
+                                <div class="form-section-block">
+                                    <h4 class="section-title"><span class="step-num">3</span> Requirements & Attachments</h4>
+
+                                    <div class="form-group">
+                                        <label for="gig-post-requirements">Worker Requirements (Press Enter to add tags)</label>
+                                        <div class="tags-input-container">
+                                            <div class="tags-holder" id="post-requirements-tags-holder"></div>
+                                            <input type="text" id="gig-requirements-input" placeholder="e.g. 'Must have laptop', 'Punctual', 'Has bicycle'">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Optional Photo / Document Preview (Drag & Drop or Select)</label>
+                                        <div class="file-upload-dropzone" id="post-gig-dropzone">
+                                            <i class="ri-image-add-line"></i>
+                                            <span>Upload task image / reference document</span>
+                                            <small>Formats: JPG, PNG, PDF (Simulated mock upload)</small>
+                                            <input type="file" id="post-gig-file-input" accept="image/*" class="hidden">
+                                        </div>
+                                        <div id="post-file-preview" class="file-preview-pill hidden">
+                                            <i class="ri-file-line"></i> <span id="post-file-name">attachment.jpg</span>
+                                            <button type="button" id="remove-post-file"><i class="ri-close-line"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- ESCROW NOTICE & SUBMIT -->
+                                <div class="escrow-notice-box">
+                                    <i class="ri-shield-fill"></i>
+                                    <div>
+                                        <strong>Campus Escrow Protection</strong>
+                                        <p>The reward amount of <span id="post-gig-escrow-amount">₹350</span> will be reserved from your wallet balance upon posting. Funds are released to the worker only after you confirm task completion.</p>
+                                    </div>
+                                </div>
+
+                                <div class="form-actions-row">
+                                    <button type="button" class="btn btn-outline nav-link" data-target="marketplace">Cancel</button>
+                                    <button type="submit" class="btn btn-primary btn-lg" id="post-gig-submit-btn">
+                                        <i class="ri-flashlight-line"></i> Publish Gig to Campus
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 5. MY GIGS VIEW -->
+                <section id="my-gigs-view" class="view-section hidden">
+                    <div class="page-header">
+                        <div class="header-titles">
+                            <h1>My Campus Gigs</h1>
+                            <p>Manage tasks you have posted or accepted across campus</p>
+                        </div>
+                        <div class="header-actions">
+                            <button class="btn btn-primary nav-link" data-target="post-gig">
+                                <i class="ri-add-line"></i> Post New Gig
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- MY GIGS TABS -->
+                    <div class="my-gigs-tabs-row">
+                        <button class="my-tab-btn active" data-tab="posted">
+                            <i class="ri-upload-2-line"></i> Posted by Me (<span id="count-posted">0</span>)
+                        </button>
+                        <button class="my-tab-btn" data-tab="accepted">
+                            <i class="ri-user-shared-line"></i> Accepted / Working (<span id="count-accepted">0</span>)
+                        </button>
+                        <button class="my-tab-btn" data-tab="completed">
+                            <i class="ri-checkbox-circle-line"></i> Completed (<span id="count-completed">0</span>)
+                        </button>
+                        <button class="my-tab-btn" data-tab="saved">
+                            <i class="ri-bookmark-3-line"></i> Bookmarked / Saved (<span id="count-saved">0</span>)
+                        </button>
+                    </div>
+
+                    <!-- MY GIGS LIST -->
+                    <div class="my-gigs-list-container" id="my-gigs-container">
+                        <!-- Dynamic Render -->
+                    </div>
+
+                    <div id="my-gigs-empty" class="empty-state-box hidden">
+                        <div class="empty-icon"><i class="ri-inbox-archive-line"></i></div>
+                        <h3 id="my-gigs-empty-title">No gigs found in this category</h3>
+                        <p id="my-gigs-empty-desc">You haven't posted or accepted any gigs in this tab yet.</p>
+                        <button class="btn btn-primary nav-link" data-target="marketplace">Find Gigs Now</button>
+                    </div>
+                </section>
+
+                <!-- 6. MESSAGES / CHAT VIEW -->
+                <section id="messages-view" class="view-section hidden">
+                    <div class="chat-app-wrapper">
+                        <!-- LEFT SIDEBAR: CONVERSATION LIST -->
+                        <div class="chat-sidebar">
+                            <div class="chat-sidebar-header">
+                                <h3>Messages</h3>
+                                <div class="chat-search">
+                                    <i class="ri-search-line"></i>
+                                    <input type="text" id="chat-search-input" placeholder="Search conversations...">
+                                </div>
+                            </div>
+                            <div class="conversations-list" id="conversations-list-container">
+                                <!-- Dynamic conversation items -->
+                            </div>
+                        </div>
+
+                        <!-- RIGHT MAIN: ACTIVE CHAT PANEL -->
+                        <div class="chat-main-panel" id="chat-main-panel">
+                            <!-- CHAT HEADER -->
+                            <div class="chat-header" id="chat-header-info">
+                                <div class="chat-user-snippet">
+                                    <button class="icon-btn mobile-only" id="back-to-convos-btn"><i class="ri-arrow-left-line"></i></button>
+                                    <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=120&q=80" alt="Avatar" class="avatar-sm" id="chat-partner-avatar">
+                                    <div>
+                                        <h4 id="chat-partner-name">Select a conversation</h4>
+                                        <span class="chat-gig-tag" id="chat-gig-title-tag">Gig: Lab Report Delivery</span>
+                                    </div>
+                                </div>
+                                <div class="chat-header-actions" id="chat-header-actions">
+                                    <button class="btn btn-sm btn-outline" id="chat-view-gig-btn"><i class="ri-external-link-line"></i> View Gig Details</button>
+                                </div>
+                            </div>
+
+                            <!-- CHAT MESSAGES BODY -->
+                            <div class="chat-messages-body" id="chat-messages-body">
+                                <div class="chat-placeholder">
+                                    <i class="ri-chat-smile-2-line"></i>
+                                    <p>Select a student conversation on the left to start messaging</p>
+                                </div>
+                            </div>
+
+                            <!-- CHAT INPUT BAR -->
+                            <form id="chat-send-form" class="chat-input-bar">
+                                <button type="button" class="chat-icon-btn" id="chat-attach-btn" title="Attach preview file"><i class="ri-attachment-2"></i></button>
+                                <input type="text" id="chat-input-field" placeholder="Type your message here... (e.g. 'I'm outside Hostel 4 now')" autocomplete="off">
+                                <button type="submit" class="btn btn-primary send-msg-btn" id="chat-send-btn">
+                                    <i class="ri-send-plane-2-fill"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 7. PAYMENTS & ESCROW VIEW -->
+                <section id="payments-view" class="view-section hidden">
+                    <div class="page-header">
+                        <div class="header-titles">
+                            <h1>Payments & Escrow Wallet</h1>
+                            <p>Manage your campus earnings, deposits, escrow protection, and UPI payouts</p>
+                        </div>
+                    </div>
+
+                    <!-- WALLET METRICS HERO -->
+                    <div class="wallet-metrics-card">
+                        <div class="wallet-stat-block">
+                            <span class="stat-label">Available Escrow Balance</span>
+                            <h1 class="wallet-big-val" id="payment-page-balance">₹1,200</h1>
+                            <small class="sub">Ready to post gigs or withdraw</small>
+                        </div>
+
+                        <div class="wallet-stat-block border-left">
+                            <span class="stat-label">Total Lifetime Earnings</span>
+                            <h2 class="wallet-med-val text-success" id="payment-page-earned">₹4,250</h2>
+                            <small class="sub">Earned from 14 completed gigs</small>
+                        </div>
+
+                        <div class="wallet-stat-block border-left">
+                            <span class="stat-label">Pending In Escrow</span>
+                            <h2 class="wallet-med-val text-warning" id="payment-page-pending">₹650</h2>
+                            <small class="sub">Locked for ongoing active tasks</small>
+                        </div>
+
+                        <div class="wallet-actions-block">
+                            <button class="btn btn-primary btn-lg" id="open-upi-deposit-modal">
+                                <i class="ri-add-circle-line"></i> Add Funds (Deposit)
+                            </button>
+                            <button class="btn btn-outline-light btn-lg" id="open-upi-withdraw-modal">
+                                <i class="ri-bank-card-line"></i> Withdraw Earnings
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- TRANSACTIONS LEDGER TABLE -->
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h3><i class="ri-history-line highlight-icon"></i> Payment History & Escrow Ledger</h3>
+                            <div class="table-filter-tabs">
+                                <button class="filter-tab-btn active" data-tx-filter="all">All Transactions</button>
+                                <button class="filter-tab-btn" data-tx-filter="Earnings">Earnings</button>
+                                <button class="filter-tab-btn" data-tx-filter="Deposits">Deposits</button>
+                                <button class="filter-tab-btn" data-tx-filter="Escrow Hold">Escrow Holds</button>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="custom-table" id="transactions-table">
+                                <thead>
+                                    <tr>
+                                        <th>Transaction ID</th>
+                                        <th>Date & Time</th>
+                                        <th>Description / Task</th>
+                                        <th>Type</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="transactions-table-body">
+                                    <!-- Dynamic rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 8. NOTIFICATIONS VIEW -->
+                <section id="notifications-view" class="view-section hidden">
+                    <div class="page-header">
+                        <div class="header-titles">
+                            <h1>Notification Center</h1>
+                            <p>Stay updated on gig requests, messages, completion approvals, and payments</p>
+                        </div>
+                        <div class="header-actions">
+                            <button class="btn btn-outline btn-sm" id="mark-all-read-btn"><i class="ri-checks-line"></i> Mark All as Read</button>
+                            <button class="btn btn-link btn-sm danger" id="clear-all-notifs-btn"><i class="ri-delete-bin-line"></i> Clear All</button>
+                        </div>
+                    </div>
+
+                    <!-- NOTIFICATION FILTERS -->
+                    <div class="notif-filter-chips">
+                        <button class="notif-chip active" data-notif-cat="all">All (<span id="notif-count-all">0</span>)</button>
+                        <button class="notif-chip" data-notif-cat="gig">Gigs</button>
+                        <button class="notif-chip" data-notif-cat="payment">Payments</button>
+                        <button class="notif-chip" data-notif-cat="message">Messages</button>
+                    </div>
+
+                    <!-- NOTIFICATIONS LIST CONTAINER -->
+                    <div class="notifications-full-list" id="notifications-full-list">
+                        <!-- Dynamic items -->
+                    </div>
+                </section>
+
+                <!-- 9. PROFILE & SETTINGS VIEW -->
+                <section id="profile-view" class="view-section hidden">
+                    <!-- PROFILE HEADER CARD -->
+                    <div class="profile-header-card">
+                        <div class="profile-banner"></div>
+                        <div class="profile-meta-row">
+                            <div class="profile-avatar-wrapper">
+                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80" alt="Student Profile" id="profile-page-avatar">
+                                <span class="verification-badge-floating" title="Verified Campus Student"><i class="ri-checkbox-circle-fill"></i></span>
+                            </div>
+                            <div class="profile-info-block">
+                                <div class="name-title-row">
+                                    <h2 id="profile-page-name">Nithyashri R</h2>
+                                    <span class="badge badge-success"><i class="ri-shield-check-fill"></i> Verified Student</span>
+                                </div>
+                                <p class="dept-year" id="profile-page-dept">School of Computing, SASTRA • 3rd Year (Junior)</p>
+                                <span class="campus-name" id="profile-page-campus"><i class="ri-building-4-line"></i> SASTRA Deemed University, Thanjavur</span>
+                            </div>
+                            <div class="profile-stats-summary">
+                                <div class="mini-stat">
+                                    <strong id="profile-page-rating">4.9 ★</strong>
+                                    <span>Rating (18 Reviews)</span>
+                                </div>
+                                <div class="mini-stat">
+                                    <strong id="profile-page-completed">14</strong>
+                                    <span>Gigs Completed</span>
+                                </div>
+                                <div class="mini-stat">
+                                    <strong id="profile-page-earned">₹4,250</strong>
+                                    <span>Total Earned</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PROFILE TABS -->
+                    <div class="profile-tabs-container">
+                        <button class="profile-tab active" data-prof-tab="overview">Overview & Bio</button>
+                        <button class="profile-tab" data-prof-tab="reviews">Ratings & Reviews (<span id="profile-reviews-count">18</span>)</button>
+                        <button class="profile-tab" data-prof-tab="edit">Edit Profile & UPI</button>
+                        <button class="profile-tab" data-prof-tab="preferences">Account Settings</button>
+                    </div>
+
+                    <!-- TAB CONTENTS -->
+                    <div class="profile-tab-content-area">
+                        <!-- OVERVIEW TAB -->
+                        <div id="prof-tab-overview" class="prof-tab-pane active">
+                            <div class="profile-two-col">
+                                <div class="content-card">
+                                    <h3>About Student</h3>
+                                    <p id="profile-page-bio" class="bio-text">Final year CS undergrad passionate about mobile dev and UI design. Available for lab setup help, printing runs around Block B, and coding tutoring.</p>
+                                    
+                                    <h4 class="mt-4">Skills & Strengths</h4>
+                                    <div class="skills-tags-holder" id="profile-skills-tags">
+                                        <span class="skill-tag">Python & C++</span>
+                                        <span class="skill-tag">Fast Delivery</span>
+                                        <span class="skill-tag">Linear Algebra</span>
+                                        <span class="skill-tag">DSLR Photography</span>
+                                    </div>
+                                </div>
+
+                                <div class="content-card">
+                                    <h3>Student Verification Info</h3>
+                                    <div class="verification-details-list">
+                                        <div class="v-item">
+                                            <i class="ri-mail-check-line text-success"></i>
+                                            <div>
+                                                <strong>College Email Domain Verified</strong>
+                                                <small id="profile-page-email">regno@sastra.ac.in</small>
+                                            </div>
+                                        </div>
+                                        <div class="v-item">
+                                            <i class="ri-id-card-line text-success"></i>
+                                            <div>
+                                                <strong>Student ID Status</strong>
+                                                <small>Verified • Valid till June 2027</small>
+                                            </div>
+                                        </div>
+                                        <div class="v-item">
+                                            <i class="ri-bank-card-line text-success"></i>
+                                            <div>
+                                                <strong>UPI Payout ID Connected</strong>
+                                                <small id="profile-page-upi">nithyashri@upi</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- REVIEWS TAB -->
+                        <div id="prof-tab-reviews" class="prof-tab-pane hidden">
+                            <div class="reviews-summary-card content-card">
+                                <div class="overall-rating-box">
+                                    <h1 id="reviews-big-score">4.9</h1>
+                                    <div class="stars-gold">★★★★★</div>
+                                    <p>Based on 18 student reviews</p>
+                                </div>
+                                <div class="reviews-breakdown">
+                                    <div class="bar-row"><span>5 Stars</span> <div class="bar-bg"><div class="bar-fill" style="width: 90%;"></div></div> <span>16</span></div>
+                                    <div class="bar-row"><span>4 Stars</span> <div class="bar-bg"><div class="bar-fill" style="width: 10%;"></div></div> <span>2</span></div>
+                                    <div class="bar-row"><span>3 Stars</span> <div class="bar-bg"><div class="bar-fill" style="width: 0%;"></div></div> <span>0</span></div>
+                                </div>
+                            </div>
+
+                            <div class="reviews-list-container" id="profile-reviews-list">
+                                <!-- Dynamic reviews render -->
+                            </div>
+                        </div>
+
+                        <!-- EDIT PROFILE TAB -->
+                        <div id="prof-tab-edit" class="prof-tab-pane hidden">
+                            <div class="content-card form-card">
+                                <h3>Edit Profile Information</h3>
+                                <form id="edit-profile-form">
+                                    <div class="form-grid-2">
+                                        <div class="form-group">
+                                            <label for="edit-name">Full Name</label>
+                                            <input type="text" id="edit-name" value="Nithyashri R" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="edit-dept">Department & Year</label>
+                                            <input type="text" id="edit-dept" value="School of Computing • 3rd Year" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="edit-bio">Bio & Campus Introduction</label>
+                                        <textarea id="edit-bio" rows="3">Undergrad student at SASTRA Deemed University, Thanjavur. Available for lab setup help, printing runs, and coding tutoring.</textarea>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="edit-skills">Skills (Comma Separated)</label>
+                                        <input type="text" id="edit-skills" value="Python & C++, Fast Delivery, Linear Algebra, Web Development">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="edit-upi">UPI Payout ID (For receiving payments)</label>
+                                        <input type="text" id="edit-upi" value="nithyashri@upi" placeholder="username@upi">
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary"><i class="ri-save-line"></i> Save Profile Changes</button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- PREFERENCES TAB -->
+                        <div id="prof-tab-preferences" class="prof-tab-pane hidden">
+                            <div class="content-card">
+                                <h3>Account & Notification Preferences</h3>
+                                <div class="preference-toggle-item">
+                                    <div>
+                                        <strong>Email Alerts for New Gigs</strong>
+                                        <p>Get notified when a new gig in your department is posted.</p>
+                                    </div>
+                                    <input type="checkbox" checked>
+                                </div>
+                                <hr>
+                                <div class="preference-toggle-item">
+                                    <div>
+                                        <strong>In-App Chat Sounds</strong>
+                                        <p>Play sound notifications for incoming messages.</p>
+                                    </div>
+                                    <input type="checkbox" checked>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- MODALS SECTION -->
+
+    <!-- 1. GIG DETAILS MODAL -->
+    <div id="gig-details-modal" class="modal-backdrop hidden">
+        <div class="modal-card modal-lg">
+            <button class="modal-close-btn" id="close-gig-modal-btn"><i class="ri-close-line"></i></button>
+
+            <div class="gig-modal-content" id="gig-modal-body">
+                <!-- Dynamic Content injected via script.js -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. SUBMIT WORK PROOF MODAL (For Worker) -->
+    <div id="submit-work-modal" class="modal-backdrop hidden">
+        <div class="modal-card">
+            <button class="modal-close-btn" id="close-submit-work-modal"><i class="ri-close-line"></i></button>
+            <div class="modal-header">
+                <h3><i class="ri-checkbox-circle-fill text-success"></i> Submit Work for Completion</h3>
+                <p>Provide work notes, Google Drive link, or photos for the requester to review.</p>
+            </div>
+            <form id="submit-work-form">
+                <input type="hidden" id="submit-work-gig-id">
+                <div class="form-group">
+                    <label for="submit-work-notes">Completion Notes / Delivery Details <span class="required">*</span></label>
+                    <textarea id="submit-work-notes" rows="4" placeholder="e.g. 'Delivered to Hostel 4, Room 302 desk. Lab report printed in color with blue cover.'" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="submit-work-link">Optional Link (Google Drive / GitHub / Drive Photo)</label>
+                    <input type="url" id="submit-work-link" placeholder="https://drive.google.com/file/d/...">
+                </div>
+                <div class="form-actions-row">
+                    <button type="button" class="btn btn-outline" id="cancel-submit-work">Cancel</button>
+                    <button type="submit" class="btn btn-success"><i class="ri-send-plane-fill"></i> Submit for Requester Approval</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 3. RATING & REVIEW MODAL (For Requester confirming completion) -->
+    <div id="rate-worker-modal" class="modal-backdrop hidden">
+        <div class="modal-card">
+            <button class="modal-close-btn" id="close-rate-worker-modal"><i class="ri-close-line"></i></button>
+            <div class="modal-header">
+                <h3><i class="ri-star-fill text-warning"></i> Confirm Completion & Rate Worker</h3>
+                <p>Releasing payout from Escrow to <strong id="rating-worker-name">Worker</strong></p>
+            </div>
+            <form id="rate-worker-form">
+                <input type="hidden" id="rate-gig-id">
+                
+                <div class="form-group text-center">
+                    <label>Overall Star Rating</label>
+                    <div class="star-rating-picker" id="star-picker">
+                        <i class="ri-star-fill star-item active" data-rating="1"></i>
+                        <i class="ri-star-fill star-item active" data-rating="2"></i>
+                        <i class="ri-star-fill star-item active" data-rating="3"></i>
+                        <i class="ri-star-fill star-item active" data-rating="4"></i>
+                        <i class="ri-star-fill star-item active" data-rating="5"></i>
+                    </div>
+                    <input type="hidden" id="selected-star-val" value="5">
+                </div>
+
+                <div class="form-group">
+                    <label for="review-text-input">Written Feedback / Review</label>
+                    <textarea id="review-text-input" rows="3" placeholder="e.g. 'Super fast delivery! Notes were neatly printed and delivered right on time.'" required></textarea>
+                </div>
+
+                <div class="escrow-release-alert">
+                    <i class="ri-coins-line"></i>
+                    <span>This will release <strong id="release-amount-text">₹350</strong> directly to the worker's wallet.</span>
+                </div>
+
+                <div class="form-actions-row">
+                    <button type="button" class="btn btn-outline" id="cancel-rate-modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="ri-shield-check-line"></i> Confirm & Release Payout</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 4. UPI PAYMENT DEPOSIT / WITHDRAWAL MODAL -->
+    <div id="upi-payment-modal" class="modal-backdrop hidden">
+        <div class="modal-card">
+            <button class="modal-close-btn" id="close-upi-modal"><i class="ri-close-line"></i></button>
+            
+            <div class="modal-header">
+                <h3 id="upi-modal-title"><i class="ri-qr-code-line"></i> Instant UPI Payment</h3>
+                <p id="upi-modal-subtitle">Add funds to your Escrow balance using UPI</p>
+            </div>
+
+            <form id="upi-payment-form">
+                <input type="hidden" id="upi-action-type" value="deposit">
+
+                <div class="form-group">
+                    <label for="upi-amount-input">Amount (₹ INR) <span class="required">*</span></label>
+                    <div class="input-prefix-wrapper">
+                        <span class="prefix">₹</span>
+                        <input type="number" id="upi-amount-input" placeholder="500" min="50" max="20000" step="50" required value="500">
+                    </div>
+                </div>
+
+                <div class="upi-apps-selector">
+                    <label>Select Preferred UPI Method:</label>
+                    <div class="upi-apps-grid">
+                        <label class="upi-app-option active">
+                            <input type="radio" name="upi-app" value="GPay" checked>
+                            <div class="app-chip"><i class="ri-google-fill"></i> Google Pay</div>
+                        </label>
+                        <label class="upi-app-option">
+                            <input type="radio" name="upi-app" value="PhonePe">
+                            <div class="app-chip"><i class="ri-smartphone-line"></i> PhonePe</div>
+                        </label>
+                        <label class="upi-app-option">
+                            <input type="radio" name="upi-app" value="Paytm">
+                            <div class="app-chip"><i class="ri-wallet-3-fill"></i> Paytm UPI</div>
+                        </label>
+                        <label class="upi-app-option">
+                            <input type="radio" name="upi-app" value="UPI ID">
+                            <div class="app-chip"><i class="ri-at-line"></i> Custom VPA</div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group" id="upi-vpa-group">
+                    <label for="upi-vpa-input">Virtual Payment Address (UPI ID)</label>
+                    <input type="text" id="upi-vpa-input" value="nithyashri@upi" placeholder="username@upi">
+                </div>
+
+                <div class="simulated-qr-box">
+                    <div class="qr-code-placeholder">
+                        <i class="ri-qr-code-fill"></i>
+                        <span>Scan & Pay via any UPI App</span>
+                    </div>
+                    <small>Simulation Mode: Instant processing</small>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block btn-lg" id="upi-submit-btn">
+                    <span>Pay ₹500 via UPI Escrow</span>
+                    <i class="ri-arrow-right-line"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 5. FILTER DRAWER / MODAL -->
+    <div id="filter-modal" class="modal-backdrop hidden">
+        <div class="modal-card">
+            <button class="modal-close-btn" id="close-filter-modal"><i class="ri-close-line"></i></button>
+            <div class="modal-header">
+                <h3><i class="ri-filter-3-line"></i> Filter Campus Gigs</h3>
+            </div>
+            
+            <div class="filter-modal-body">
+                <div class="form-group">
+                    <label>Reward Range (₹)</label>
+                    <div class="range-slider-row">
+                        <span id="reward-min-label">₹50</span>
+                        <input type="range" id="filter-reward-range" min="50" max="2000" step="50" value="2000">
+                        <span id="reward-max-label">Up to ₹2000</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="filter-location-select">Campus Location / Block</label>
+                    <select id="filter-location-select">
+                        <option value="all">All Campus Locations</option>
+                        <option value="Hostels">Hostels & Dorms</option>
+                        <option value="Library">Central Library</option>
+                        <option value="Canteen">Main Canteen & Mess</option>
+                        <option value="Science Block">Science & Academic Block</option>
+                        <option value="Tech Park">Tech Park & Labs</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Gig Status</label>
+                    <select id="filter-status-select">
+                        <option value="available">Available Gigs Only</option>
+                        <option value="all">All Gigs (Available & In Progress)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-actions-row">
+                <button class="btn btn-outline" id="filter-reset-btn">Reset</button>
+                <button class="btn btn-primary" id="filter-apply-btn">Apply Filters</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. GENERIC CONFIRMATION MODAL -->
+    <div id="confirm-modal" class="modal-backdrop hidden">
+        <div class="modal-card modal-sm text-center">
+            <div class="confirm-icon warning"><i class="ri-error-warning-line"></i></div>
+            <h3 id="confirm-modal-title">Are you sure?</h3>
+            <p id="confirm-modal-desc">This action cannot be undone.</p>
+            <div class="form-actions-row justify-center mt-4">
+                <button class="btn btn-outline" id="confirm-cancel-btn">Cancel</button>
+                <button class="btn btn-danger" id="confirm-action-btn">Confirm Action</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN SCRIPT -->
+    <script src="java.js"></script>
+</body>
+</html>
