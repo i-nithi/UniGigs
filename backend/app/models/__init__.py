@@ -5,6 +5,7 @@ from app.models.application import Application
 from app.models.transaction import Transaction
 from app.models.review import Review
 from app.models.notification import Notification
+from app.models.otp import OTPRecord
 
 __all__ = [
     "Base",
@@ -14,4 +15,5 @@ __all__ = [
     "Transaction",
     "Review",
     "Notification",
+    "OTPRecord",
 ]

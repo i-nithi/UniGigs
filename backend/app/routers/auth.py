@@ -2,16 +2,48 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.schemas.user import UserSignupRequest, UserLoginRequest, UserResponse
-from app.schemas.auth import TokenResponse
+from app.schemas.auth import TokenResponse, RequestOTPRequest, RequestOTPResponse, VerifyOTPRequest, VerifyOTPResponse
 from app.services.auth_service import signup_student, authenticate_student
+from app.services.otp_service import create_and_send_otp, verify_otp_code
 from app.core.security import create_access_token
 from app.core.dependencies import get_current_user
 from app.models.user import User
 
 router = APIRouter(
     prefix="/auth",
-    tags=["Authentication"]
+    tags=["Authentication & Security"]
 )
+
+
+@router.post(
+    "/request-otp",
+    response_model=RequestOTPResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Request a 6-digit transactional email OTP code",
+    description="Generates a 6-digit verification code and delivers it to the student's @sastra.ac.in email address. Returns success ONLY if email provider accepts message."
+)
+def request_otp(request_data: RequestOTPRequest, db: Session = Depends(get_db)):
+    create_and_send_otp(db=db, email=request_data.email)
+    return RequestOTPResponse(
+        message=f"Verification code sent to {request_data.email}",
+        email=request_data.email,
+        expires_in_seconds=300
+    )
+
+
+@router.post(
+    "/verify-otp",
+    response_model=VerifyOTPResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Verify a 6-digit email OTP code",
+    description="Verifies an active, non-expired 6-digit OTP verification code."
+)
+def verify_otp(verify_data: VerifyOTPRequest, db: Session = Depends(get_db)):
+    verify_otp_code(db=db, email=verify_data.email, code=verify_data.otp_code)
+    return VerifyOTPResponse(
+        message="OTP code verified successfully.",
+        verified=True
+    )
 
 
 @router.post(

@@ -657,28 +657,37 @@
                         <!-- CATEGORY CHIPS SCROLLABLE -->
                         <div class="category-chips-row" id="category-chips-container">
                             <button class="cat-chip active" data-category="all">
-                                <i class="ri-apps-2-line"></i> All Categories <span class="count">12</span>
+                                <i class="ri-apps-2-line"></i> All Categories
+                            </button>
+                            <button class="cat-chip" data-category="Graphic Design">
+                                <i class="ri-palette-line"></i> Graphic Design
+                            </button>
+                            <button class="cat-chip" data-category="Programming">
+                                <i class="ri-code-s-slash-line"></i> Programming
+                            </button>
+                            <button class="cat-chip" data-category="Writing">
+                                <i class="ri-draft-line"></i> Writing
                             </button>
                             <button class="cat-chip" data-category="Delivery">
-                                <i class="ri-truck-line"></i> Delivery <span class="count">2</span>
+                                <i class="ri-truck-line"></i> Delivery
                             </button>
                             <button class="cat-chip" data-category="Food">
-                                <i class="ri-restaurant-line"></i> Food <span class="count">3</span>
+                                <i class="ri-restaurant-line"></i> Food
                             </button>
                             <button class="cat-chip" data-category="Printing">
-                                <i class="ri-printer-line"></i> Printing <span class="count">2</span>
+                                <i class="ri-printer-line"></i> Printing
                             </button>
                             <button class="cat-chip" data-category="Academic Help">
-                                <i class="ri-book-read-line"></i> Academic Help <span class="count">2</span>
+                                <i class="ri-book-read-line"></i> Academic Help
                             </button>
                             <button class="cat-chip" data-category="Errands">
-                                <i class="ri-walk-line"></i> Errands <span class="count">1</span>
+                                <i class="ri-walk-line"></i> Errands
                             </button>
                             <button class="cat-chip" data-category="Events">
-                                <i class="ri-camera-3-line"></i> Events <span class="count">1</span>
+                                <i class="ri-camera-3-line"></i> Events
                             </button>
                             <button class="cat-chip" data-category="Technical Help">
-                                <i class="ri-code-s-slash-line"></i> Technical Help <span class="count">1</span>
+                                <i class="ri-tools-line"></i> Technical Help
                             </button>
                         </div>
 
@@ -809,7 +818,7 @@
                                     </h4>
 
                                     <div class="form-group">
-                                        <label for="gig-post-requirements">Worker Requirements (Press Enter to add
+                                        <label for="gig-post-requirements">Working Requirements (Press Enter to add
                                             tags)</label>
                                         <div class="tags-input-container">
                                             <div class="tags-holder" id="post-requirements-tags-holder"></div>
@@ -821,16 +830,16 @@
                                     <div class="form-group">
                                         <label>Optional Photo / Document Preview (Drag & Drop or Select)</label>
                                         <div class="file-upload-dropzone" id="post-gig-dropzone">
-                                            <i class="ri-image-add-line"></i>
-                                            <span>Upload task image / reference document</span>
-                                            <small>Formats: JPG, PNG, PDF (Simulated mock upload)</small>
-                                            <input type="file" id="post-gig-file-input" accept="image/*" class="hidden">
-                                        </div>
-                                        <div id="post-file-preview" class="file-preview-pill hidden">
-                                            <i class="ri-file-line"></i> <span id="post-file-name">attachment.jpg</span>
-                                            <button type="button" id="remove-post-file"><i
-                                                    class="ri-close-line"></i></button>
-                                        </div>
+                                             <i class="ri-image-add-line" style="font-size:2rem; color:var(--primary);"></i>
+                                             <span>Upload task image / reference document</span>
+                                             <small class="text-muted">Formats: JPG, PNG, PDF (Max 10 MB)</small>
+                                             <button type="button" class="btn btn-sm btn-outline mt-2" id="post-gig-select-file-btn" style="margin-top:8px;"><i class="ri-folder-open-line"></i> Select Files</button>
+                                             <input type="file" id="post-gig-file-input" accept=".jpg,.jpeg,.png,.pdf" class="hidden">
+                                         </div>
+                                         <div id="post-file-preview" class="file-preview-pill hidden" style="margin-top:10px;">
+                                             <i class="ri-file-line" id="preview-icon"></i> <span id="post-file-name">attachment.jpg</span>
+                                             <button type="button" id="remove-post-file" aria-label="Remove attachment"><i class="ri-close-line"></i></button>
+                                         </div>
                                     </div>
                                 </div>
 

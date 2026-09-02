@@ -80,9 +80,11 @@ async function apiFetch(endpoint, options = {}) {
 
 // User Profile API Service Wrapper
 const UserAPI = {
-    // Auth APIs
+    // Auth & OTP APIs
     signup: (signupData) => apiFetch('/auth/signup', { method: 'POST', body: JSON.stringify(signupData) }),
     login: (loginData) => apiFetch('/auth/login', { method: 'POST', body: JSON.stringify(loginData) }),
+    requestOTP: (email) => apiFetch('/auth/request-otp', { method: 'POST', body: JSON.stringify({ email }) }),
+    verifyOTP: (email, code) => apiFetch('/auth/verify-otp', { method: 'POST', body: JSON.stringify({ email, otp_code: code }) }),
     getMe: () => apiFetch('/users/me'),
     
     // Profile APIs
@@ -121,6 +123,29 @@ const GigAPI = {
     submitWork: (gigId, submissionData) => apiFetch(`/gigs/${gigId}/submit`, { method: 'POST', body: JSON.stringify(submissionData) }),
     completeGig: (gigId) => apiFetch(`/gigs/${gigId}/complete`, { method: 'POST' }),
     cancelGig: (gigId) => apiFetch(`/gigs/${gigId}/cancel`, { method: 'POST' })
+};
+
+// File Upload Utility API
+const UploadAPI = {
+    uploadFile: async (file) => {
+        const formData = new FormData();
+        formData.append('file', file);
+        const headers = {};
+        const token = getAuthToken();
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+        const response = await fetch(`${API_BASE_URL}/upload`, {
+            method: 'POST',
+            headers,
+            body: formData
+        });
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.detail || 'File upload failed.');
+        }
+        return data;
+    }
 };
 
 // Payment & Wallet API Service Wrapper
@@ -163,5 +188,6 @@ window.removeAuthToken = removeAuthToken;
 window.apiFetch = apiFetch;
 window.UserAPI = UserAPI;
 window.GigAPI = GigAPI;
+window.UploadAPI = UploadAPI;
 window.PaymentAPI = PaymentAPI;
 window.NotificationAPI = NotificationAPI;

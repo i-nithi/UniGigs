@@ -1230,7 +1230,7 @@
                                                 ${app.status === 'pending' ? `
                                                     <button class="btn btn-xs btn-outline btn-view-applicant-profile" data-user-id="${applicant.id}"><i class="ri-user-3-line"></i> Profile</button>
                                                     <button class="btn btn-xs btn-outline-danger btn-reject-applicant" data-gig-id="${gig.id}" data-app-id="${app.id}"><i class="ri-close-line"></i> Reject</button>
-                                                    <button class="btn btn-sm btn-primary btn-select-worker" data-gig-id="${gig.id}" data-app-id="${app.id}" data-applicant-id="${applicant.id}"><i class="ri-checkbox-circle-fill"></i> Select Worker</button>
+                                                    <button class="btn btn-sm btn-primary btn-select-worker" data-gig-id="${gig.id}" data-app-id="${app.id}" data-applicant-id="${applicant.id}"><i class="ri-checkbox-circle-fill"></i> Select</button>
                                                 ` : app.status === 'accepted' ? `
                                                     <span class="badge badge-success"><i class="ri-checkbox-circle-fill"></i> Selected Worker</span>
                                                 ` : `
@@ -1295,17 +1295,17 @@
                     </div>
 
                     <div class="profile-snippet-card p-3" style="background:var(--bg-input); border-radius:12px">
-                        <small class="text-muted">ASSIGNED WORKER</small>
+                        <small class="text-muted">Assigned Hustler</small>
                         ${worker ? `
                             <div class="d-flex align-items-center gap-2 mt-2">
                                 <img src="${worker.avatar}" alt="${worker.name}" style="width:42px; height:42px; border-radius:50%; object-fit:cover">
                                 <div>
                                     <strong>${escapeHTML(worker.name)}</strong>
-                                    <div style="font-size:0.78rem" class="text-muted">★ ${worker.rating} Verified Worker</div>
+                                    <div style="font-size:0.78rem" class="text-muted">★ ${worker.rating} Verified Hustler</div>
                                 </div>
                             </div>
                         ` : `
-                            <p class="mt-2 text-muted" style="font-size:0.85rem">No worker assigned yet</p>
+                            <p class="mt-2 text-muted" style="font-size:0.85rem">No hustler assigned yet</p>
                         `}
                     </div>
                 </div>
@@ -1376,12 +1376,30 @@
         const reward = parseInt(document.getElementById('gig-post-reward').value, 10);
         const deadline = document.getElementById('gig-post-deadline').value;
 
+        let attachmentUrl = null;
+        if (selectedPostFile && window.UploadAPI) {
+            try {
+                showToast('Uploading file attachment...', 'info');
+                const uploadRes = await window.UploadAPI.uploadFile(selectedPostFile);
+                if (uploadRes && uploadRes.file_url) {
+                    attachmentUrl = uploadRes.file_url;
+                }
+            } catch (uploadErr) {
+                showToast(`Attachment upload failed: ${uploadErr.message}`, 'error');
+                return;
+            }
+        }
+
         // If backend auth token is present, post via API
         if (window.getAuthToken && window.getAuthToken()) {
             try {
+                const fullDescription = attachmentUrl 
+                    ? `${description}\n\n[Attachment: ${attachmentUrl}]`
+                    : description;
+
                 const createdGig = await window.GigAPI.createGig({
                     title: title,
-                    description: description,
+                    description: fullDescription,
                     category: category,
                     reward_amount: reward,
                     location: location,
@@ -1390,8 +1408,10 @@
                     required_skills: ["Campus verified student"]
                 });
 
-                showToast(`Gig "${createdGig.title}" posted successfully to PostgreSQL backend!`, 'success');
+                showToast(`Gig "${createdGig.title}" posted successfully!`, 'success');
                 document.getElementById('post-gig-form').reset();
+                selectedPostFile = null;
+                document.getElementById('post-file-preview')?.classList.add('hidden');
                 switchView('marketplace');
                 renderMarketplace();
                 return;
@@ -1865,38 +1885,57 @@
         timerId: null
     };
 
-    function sendOTP(email, pendingUser) {
-        const code = String(Math.floor(100000 + Math.random() * 900000));
-        const expiresAt = Date.now() + 60000; // 60 seconds
-
-        if (activeOTP.timerId) clearInterval(activeOTP.timerId);
-
-        activeOTP = {
-            code,
-            email,
-            pendingUser,
-            expiresAt,
-            timerId: null
-        };
+    async function sendOTP(email, pendingUser) {
+        const signupBtn = document.getElementById('signup-submit-btn');
+        if (signupBtn) {
+            signupBtn.disabled = true;
+            signupBtn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Sending OTP...';
+        }
 
         const emailEl = document.getElementById('otp-target-email');
         const errEl = document.getElementById('otp-error-msg');
         if (emailEl) emailEl.textContent = email;
         if (errEl) errEl.classList.add('hidden');
 
-        document.querySelectorAll('.otp-digit').forEach(input => {
-            input.value = '';
-            input.classList.remove('filled');
-        });
+        try {
+            if (window.UserAPI && window.UserAPI.requestOTP) {
+                await window.UserAPI.requestOTP(email);
+            }
 
-        startOTPTimer(60);
+            activeOTP = {
+                email,
+                pendingUser,
+                expiresAt: Date.now() + 300000,
+                timerId: null
+            };
 
-        document.getElementById('otp-verification-modal')?.classList.remove('hidden');
-        setTimeout(() => {
-            document.querySelector('.otp-digit[data-index="0"]')?.focus();
-        }, 150);
+            document.querySelectorAll('.otp-digit').forEach(input => {
+                input.value = '';
+                input.classList.remove('filled');
+            });
 
-        showToast(`Verification code sent to ${email}. Your test OTP is: ${code}`, 'success');
+            startOTPTimer(60);
+
+            document.getElementById('otp-verification-modal')?.classList.remove('hidden');
+            setTimeout(() => {
+                document.querySelector('.otp-digit[data-index="0"]')?.focus();
+            }, 150);
+
+            showToast(`Verification code sent to ${email}`, 'success');
+        } catch (err) {
+            const errBox = document.getElementById('signup-confirm-error') || document.getElementById('signup-regno-error');
+            const errorMsg = err.message || 'Unable to send OTP right now. Please try again.';
+            if (errBox) {
+                errBox.textContent = errorMsg;
+                errBox.classList.remove('hidden');
+            }
+            showToast(errorMsg, 'error');
+        } finally {
+            if (signupBtn) {
+                signupBtn.disabled = false;
+                signupBtn.innerHTML = '<i class="ri-checkbox-circle-fill"></i> Complete Registration';
+            }
+        }
     }
 
     function startOTPTimer(seconds) {
@@ -1924,42 +1963,68 @@
         activeOTP.timerId = setInterval(updateDisplay, 1000);
     }
 
-    function verifyOTP(enteredCode) {
+    async function verifyOTP(enteredCode) {
         const errorBox = document.getElementById('otp-error-msg');
+        const verifyBtn = document.getElementById('otp-submit-btn');
 
-        if (Date.now() > activeOTP.expiresAt) {
-            if (errorBox) {
-                errorBox.textContent = 'OTP verification code has expired. Click "Resend OTP Code" to get a new code.';
-                errorBox.classList.remove('hidden');
-            }
-            showToast('OTP verification code expired.', 'error');
-            return false;
+        if (verifyBtn) {
+            verifyBtn.disabled = true;
+            verifyBtn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Verifying...';
         }
 
-        if (enteredCode !== activeOTP.code) {
+        try {
+            if (window.UserAPI && window.UserAPI.verifyOTP) {
+                await window.UserAPI.verifyOTP(activeOTP.email, enteredCode);
+            }
+
+            // OTP Verified successfully! Register user account
+            const newUser = activeOTP.pendingUser;
+            if (newUser) {
+                newUser.isVerified = true;
+
+                // Sync with backend DB if API available
+                try {
+                    if (window.UserAPI && window.UserAPI.signup) {
+                        const tokenRes = await window.UserAPI.signup({
+                            name: newUser.name,
+                            registration_number: newUser.regNo,
+                            email: newUser.email,
+                            password: newUser.password
+                        });
+                        if (tokenRes && tokenRes.access_token) {
+                            window.setAuthToken(tokenRes.access_token);
+                        }
+                    }
+                } catch (signupErr) {
+                    console.log('Backend signup sync note:', signupErr.message);
+                }
+
+                state.users.push(newUser);
+                state.currentUser = newUser;
+                saveState();
+            }
+
+            if (activeOTP.timerId) clearInterval(activeOTP.timerId);
+            activeOTP = { code: null, email: null, pendingUser: null, expiresAt: 0, timerId: null };
+
+            document.getElementById('otp-verification-modal')?.classList.add('hidden');
+            showToast(`Account verified! Welcome to UniGigs, ${newUser ? newUser.name : 'Student'}!`, 'success');
+            switchView('dashboard');
+            return true;
+        } catch (err) {
+            const errorMsg = err.message || 'Invalid 6-digit OTP code. Please check and try again.';
             if (errorBox) {
-                errorBox.textContent = 'Invalid 6-digit OTP code. Please check and try again.';
+                errorBox.textContent = errorMsg;
                 errorBox.classList.remove('hidden');
             }
-            showToast('Invalid OTP verification code.', 'error');
+            showToast(errorMsg, 'error');
             return false;
+        } finally {
+            if (verifyBtn) {
+                verifyBtn.disabled = false;
+                verifyBtn.innerHTML = '<i class="ri-checkbox-circle-line"></i> Verify & Sign Up';
+            }
         }
-
-        // OTP Verified successfully! Register user account
-        const newUser = activeOTP.pendingUser;
-        newUser.isVerified = true;
-
-        state.users.push(newUser);
-        state.currentUser = newUser;
-        saveState();
-
-        if (activeOTP.timerId) clearInterval(activeOTP.timerId);
-        activeOTP = { code: null, email: null, pendingUser: null, expiresAt: 0, timerId: null };
-
-        document.getElementById('otp-verification-modal')?.classList.add('hidden');
-        showToast(`Account verified! Welcome to UniGigs, ${newUser.name}!`, 'success');
-        switchView('dashboard');
-        return true;
     }
 
     function handleLoginSubmit(e) {
@@ -2392,6 +2457,105 @@
             idDropzone?.classList.remove('hidden');
         });
 
+    let selectedPostFile = null;
+
+    function setupFileUploadHandlers() {
+        const dropzone = document.getElementById('post-gig-dropzone');
+        const fileInput = document.getElementById('post-gig-file-input');
+        const selectBtn = document.getElementById('post-gig-select-file-btn');
+        const previewContainer = document.getElementById('post-file-preview');
+        const fileNameEl = document.getElementById('post-file-name');
+        const removeBtn = document.getElementById('remove-post-file');
+        const previewIcon = document.getElementById('preview-icon');
+
+        if (!dropzone || !fileInput) return;
+
+        selectBtn?.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            fileInput.click();
+        });
+
+        dropzone.addEventListener('click', (e) => {
+            if (e.target !== selectBtn && !selectBtn?.contains(e.target)) {
+                fileInput.click();
+            }
+        });
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropzone.style.borderColor = 'var(--primary)';
+                dropzone.style.background = 'rgba(132, 204, 22, 0.05)';
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropzone.style.borderColor = '';
+                dropzone.style.background = '';
+            }, false);
+        });
+
+        dropzone.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt ? dt.files : null;
+            if (files && files.length > 0) {
+                handleFileSelection(files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files && e.target.files.length > 0) {
+                handleFileSelection(e.target.files[0]);
+            }
+        });
+
+        removeBtn?.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            selectedPostFile = null;
+            if (fileInput) fileInput.value = '';
+            if (previewContainer) previewContainer.classList.add('hidden');
+        });
+
+        function handleFileSelection(file) {
+            const validExts = ['.jpg', '.jpeg', '.png', '.pdf'];
+            const ext = '.' + file.name.split('.').pop().toLowerCase();
+            if (!validExts.includes(ext)) {
+                showToast('Only JPG, PNG, and PDF files are supported.', 'error');
+                return;
+            }
+
+            const maxSizeBytes = 10 * 1024 * 1024;
+            if (file.size > maxSizeBytes) {
+                showToast(`File size (${(file.size / (1024 * 1024)).toFixed(2)} MB) exceeds the 10 MB limit.`, 'error');
+                return;
+            }
+
+            selectedPostFile = file;
+
+            const formattedSize = file.size >= 1024 * 1024 
+                ? (file.size / (1024 * 1024)).toFixed(1) + ' MB'
+                : (file.size / 1024).toFixed(0) + ' KB';
+
+            if (fileNameEl) fileNameEl.textContent = `${file.name} (${formattedSize})`;
+
+            if (previewIcon) {
+                if (ext === '.pdf') {
+                    previewIcon.className = 'ri-file-pdf-line text-danger';
+                } else {
+                    previewIcon.className = 'ri-image-line text-primary';
+                }
+            }
+
+            if (previewContainer) previewContainer.classList.remove('hidden');
+        }
+    }
+
         // Demo login shortcuts
         document.getElementById('demo-user-1')?.addEventListener('click', () => {
             const regnoEl = document.getElementById('login-regno');
@@ -2432,6 +2596,25 @@
         document.getElementById('dash-match-sort')?.addEventListener('change', () => {
             renderBestMatchesSection();
         });
+
+        // Setup File Upload & Drag and Drop Handlers
+        setupFileUploadHandlers();
+
+        // Clear & Reset Filters Handlers
+        const resetFiltersHandler = () => {
+            state.selectedCategory = 'all';
+            state.searchQuery = '';
+            const searchField = document.getElementById('market-search-field');
+            if (searchField) searchField.value = '';
+            document.querySelectorAll('.cat-chip').forEach(c => {
+                if (c.getAttribute('data-category') === 'all') c.classList.add('active');
+                else c.classList.remove('active');
+            });
+            renderMarketplace();
+        };
+
+        document.getElementById('reset-marketplace-search-btn')?.addEventListener('click', resetFiltersHandler);
+        document.getElementById('clear-all-filters-btn')?.addEventListener('click', resetFiltersHandler);
 
         // Category Chips
         document.getElementById('category-chips-container')?.addEventListener('click', e => {
