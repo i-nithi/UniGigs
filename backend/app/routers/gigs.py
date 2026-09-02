@@ -1,13 +1,16 @@
 from typing import Optional
-from fastapi import APIRouter, Depends, Query, Response, status
+from fastapi import APIRouter, Depends, Query, Response, status, Header
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.user import User
 from app.core.dependencies import get_current_user
+from app.core.security import decode_access_token
 from app.schemas.gig import (
     GigCreateRequest,
     GigUpdateRequest,
+    WorkSubmissionRequest,
     GigDetailResponse,
+    GigLifecycleResponse,
     PaginatedGigResponse
 )
 from app.services.gig_service import (
@@ -16,6 +19,12 @@ from app.services.gig_service import (
     get_gig_by_id,
     update_gig,
     delete_gig
+)
+from app.services.gig_lifecycle_service import (
+    start_work,
+    submit_work,
+    complete_gig,
+    cancel_gig
 )
 
 router = APIRouter(
@@ -83,11 +92,32 @@ def list_gigs(
     response_model=GigDetailResponse,
     status_code=status.HTTP_200_OK,
     summary="Get detailed information for a specific Gig",
-    description="Returns full Gig details along with the poster's public-safe profile summary."
+    description="Returns full Gig details along with the poster's public-safe profile summary. Submission links are kept private from unrelated users."
 )
-def get_gig(gig_id: int, db: Session = Depends(get_db)):
+def get_gig(
+    gig_id: int,
+    authorization: Optional[str] = Header(None),
+    db: Session = Depends(get_db)
+):
     gig = get_gig_by_id(db, gig_id)
-    return GigDetailResponse.model_validate(gig)
+    response_data = GigDetailResponse.model_validate(gig)
+
+    # Determine requesting user ID if token provided
+    requester_id = None
+    if authorization and authorization.startswith("Bearer "):
+        try:
+            token = authorization.split(" ")[1]
+            payload = decode_access_token(token)
+            requester_id = int(payload.get("sub"))
+        except Exception:
+            pass
+
+    # Hide submission data from unrelated public users
+    if requester_id != gig.poster_id and requester_id != gig.selected_worker_id:
+        response_data.submission_note = None
+        response_data.submission_link = None
+
+    return response_data
 
 
 @router.put(
@@ -122,3 +152,84 @@ def delete_existing_gig(
     gig = get_gig_by_id(db, gig_id)
     delete_gig(db, gig, current_user.id)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+# --------------------------------------------------
+# PHASE 5: GIG LIFECYCLE TRANSITION ENDPOINTS
+# --------------------------------------------------
+
+@router.post(
+    "/{gig_id}/start",
+    response_model=GigLifecycleResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Start work on Gig (Selected Worker only)",
+    description="Transitions Gig status from WORKER_SELECTED to IN_PROGRESS. Only the selected worker can execute this action."
+)
+def start_gig_work(
+    gig_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    gig = start_work(db, gig_id, current_user.id)
+    return {
+        "message": "Work started successfully. Status updated to IN_PROGRESS.",
+        "gig": GigDetailResponse.model_validate(gig)
+    }
+
+
+@router.post(
+    "/{gig_id}/submit",
+    response_model=GigLifecycleResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Submit completed work for review (Selected Worker only)",
+    description="Transitions Gig status from IN_PROGRESS to WORK_SUBMITTED and records submission note/link. Only the selected worker can execute this action."
+)
+def submit_gig_work(
+    gig_id: int,
+    submission_data: WorkSubmissionRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    gig = submit_work(db, gig_id, current_user.id, submission_data)
+    return {
+        "message": "Work submitted successfully for requester review. Status updated to WORK_SUBMITTED.",
+        "gig": GigDetailResponse.model_validate(gig)
+    }
+
+
+@router.post(
+    "/{gig_id}/complete",
+    response_model=GigLifecycleResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Confirm Gig completion (Gig Poster only)",
+    description="Transitions Gig status from WORK_SUBMITTED to COMPLETED. Only the original poster can execute this action."
+)
+def complete_gig_work(
+    gig_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    gig = complete_gig(db, gig_id, current_user.id)
+    return {
+        "message": "Gig confirmed and marked as COMPLETED successfully.",
+        "gig": GigDetailResponse.model_validate(gig)
+    }
+
+
+@router.post(
+    "/{gig_id}/cancel",
+    response_model=GigLifecycleResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Cancel Gig (Gig Poster only)",
+    description="Cancels an open or worker-selected Gig and rejects pending applications. Only the original poster can execute this action."
+)
+def cancel_gig_work(
+    gig_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    gig = cancel_gig(db, gig_id, current_user.id)
+    return {
+        "message": "Gig cancelled successfully.",
+        "gig": GigDetailResponse.model_validate(gig)
+    }

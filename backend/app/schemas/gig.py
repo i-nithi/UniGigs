@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Optional
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, HttpUrl
 from app.core.enums import GigStatus
 
 class GigCreateRequest(BaseModel):
@@ -43,6 +43,14 @@ class GigUpdateRequest(BaseModel):
     estimated_duration: Optional[str] = Field(None, max_length=50)
     deadline: Optional[datetime] = None
     required_skills: Optional[list[str]] = None
+
+
+class WorkSubmissionRequest(BaseModel):
+    """
+    Schema for submitting completed work for a Gig.
+    """
+    submission_note: Optional[str] = Field(None, max_length=1000, description="Short note to poster regarding completed work")
+    submission_link: Optional[str] = Field(None, max_length=500, description="Optional link to completed work file/deliverable")
 
 
 class GigPosterSummary(BaseModel):
@@ -104,7 +112,7 @@ class GigListItemResponse(BaseModel):
 
 class GigDetailResponse(BaseModel):
     """
-    Full Gig detail response model.
+    Full Gig detail response model. Includes submission & lifecycle metadata.
     """
     id: int
     title: str
@@ -116,12 +124,27 @@ class GigDetailResponse(BaseModel):
     deadline: Optional[datetime] = None
     required_skills: Optional[list[str]] = []
     status: GigStatus
+    poster_id: int
+    selected_worker_id: Optional[int] = None
+    submission_note: Optional[str] = None
+    submission_link: Optional[str] = None
+    submitted_at: Optional[datetime] = None
+    completed_at: Optional[datetime] = None
+    cancelled_at: Optional[datetime] = None
     created_at: datetime
     updated_at: datetime
     poster: GigPosterDetail
 
     class Config:
         from_attributes = True
+
+
+class GigLifecycleResponse(BaseModel):
+    """
+    Response model for lifecycle actions (start, submit, complete, cancel).
+    """
+    message: str
+    gig: GigDetailResponse
 
 
 class PaginatedGigResponse(BaseModel):

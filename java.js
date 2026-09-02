@@ -1108,17 +1108,19 @@
 
         // Action buttons based on lifecycle & user role
         let actionButtonsHTML = '';
+        const normStatus = String(gig.status).toLowerCase();
+
         if (state.currentUser) {
-            if (gig.status === 'available') {
+            if (normStatus === 'open' || normStatus === 'available' || normStatus === 'applications_open') {
                 if (isPoster) {
                     actionButtonsHTML = `
-                        <button class="btn btn-danger btn-cancel-gig" data-gig-id="${gig.id}"><i class="ri-delete-bin-line"></i> Cancel Gig & Refund Escrow</button>
+                        <button class="btn btn-danger btn-cancel-gig" data-gig-id="${gig.id}"><i class="ri-delete-bin-line"></i> Cancel Gig</button>
                     `;
                 } else {
                     if (!myApp) {
                         actionButtonsHTML = `
                             <button class="btn btn-primary btn-lg btn-open-apply-modal" data-gig-id="${gig.id}"><i class="ri-send-plane-fill"></i> Apply for Gig</button>
-                            <button class="btn btn-outline btn-open-chat" data-user-id="${poster.id}" data-gig-id="${gig.id}"><i class="ri-chat-3-line"></i> Chat with Requester</button>
+                            <button class="btn btn-outline btn-open-chat" data-user-id="${poster.id}" data-gig-id="${gig.id}"><i class="ri-chat-3-line"></i> Chat</button>
                         `;
                     } else if (myApp.status === 'pending') {
                         actionButtonsHTML = `
@@ -1126,45 +1128,49 @@
                                 <i class="ri-checkbox-circle-line" style="font-size:1.1rem"></i> Application Submitted
                             </div>
                             <button class="btn btn-outline-danger btn-withdraw-app" data-app-id="${myApp.id}" data-gig-id="${gig.id}"><i class="ri-close-circle-line"></i> Withdraw Application</button>
-                            <button class="btn btn-outline btn-open-chat" data-user-id="${poster.id}" data-gig-id="${gig.id}"><i class="ri-chat-3-line"></i> Chat</button>
-                        `;
-                    } else if (myApp.status === 'rejected') {
-                        actionButtonsHTML = `
-                            <div class="alert alert-danger py-2 px-3 font-weight-bold mb-0 me-2" style="border-radius:8px; display:inline-flex; align-items:center; gap:6px;">
-                                <i class="ri-error-warning-line"></i> Application Declined by Poster
-                            </div>
-                            <button class="btn btn-outline btn-open-chat" data-user-id="${poster.id}" data-gig-id="${gig.id}"><i class="ri-chat-3-line"></i> Chat</button>
                         `;
                     }
                 }
-            } else if (gig.status === 'accepted' || gig.status === 'in_progress') {
+            } else if (normStatus === 'worker_selected') {
                 if (isWorker) {
                     actionButtonsHTML = `
-                        <button class="btn btn-success btn-lg btn-trigger-submit-work" data-gig-id="${gig.id}"><i class="ri-checkbox-circle-line"></i> Submit Completed Work</button>
-                        <button class="btn btn-outline btn-open-chat" data-user-id="${poster.id}" data-gig-id="${gig.id}"><i class="ri-chat-3-line"></i> Chat with Requester</button>
+                        <button class="btn btn-primary btn-lg btn-trigger-start-work" data-gig-id="${gig.id}"><i class="ri-play-circle-fill"></i> Start Work</button>
                     `;
                 } else if (isPoster) {
                     actionButtonsHTML = `
-                        <button class="btn btn-outline btn-open-chat" data-user-id="${worker ? worker.id : ''}" data-gig-id="${gig.id}"><i class="ri-chat-3-line"></i> Chat with Worker</button>
-                        <button class="btn btn-danger btn-cancel-gig" data-gig-id="${gig.id}">Cancel & Refund</button>
+                        <div class="alert alert-info py-2 px-3 font-weight-bold mb-2" style="border-radius:8px;">Worker Selected - Awaiting Worker to Start</div>
+                        <button class="btn btn-danger btn-cancel-gig" data-gig-id="${gig.id}"><i class="ri-close-circle-line"></i> Cancel Gig</button>
                     `;
                 }
-            } else if (gig.status === 'submitted') {
+            } else if (normStatus === 'in_progress') {
+                if (isWorker) {
+                    actionButtonsHTML = `
+                        <button class="btn btn-success btn-lg btn-trigger-submit-work" data-gig-id="${gig.id}"><i class="ri-checkbox-circle-line"></i> Submit Completed Work</button>
+                    `;
+                } else if (isPoster) {
+                    actionButtonsHTML = `
+                        <div class="alert alert-info py-2 px-3 font-weight-bold" style="border-radius:8px;">Work in Progress by Selected Student</div>
+                    `;
+                }
+            } else if (normStatus === 'work_submitted') {
                 if (isPoster) {
                     actionButtonsHTML = `
-                        <button class="btn btn-success btn-lg btn-trigger-rate-worker" data-gig-id="${gig.id}"><i class="ri-shield-check-line"></i> Confirm Completion & Release ₹${gig.reward}</button>
-                        <button class="btn btn-outline btn-open-chat" data-user-id="${worker ? worker.id : ''}" data-gig-id="${gig.id}"><i class="ri-chat-3-line"></i> Chat Worker</button>
+                        <button class="btn btn-success btn-lg btn-trigger-confirm-complete" data-gig-id="${gig.id}"><i class="ri-shield-check-line"></i> Confirm Completion & Release Payout</button>
                     `;
                 } else if (isWorker) {
                     actionButtonsHTML = `
                         <div class="alert alert-info py-2 px-3 font-weight-bold" style="background-color:var(--primary-light); color:var(--primary); border-radius:8px">
-                            <i class="ri-time-line"></i> Work Submitted! Awaiting Requester Approval & Payment Release.
+                            <i class="ri-time-line"></i> Work Submitted! Awaiting Requester Approval.
                         </div>
                     `;
                 }
-            } else if (gig.status === 'completed') {
+            } else if (normStatus === 'completed') {
                 actionButtonsHTML = `
                     <div class="badge badge-success p-2" style="font-size:0.9rem"><i class="ri-checkbox-circle-fill"></i> Gig Completed & Payout Released</div>
+                `;
+            } else if (normStatus === 'cancelled') {
+                actionButtonsHTML = `
+                    <div class="badge badge-danger p-2" style="font-size:0.9rem"><i class="ri-close-circle-fill"></i> Gig Cancelled</div>
                 `;
             }
         }
@@ -2824,6 +2830,46 @@
                     showToast(`Gig cancelled. ₹${gig.reward} refunded to your wallet balance.`, 'info');
                     document.getElementById('gig-details-modal')?.classList.add('hidden');
                     renderApp();
+                }
+            });
+        });
+
+        // Start Work Button (Worker Action)
+        document.querySelectorAll('.btn-trigger-start-work').forEach(btn => {
+            btn.addEventListener('click', async e => {
+                const gigId = e.target.closest('button').getAttribute('data-gig-id');
+                if (window.GigAPI && window.getAuthToken && window.getAuthToken()) {
+                    try {
+                        await window.GigAPI.startWork(gigId);
+                        showToast('Work started successfully! Status: IN_PROGRESS', 'success');
+                        openGigDetailsModal(gigId);
+                        renderMarketplace();
+                        return;
+                    } catch (err) {
+                        showToast(err.message || 'Failed to start work.', 'error');
+                        return;
+                    }
+                }
+            });
+        });
+
+        // Confirm Completion Button (Poster Action)
+        document.querySelectorAll('.btn-trigger-confirm-complete').forEach(btn => {
+            btn.addEventListener('click', async e => {
+                const gigId = e.target.closest('button').getAttribute('data-gig-id');
+                if (confirm('Confirm that the work has been completed satisfactorily?')) {
+                    if (window.GigAPI && window.getAuthToken && window.getAuthToken()) {
+                        try {
+                            await window.GigAPI.completeGig(gigId);
+                            showToast('Gig marked as COMPLETED successfully!', 'success');
+                            openGigDetailsModal(gigId);
+                            renderMarketplace();
+                            return;
+                        } catch (err) {
+                            showToast(err.message || 'Failed to confirm completion.', 'error');
+                            return;
+                        }
+                    }
                 }
             });
         });

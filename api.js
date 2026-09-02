@@ -114,7 +114,13 @@ const GigAPI = {
     updateGig: (gigId, updateData) => apiFetch(`/gigs/${gigId}`, { method: 'PUT', body: JSON.stringify(updateData) }),
 
     // Soft-delete Gig (poster only)
-    deleteGig: (gigId) => apiFetch(`/gigs/${gigId}`, { method: 'DELETE' })
+    deleteGig: (gigId) => apiFetch(`/gigs/${gigId}`, { method: 'DELETE' }),
+
+    // Phase 5 Lifecycle APIs
+    startWork: (gigId) => apiFetch(`/gigs/${gigId}/start`, { method: 'POST' }),
+    submitWork: (gigId, submissionData) => apiFetch(`/gigs/${gigId}/submit`, { method: 'POST', body: JSON.stringify(submissionData) }),
+    completeGig: (gigId) => apiFetch(`/gigs/${gigId}/complete`, { method: 'POST' }),
+    cancelGig: (gigId) => apiFetch(`/gigs/${gigId}/cancel`, { method: 'POST' })
 };
 
 // Export to window scope
