@@ -6,10 +6,11 @@ from fastapi import HTTPException, status
 from app.models.gig import Gig
 from app.models.escrow import Escrow
 from app.models.wallet import Wallet
-from app.core.enums import EscrowStatus, TransactionType, GigStatus
+from app.core.enums import EscrowStatus, TransactionType, GigStatus, NotificationType
 from app.services.wallet_service import get_or_create_wallet, get_wallet_with_lock
 from app.services.transaction_service import log_transaction
 from app.services.gig_service import get_gig_by_id
+from app.services.notification_service import create_notification
 
 def lock_payment(db: Session, gig_id: int, poster_id: int) -> tuple[Escrow, Wallet]:
     """
@@ -87,6 +88,16 @@ def lock_payment(db: Session, gig_id: int, poster_id: int) -> tuple[Escrow, Wall
         description=f"Locked ₹{reward_decimal:.2f} into simulated escrow for '{gig.title[:30]}'"
     )
 
+    # Notify selected worker
+    create_notification(
+        db=db,
+        user_id=gig.selected_worker_id,
+        notification_type=NotificationType.PAYMENT_LOCKED,
+        title="Payment Secured",
+        message=f"Payment for '{gig.title[:30]}' has been secured in simulated escrow.",
+        related_gig_id=gig.id
+    )
+
     db.commit()
     db.refresh(poster_wallet)
     db.refresh(escrow)
@@ -139,6 +150,16 @@ def release_payment(db: Session, gig_id: int, poster_id: int) -> tuple[Escrow, W
         description=f"Received ₹{amount:.2f} payout for completing '{gig.title[:30]}'"
     )
 
+    # Notify worker that payment is released
+    create_notification(
+        db=db,
+        user_id=escrow.payee_id,
+        notification_type=NotificationType.PAYMENT_RELEASED,
+        title="Payment Released",
+        message=f"Payment of ₹{amount:.2f} for '{gig.title[:30]}' has been released to your simulated wallet.",
+        related_gig_id=gig.id
+    )
+
     db.commit()
     db.refresh(poster_wallet)
     db.refresh(escrow)
@@ -179,6 +200,16 @@ def refund_payment(db: Session, gig_id: int, poster_id: int) -> Optional[Escrow]
         transaction_type=TransactionType.ESCROW_REFUND,
         amount=amount,
         description=f"Refunded ₹{amount:.2f} from simulated escrow for cancelled '{gig.title[:30]}'"
+    )
+
+    # Notify poster that payment is refunded
+    create_notification(
+        db=db,
+        user_id=poster_id,
+        notification_type=NotificationType.PAYMENT_REFUNDED,
+        title="Payment Refunded",
+        message=f"Locked simulated payment of ₹{amount:.2f} for '{gig.title[:30]}' has been refunded to your available balance.",
+        related_gig_id=gig.id
     )
 
     db.commit()

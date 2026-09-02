@@ -2946,6 +2946,47 @@
         return d.toLocaleDateString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
     }
 
+    let notificationPollInterval = null;
+
+    async function updateNotificationBadge() {
+        const badgeEl = document.getElementById('header-notif-badge');
+        if (!badgeEl) return;
+
+        if (window.NotificationAPI && window.getAuthToken && window.getAuthToken()) {
+            try {
+                const data = await window.NotificationAPI.getNotifications({ page: 1, limit: 20 });
+                if (data && typeof data.unread_count === 'number') {
+                    const count = data.unread_count;
+                    if (count > 0) {
+                        badgeEl.textContent = count > 99 ? '99+' : count;
+                        badgeEl.classList.remove('hidden');
+                        badgeEl.style.display = 'inline-flex';
+                    } else {
+                        badgeEl.classList.add('hidden');
+                        badgeEl.style.display = 'none';
+                    }
+                }
+            } catch (err) {
+                console.log('Notification sync error:', err.message);
+            }
+        }
+    }
+
+    function startNotificationPolling() {
+        if (notificationPollInterval) {
+            clearInterval(notificationPollInterval);
+        }
+        updateNotificationBadge();
+        notificationPollInterval = setInterval(updateNotificationBadge, 60000);
+    }
+
+    function stopNotificationPolling() {
+        if (notificationPollInterval) {
+            clearInterval(notificationPollInterval);
+            notificationPollInterval = null;
+        }
+    }
+
     // 18. INIT
     document.addEventListener('DOMContentLoaded', async () => {
         loadState();
@@ -2968,6 +3009,9 @@
                     state.currentUser.rating = apiUser.average_rating || 5.0;
                     state.currentUser.completedGigsCount = apiUser.completed_gigs_count || 0;
                     saveState();
+                    if (typeof startNotificationPolling === 'function') {
+                        startNotificationPolling();
+                    }
                 }
             } catch (err) {
                 console.log('Backend sync status:', err.message);

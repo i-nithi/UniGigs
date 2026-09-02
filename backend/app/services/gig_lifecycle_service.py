@@ -3,10 +3,11 @@ from sqlalchemy.orm import Session, joinedload
 from fastapi import HTTPException, status
 from app.models.gig import Gig
 from app.models.application import Application
-from app.core.enums import GigStatus, ApplicationStatus, EscrowStatus
+from app.core.enums import GigStatus, ApplicationStatus, EscrowStatus, NotificationType
 from app.core.lifecycle import validate_transition
 from app.schemas.gig import WorkSubmissionRequest
 from app.services.gig_service import get_gig_by_id
+from app.services.notification_service import create_notification
 
 def start_work(db: Session, gig_id: int, current_user_id: int) -> Gig:
     """
@@ -26,6 +27,17 @@ def start_work(db: Session, gig_id: int, current_user_id: int) -> Gig:
     gig.status = GigStatus.IN_PROGRESS
     gig.updated_at = datetime.now(timezone.utc)
     
+    # Notify poster that work has started
+    worker_name = gig.selected_worker.name if gig.selected_worker else "Worker"
+    create_notification(
+        db=db,
+        user_id=gig.poster_id,
+        notification_type=NotificationType.GIG_STARTED,
+        title="Work Started",
+        message=f"{worker_name} has started working on '{gig.title[:30]}'",
+        related_gig_id=gig.id
+    )
+
     db.add(gig)
     db.commit()
     db.refresh(gig)
@@ -53,6 +65,17 @@ def submit_work(db: Session, gig_id: int, current_user_id: int, submission_data:
     gig.submitted_at = datetime.now(timezone.utc)
     gig.status = GigStatus.WORK_SUBMITTED
     gig.updated_at = datetime.now(timezone.utc)
+
+    # Notify poster that work has been submitted
+    worker_name = gig.selected_worker.name if gig.selected_worker else "Worker"
+    create_notification(
+        db=db,
+        user_id=gig.poster_id,
+        notification_type=NotificationType.WORK_SUBMITTED,
+        title="Work Submitted",
+        message=f"{worker_name} submitted work for '{gig.title[:30]}'",
+        related_gig_id=gig.id
+    )
 
     db.add(gig)
     db.commit()
@@ -85,6 +108,17 @@ def complete_gig(db: Session, gig_id: int, current_user_id: int) -> Gig:
         gig.selected_worker.completed_gigs_count = (gig.selected_worker.completed_gigs_count or 0) + 1
     if gig.poster:
         gig.poster.completed_gigs_count = (gig.poster.completed_gigs_count or 0) + 1
+
+    # Notify worker that gig is completed
+    if gig.selected_worker_id:
+        create_notification(
+            db=db,
+            user_id=gig.selected_worker_id,
+            notification_type=NotificationType.GIG_COMPLETED,
+            title="Gig Completed",
+            message=f"'{gig.title[:30]}' has been marked as completed.",
+            related_gig_id=gig.id
+        )
 
     db.add(gig)
     db.commit()
@@ -125,6 +159,17 @@ def cancel_gig(db: Session, gig_id: int, current_user_id: int) -> Gig:
     gig.cancelled_at = datetime.now(timezone.utc)
     gig.status = GigStatus.CANCELLED
     gig.updated_at = datetime.now(timezone.utc)
+
+    # Notify selected worker if assigned
+    if gig.selected_worker_id:
+        create_notification(
+            db=db,
+            user_id=gig.selected_worker_id,
+            notification_type=NotificationType.GIG_CANCELLED,
+            title="Gig Cancelled",
+            message=f"'{gig.title[:30]}' has been cancelled.",
+            related_gig_id=gig.id
+        )
 
     db.add(gig)
     db.commit()

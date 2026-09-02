@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
-from app.routers import auth, users, gigs, applications, payment, wallet, transactions
+from app.routers import auth, users, gigs, applications, payment, wallet, transactions, notifications
 
 app = FastAPI(
     title=settings.APP_NAME,
@@ -33,6 +33,7 @@ app.include_router(applications.router)
 app.include_router(payment.router)
 app.include_router(wallet.router)
 app.include_router(transactions.router)
+app.include_router(notifications.router)
 
 
 @app.get("/", tags=["Health"])

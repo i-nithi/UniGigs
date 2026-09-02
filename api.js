@@ -140,6 +140,21 @@ const PaymentAPI = {
     releasePayment: (gigId) => apiFetch('/payment/release', { method: 'POST', body: JSON.stringify({ gig_id: Number(gigId) }) })
 };
 
+// In-App Notification API Service Wrapper
+const NotificationAPI = {
+    getNotifications: (params = {}) => {
+        const query = new URLSearchParams();
+        Object.keys(params).forEach(key => {
+            if (params[key] !== undefined && params[key] !== null) {
+                query.append(key, params[key]);
+            }
+        });
+        const queryString = query.toString();
+        return apiFetch(`/notifications${queryString ? '?' + queryString : ''}`);
+    },
+    markAsRead: (notificationId) => apiFetch(`/notifications/${notificationId}/read`, { method: 'POST' })
+};
+
 // Export to window scope
 window.API_BASE_URL = API_BASE_URL;
 window.getAuthToken = getAuthToken;
@@ -149,3 +164,4 @@ window.apiFetch = apiFetch;
 window.UserAPI = UserAPI;
 window.GigAPI = GigAPI;
 window.PaymentAPI = PaymentAPI;
+window.NotificationAPI = NotificationAPI;
