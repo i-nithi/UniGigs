@@ -1,19 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UniGigs - Campus Student Gig Marketplace & Micro-Earnings Platform</title>
     <!-- Meta tags for SEO -->
-    <meta name="description" content="UniGigs is a student-to-student campus gig marketplace where verified college students post tasks, accept gigs, earn money, and build trust through ratings.">
+    <meta name="description"
+        content="UniGigs is a student-to-student campus gig marketplace where verified college students post tasks, accept gigs, earn money, and build trust through ratings.">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <!-- RemixIcon for rich icon set -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body class="light-theme">
 
     <!-- Toast Notification Container -->
@@ -33,14 +37,16 @@
                         <i class="ri-flashlight-fill"></i>
                     </div>
                     <span class="logo-text">Uni<span class="highlight">Gigs</span></span>
-                    <span class="campus-badge" id="header-campus-tag"><i class="ri-building-4-line"></i> SASTRA Deemed University, Thanjavur</span>
+                    <span class="campus-badge" id="header-campus-tag"><i class="ri-building-4-line"></i> SASTRA Deemed
+                        University, Thanjavur</span>
                 </a>
             </div>
 
             <div class="header-center">
                 <div class="global-search-bar">
                     <i class="ri-search-line search-icon"></i>
-                    <input type="text" id="global-search-input" placeholder="Search gigs, skills, campus locations..." autocomplete="off">
+                    <input type="text" id="global-search-input" placeholder="Search gigs, skills, campus locations..."
+                        autocomplete="off">
                     <button id="global-search-clear" class="clear-btn hidden"><i class="ri-close-line"></i></button>
                 </div>
             </div>
@@ -53,32 +59,41 @@
                         <span class="wallet-amount" id="header-wallet-amount">₹0</span>
                     </button>
 
-                    <button class="icon-btn nav-link position-relative" data-target="notifications" title="Notifications" id="header-notif-btn">
+                    <button class="icon-btn nav-link position-relative" data-target="notifications"
+                        title="Notifications" id="header-notif-btn">
                         <i class="ri-notification-3-line"></i>
                         <span class="unread-dot hidden" id="header-notif-badge"></span>
                     </button>
 
-                    <button class="icon-btn nav-link position-relative" data-target="messages" title="Messages" id="header-msg-btn">
+                    <button class="icon-btn nav-link position-relative" data-target="messages" title="Messages"
+                        id="header-msg-btn">
                         <i class="ri-chat-3-line"></i>
                         <span class="unread-dot hidden" id="header-msg-badge"></span>
                     </button>
 
                     <div class="user-avatar-menu" id="user-avatar-trigger">
-                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" alt="User Avatar" class="header-avatar" id="header-user-avatar">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80"
+                            alt="User Avatar" class="header-avatar" id="header-user-avatar">
                         <span class="status-indicator online"></span>
                         <div class="dropdown-menu hidden" id="avatar-dropdown">
                             <div class="dropdown-header">
                                 <strong id="dropdown-user-name">Nithyashri R</strong>
                                 <span id="dropdown-user-email">regno@sastra.ac.in</span>
-                                <span class="verification-pill verified"><i class="ri-checkbox-circle-fill"></i> Verified Student</span>
+                                <span class="verification-pill verified"><i class="ri-checkbox-circle-fill"></i>
+                                    Verified Student</span>
                             </div>
                             <hr>
-                            <a href="#profile" class="dropdown-item nav-link" data-target="profile"><i class="ri-user-3-line"></i> View My Profile</a>
-                            <a href="#my-gigs" class="dropdown-item nav-link" data-target="my-gigs"><i class="ri-briefcase-line"></i> My Posted & Working Gigs</a>
-                            <a href="#payments" class="dropdown-item nav-link" data-target="payments"><i class="ri-wallet-line"></i> Earnings & UPI Escrow</a>
-                            <button id="theme-toggle-btn" class="dropdown-item"><i class="ri-moon-line" id="theme-icon"></i> Switch Theme Mode</button>
+                            <a href="#profile" class="dropdown-item nav-link" data-target="profile"><i
+                                    class="ri-user-3-line"></i> View My Profile</a>
+                            <a href="#my-gigs" class="dropdown-item nav-link" data-target="my-gigs"><i
+                                    class="ri-briefcase-line"></i> My Posted & Working Gigs</a>
+                            <a href="#payments" class="dropdown-item nav-link" data-target="payments"><i
+                                    class="ri-wallet-line"></i> Earnings & UPI Escrow</a>
+                            <button id="theme-toggle-btn" class="dropdown-item"><i class="ri-moon-line"
+                                    id="theme-icon"></i> Switch Theme Mode</button>
                             <hr>
-                            <button id="logout-btn" class="dropdown-item danger"><i class="ri-logout-box-r-line"></i> Sign Out</button>
+                            <button id="logout-btn" class="dropdown-item danger"><i class="ri-logout-box-r-line"></i>
+                                Sign Out</button>
                         </div>
                     </div>
                 </div>
@@ -125,7 +140,7 @@
                                 <span class="nav-count-badge" id="mygigs-count-badge">0</span>
                             </a>
                         </li>
-                        
+
                         <li class="menu-label">Communication & Funds</li>
                         <li>
                             <a href="#messages" class="sidebar-item nav-link" data-target="messages">
@@ -200,14 +215,19 @@
                     <div class="auth-container">
                         <div class="auth-hero-side">
                             <div class="auth-hero-content">
-                                <div class="brand-badge"><i class="ri-shield-star-line"></i> Exclusive SASTRA Student Network</div>
+                                <div class="brand-badge"><i class="ri-shield-star-line"></i> Exclusive SASTRA Student
+                                    Network</div>
                                 <h2>Earn Money & Get Help Around Campus Fast</h2>
                                 <p class="auth-tagline">“Turn spare time into campus cash”</p>
-                                <p>Join verified SASTRA University students trading skills, lab assistance, canteen deliveries, and tutoring within your campus community.</p>
+                                <p>Join verified SASTRA University students trading skills, lab assistance, canteen
+                                    deliveries, and tutoring within your campus community.</p>
                                 <div class="auth-features">
-                                    <div class="feat-item"><i class="ri-checkbox-circle-fill"></i> Official SASTRA Email & Registration Number Verification</div>
-                                    <div class="feat-item"><i class="ri-checkbox-circle-fill"></i> Instant UPI Payouts & Escrow Protection</div>
-                                    <div class="feat-item"><i class="ri-checkbox-circle-fill"></i> Built-in Campus Chat & Peer Rating System</div>
+                                    <div class="feat-item"><i class="ri-checkbox-circle-fill"></i> Official SASTRA Email
+                                        & Registration Number Verification</div>
+                                    <div class="feat-item"><i class="ri-checkbox-circle-fill"></i> Instant UPI Payouts &
+                                        Escrow Protection</div>
+                                    <div class="feat-item"><i class="ri-checkbox-circle-fill"></i> Built-in Campus Chat
+                                        & Peer Rating System</div>
                                 </div>
                             </div>
                         </div>
@@ -230,7 +250,8 @@
                                         <label for="login-regno">SASTRA Registration Number</label>
                                         <div class="input-addon-wrapper">
                                             <i class="ri-user-2-line input-icon"></i>
-                                            <input type="text" id="login-regno" placeholder="e.g. 124003189" required autocomplete="off" value="124003189">
+                                            <input type="text" id="login-regno" placeholder="e.g. 124003189" required
+                                                autocomplete="off" value="124003189">
                                             <span class="input-addon-domain">@sastra.ac.in</span>
                                         </div>
                                         <small class="hint">Only SASTRA University students can log in</small>
@@ -240,12 +261,15 @@
                                     <div class="form-group">
                                         <div class="label-row">
                                             <label for="login-password">Password</label>
-                                            <a href="#" id="forgot-password-link" class="forgot-link">Forgot password?</a>
+                                            <a href="#" id="forgot-password-link" class="forgot-link">Forgot
+                                                password?</a>
                                         </div>
                                         <div class="input-icon-wrapper">
                                             <i class="ri-lock-2-line"></i>
-                                            <input type="password" id="login-password" placeholder="••••••••" required value="password123">
-                                            <button type="button" class="toggle-password"><i class="ri-eye-line"></i></button>
+                                            <input type="password" id="login-password" placeholder="••••••••" required
+                                                value="password123">
+                                            <button type="button" class="toggle-password"><i
+                                                    class="ri-eye-line"></i></button>
                                         </div>
                                         <span class="field-error-text hidden" id="login-password-error"></span>
                                     </div>
@@ -256,7 +280,8 @@
                                         </label>
                                     </div>
 
-                                    <button type="submit" class="btn btn-primary btn-block btn-lg" id="login-submit-btn">
+                                    <button type="submit" class="btn btn-primary btn-block btn-lg"
+                                        id="login-submit-btn">
                                         <span>Sign In to UniGigs</span>
                                         <i class="ri-arrow-right-line"></i>
                                     </button>
@@ -264,8 +289,10 @@
                                     <div class="demo-accounts-box">
                                         <span>Quick Demo Sign-In:</span>
                                         <div class="demo-btns">
-                                            <button type="button" class="btn btn-xs btn-outline" id="demo-user-1">Nithyashri R (124003189)</button>
-                                            <button type="button" class="btn btn-xs btn-outline" id="demo-user-2">Ananya Sen (124003250)</button>
+                                            <button type="button" class="btn btn-xs btn-outline"
+                                                id="demo-user-1">Nithyashri R (124003189)</button>
+                                            <button type="button" class="btn btn-xs btn-outline" id="demo-user-2">Ananya
+                                                Sen (124003250)</button>
                                         </div>
                                     </div>
                                 </form>
@@ -285,7 +312,8 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="signup-dept">Department / School</label>
-                                            <input type="text" id="signup-dept" placeholder="School of Computing" required>
+                                            <input type="text" id="signup-dept" placeholder="School of Computing"
+                                                required>
                                         </div>
                                     </div>
 
@@ -293,10 +321,12 @@
                                         <label for="signup-regno">SASTRA Registration Number</label>
                                         <div class="input-addon-wrapper">
                                             <i class="ri-user-2-line input-icon"></i>
-                                            <input type="text" id="signup-regno" placeholder="e.g. 124005999" required autocomplete="off">
+                                            <input type="text" id="signup-regno" placeholder="e.g. 124005999" required
+                                                autocomplete="off">
                                             <span class="input-addon-domain">@sastra.ac.in</span>
                                         </div>
-                                        <small class="hint">Your official email will be generated as <strong id="generated-email-preview">registrationnumber@sastra.ac.in</strong></small>
+                                        <small class="hint">Your official email will be generated as <strong
+                                                id="generated-email-preview">registrationnumber@sastra.ac.in</strong></small>
                                         <span class="field-error-text hidden" id="signup-regno-error"></span>
                                     </div>
 
@@ -322,16 +352,20 @@
                                             <label for="signup-password">Password</label>
                                             <div class="input-icon-wrapper">
                                                 <i class="ri-lock-2-line"></i>
-                                                <input type="password" id="signup-password" placeholder="Min 6 characters" required>
+                                                <input type="password" id="signup-password"
+                                                    placeholder="Min 6 characters" required>
                                             </div>
-                                            <div class="password-strength-bar mt-1"><div id="password-strength-fill"></div></div>
+                                            <div class="password-strength-bar mt-1">
+                                                <div id="password-strength-fill"></div>
+                                            </div>
                                             <span class="field-error-text hidden" id="signup-password-error"></span>
                                         </div>
                                         <div class="form-group">
                                             <label for="signup-confirm-password">Confirm Password</label>
                                             <div class="input-icon-wrapper">
                                                 <i class="ri-lock-check-line"></i>
-                                                <input type="password" id="signup-confirm-password" placeholder="Repeat password" required>
+                                                <input type="password" id="signup-confirm-password"
+                                                    placeholder="Repeat password" required>
                                             </div>
                                             <span class="field-error-text hidden" id="signup-confirm-error"></span>
                                         </div>
@@ -346,18 +380,22 @@
                                             <input type="file" id="signup-id-input" accept="image/*" class="hidden">
                                         </div>
                                         <div id="signup-id-preview" class="file-preview-pill hidden">
-                                            <i class="ri-image-line"></i> <span id="id-filename">student_id_card.jpg</span>
-                                            <button type="button" id="remove-id-preview"><i class="ri-close-line"></i></button>
+                                            <i class="ri-image-line"></i> <span
+                                                id="id-filename">student_id_card.jpg</span>
+                                            <button type="button" id="remove-id-preview"><i
+                                                    class="ri-close-line"></i></button>
                                         </div>
                                     </div>
 
                                     <div class="form-options">
                                         <label class="checkbox-label">
-                                            <input type="checkbox" id="terms-agree" required> I agree to SASTRA Honor Code & Escrow Terms
+                                            <input type="checkbox" id="terms-agree" required> I agree to SASTRA Honor
+                                            Code & Escrow Terms
                                         </label>
                                     </div>
 
-                                    <button type="submit" class="btn btn-primary btn-block btn-lg" id="signup-submit-btn">
+                                    <button type="submit" class="btn btn-primary btn-block btn-lg"
+                                        id="signup-submit-btn">
                                         <span>Send 6-Digit Verification OTP</span>
                                         <i class="ri-mail-send-line"></i>
                                     </button>
@@ -374,13 +412,16 @@
                                         <label for="forgot-regno">SASTRA Registration Number</label>
                                         <div class="input-addon-wrapper">
                                             <i class="ri-user-2-line input-icon"></i>
-                                            <input type="text" id="forgot-regno" placeholder="124003189" required autocomplete="off">
+                                            <input type="text" id="forgot-regno" placeholder="124003189" required
+                                                autocomplete="off">
                                             <span class="input-addon-domain">@sastra.ac.in</span>
                                         </div>
                                     </div>
 
-                                    <button type="submit" class="btn btn-primary btn-block">Send Reset Instructions</button>
-                                    <button type="button" class="btn btn-link btn-block" id="back-to-login">Back to Sign In</button>
+                                    <button type="submit" class="btn btn-primary btn-block">Send Reset
+                                        Instructions</button>
+                                    <button type="button" class="btn btn-link btn-block" id="back-to-login">Back to Sign
+                                        In</button>
                                 </form>
 
                             </div>
@@ -394,11 +435,13 @@
                     <div class="dashboard-hero">
                         <div class="hero-text">
                             <div class="welcome-tag">
-                                <span class="badge badge-success" id="dash-verification-pill"><i class="ri-shield-check-fill"></i> Verified Student</span>
+                                <span class="badge badge-success" id="dash-verification-pill"><i
+                                        class="ri-shield-check-fill"></i> Verified Student</span>
                                 <span class="timestamp-tag" id="dash-current-date">Today, 29 Aug</span>
                             </div>
                             <h1 id="dash-greeting-text">Welcome back, Nithyashri! 👋</h1>
-                            <p>Here is what is happening across campus today. You have <strong id="dash-active-count-text">2 active gigs</strong> in progress.</p>
+                            <p>Here is what is happening across campus today. You have <strong
+                                    id="dash-active-count-text">2 active gigs</strong> in progress.</p>
                         </div>
                         <div class="hero-actions">
                             <button class="btn btn-primary nav-link" data-target="post-gig">
@@ -417,7 +460,8 @@
                             <div class="stat-info">
                                 <span class="stat-label">Total Earnings</span>
                                 <h3 class="stat-value" id="dash-total-earnings">₹4,250</h3>
-                                <span class="stat-subtext positive"><i class="ri-arrow-up-line"></i> ₹850 this week</span>
+                                <span class="stat-subtext positive"><i class="ri-arrow-up-line"></i> ₹850 this
+                                    week</span>
                             </div>
                         </div>
 
@@ -458,7 +502,8 @@
                             <div class="content-card">
                                 <div class="card-header">
                                     <h3><i class="ri-time-fill highlight-icon"></i> Your Active Campus Tasks</h3>
-                                    <a href="#my-gigs" class="card-link nav-link" data-target="my-gigs">View All My Gigs →</a>
+                                    <a href="#my-gigs" class="card-link nav-link" data-target="my-gigs">View All My Gigs
+                                        →</a>
                                 </div>
                                 <div class="active-gigs-list" id="dash-active-gigs-container">
                                     <!-- Dynamic Active Gigs render here -->
@@ -469,11 +514,14 @@
                             <div class="content-card best-matches-card">
                                 <div class="card-header flex-header-wrap">
                                     <div>
-                                        <h3><i class="ri-sparkles-fill highlight-icon text-accent"></i> Best Matches for You</h3>
-                                        <p class="card-subtitle-sm">Smart AI recommendations tailored to your skills, department & payout preferences</p>
+                                        <h3><i class="ri-sparkles-fill highlight-icon text-accent"></i> Best Matches for
+                                            You</h3>
+                                        <p class="card-subtitle-sm">Smart AI recommendations tailored to your skills,
+                                            department & payout preferences</p>
                                     </div>
                                     <div class="header-sort-controls">
-                                        <label for="dash-match-sort" class="sort-label"><i class="ri-sort-desc"></i> Sort:</label>
+                                        <label for="dash-match-sort" class="sort-label"><i class="ri-sort-desc"></i>
+                                            Sort:</label>
                                         <select id="dash-match-sort" class="select-sm">
                                             <option value="best-match" selected>Best Match</option>
                                             <option value="highest-pay">Highest Pay</option>
@@ -491,7 +539,8 @@
                             <div class="content-card">
                                 <div class="card-header">
                                     <h3><i class="ri-fire-fill highlight-icon"></i> Recommended Gigs Near You</h3>
-                                    <a href="#marketplace" class="card-link nav-link" data-target="marketplace">Explore Marketplace →</a>
+                                    <a href="#marketplace" class="card-link nav-link" data-target="marketplace">Explore
+                                        Marketplace →</a>
                                 </div>
                                 <div class="gigs-grid-mini" id="dash-recommended-gigs">
                                     <!-- Dynamic recommended cards -->
@@ -502,7 +551,7 @@
 
                         <!-- RIGHT COLUMN: NOTIFICATIONS SNAPSHOT + RECENT ACTIVITY + PROFILE CARD -->
                         <div class="dash-right">
-                            
+
                             <!-- QUICK WALLET / ESCROW SNAPSHOT -->
                             <div class="content-card wallet-quick-card">
                                 <div class="wallet-balance-row">
@@ -523,7 +572,8 @@
                             <div class="content-card">
                                 <div class="card-header">
                                     <h3><i class="ri-notification-3-fill highlight-icon"></i> Recent Alerts</h3>
-                                    <a href="#notifications" class="card-link nav-link" data-target="notifications">All Notifications</a>
+                                    <a href="#notifications" class="card-link nav-link" data-target="notifications">All
+                                        Notifications</a>
                                 </div>
                                 <div class="notif-widget-list" id="dash-notif-widget">
                                     <!-- Dynamic list -->
@@ -564,7 +614,8 @@
                         <div class="search-sort-row">
                             <div class="market-search-input">
                                 <i class="ri-search-2-line"></i>
-                                <input type="text" id="market-search-field" placeholder="Search by title, keywords (e.g. 'Lab Report', 'Biryani', 'Printing')...">
+                                <input type="text" id="market-search-field"
+                                    placeholder="Search by title, keywords (e.g. 'Lab Report', 'Biryani', 'Printing')...">
                             </div>
 
                             <div class="market-sort-select">
@@ -650,16 +701,20 @@
                                 <!-- STEP 1: TITLE & CATEGORY -->
                                 <div class="form-section-block">
                                     <h4 class="section-title"><span class="step-num">1</span> Gig Overview</h4>
-                                    
+
                                     <div class="form-group">
                                         <label for="gig-post-title">Gig Title <span class="required">*</span></label>
-                                        <input type="text" id="gig-post-title" placeholder="e.g. Need 40 pages notes printed & bound urgently before 3 PM" required maxlength="100">
-                                        <small class="hint">Be specific about the task, location, or item needed.</small>
+                                        <input type="text" id="gig-post-title"
+                                            placeholder="e.g. Need 40 pages notes printed & bound urgently before 3 PM"
+                                            required maxlength="100">
+                                        <small class="hint">Be specific about the task, location, or item
+                                            needed.</small>
                                     </div>
 
                                     <div class="form-grid-2">
                                         <div class="form-group">
-                                            <label for="gig-post-category">Category <span class="required">*</span></label>
+                                            <label for="gig-post-category">Category <span
+                                                    class="required">*</span></label>
                                             <select id="gig-post-category" required>
                                                 <option value="" disabled selected>Select category...</option>
                                                 <option value="Delivery">🚀 Delivery (Hostels/Blocks)</option>
@@ -674,41 +729,56 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="gig-post-location">Campus Location <span class="required">*</span></label>
+                                            <label for="gig-post-location">Campus Location <span
+                                                    class="required">*</span></label>
                                             <select id="gig-post-location" required>
                                                 <option value="Hostel 4 / Block B">Hostel 4 / Block B</option>
-                                                <option value="Central Library & Reading Hall">Central Library & Reading Hall</option>
-                                                <option value="Main Canteen & Food Court">Main Canteen & Food Court</option>
+                                                <option value="Central Library & Reading Hall">Central Library & Reading
+                                                    Hall</option>
+                                                <option value="Main Canteen & Food Court">Main Canteen & Food Court
+                                                </option>
                                                 <option value="Science Block A">Science Block A</option>
-                                                <option value="Tech Park & Computer Labs">Tech Park & Computer Labs</option>
-                                                <option value="Sports Complex & Gymnasium">Sports Complex & Gymnasium</option>
-                                                <option value="Main Gate / Off-Campus Delivery">Main Gate / Off-Campus Delivery</option>
+                                                <option value="Tech Park & Computer Labs">Tech Park & Computer Labs
+                                                </option>
+                                                <option value="Sports Complex & Gymnasium">Sports Complex & Gymnasium
+                                                </option>
+                                                <option value="Main Gate / Off-Campus Delivery">Main Gate / Off-Campus
+                                                    Delivery</option>
                                             </select>
                                         </div>
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="gig-post-desc">Detailed Description & Instructions <span class="required">*</span></label>
-                                        <textarea id="gig-post-desc" rows="4" placeholder="Describe exact requirements, room numbers, contact info, or special notes for the worker..." required></textarea>
+                                        <label for="gig-post-desc">Detailed Description & Instructions <span
+                                                class="required">*</span></label>
+                                        <textarea id="gig-post-desc" rows="4"
+                                            placeholder="Describe exact requirements, room numbers, contact info, or special notes for the worker..."
+                                            required></textarea>
                                     </div>
                                 </div>
 
                                 <!-- STEP 2: REWARD & DEADLINE -->
                                 <div class="form-section-block">
-                                    <h4 class="section-title"><span class="step-num">2</span> Compensation & Timeline</h4>
+                                    <h4 class="section-title"><span class="step-num">2</span> Compensation & Timeline
+                                    </h4>
 
                                     <div class="form-grid-2">
                                         <div class="form-group">
-                                            <label for="gig-post-reward">Reward Amount (₹ INR) <span class="required">*</span></label>
+                                            <label for="gig-post-reward">Reward Amount (₹ INR) <span
+                                                    class="required">*</span></label>
                                             <div class="input-prefix-wrapper">
                                                 <span class="prefix">₹</span>
-                                                <input type="number" id="gig-post-reward" placeholder="350" min="50" max="10000" step="10" required>
+                                                <input type="number" id="gig-post-reward" placeholder="350" min="50"
+                                                    max="10000" step="10" required>
                                             </div>
-                                            <small class="hint positive-hint" id="post-reward-suggestion"><i class="ri-information-line"></i> Recommended: ₹150 - ₹350 for campus tasks</small>
+                                            <small class="hint positive-hint" id="post-reward-suggestion"><i
+                                                    class="ri-information-line"></i> Recommended: ₹150 - ₹350 for campus
+                                                tasks</small>
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="gig-post-deadline">Task Completion Deadline <span class="required">*</span></label>
+                                            <label for="gig-post-deadline">Task Completion Deadline <span
+                                                    class="required">*</span></label>
                                             <input type="datetime-local" id="gig-post-deadline" required>
                                         </div>
                                     </div>
@@ -716,13 +786,16 @@
 
                                 <!-- STEP 3: REQUIREMENTS & ATTACHMENT -->
                                 <div class="form-section-block">
-                                    <h4 class="section-title"><span class="step-num">3</span> Requirements & Attachments</h4>
+                                    <h4 class="section-title"><span class="step-num">3</span> Requirements & Attachments
+                                    </h4>
 
                                     <div class="form-group">
-                                        <label for="gig-post-requirements">Worker Requirements (Press Enter to add tags)</label>
+                                        <label for="gig-post-requirements">Worker Requirements (Press Enter to add
+                                            tags)</label>
                                         <div class="tags-input-container">
                                             <div class="tags-holder" id="post-requirements-tags-holder"></div>
-                                            <input type="text" id="gig-requirements-input" placeholder="e.g. 'Must have laptop', 'Punctual', 'Has bicycle'">
+                                            <input type="text" id="gig-requirements-input"
+                                                placeholder="e.g. 'Must have laptop', 'Punctual', 'Has bicycle'">
                                         </div>
                                     </div>
 
@@ -736,7 +809,8 @@
                                         </div>
                                         <div id="post-file-preview" class="file-preview-pill hidden">
                                             <i class="ri-file-line"></i> <span id="post-file-name">attachment.jpg</span>
-                                            <button type="button" id="remove-post-file"><i class="ri-close-line"></i></button>
+                                            <button type="button" id="remove-post-file"><i
+                                                    class="ri-close-line"></i></button>
                                         </div>
                                     </div>
                                 </div>
@@ -746,12 +820,15 @@
                                     <i class="ri-shield-fill"></i>
                                     <div>
                                         <strong>Campus Escrow Protection</strong>
-                                        <p>The reward amount of <span id="post-gig-escrow-amount">₹350</span> will be reserved from your wallet balance upon posting. Funds are released to the worker only after you confirm task completion.</p>
+                                        <p>The reward amount of <span id="post-gig-escrow-amount">₹350</span> will be
+                                            reserved from your wallet balance upon posting. Funds are released to the
+                                            worker only after you confirm task completion.</p>
                                     </div>
                                 </div>
 
                                 <div class="form-actions-row">
-                                    <button type="button" class="btn btn-outline nav-link" data-target="marketplace">Cancel</button>
+                                    <button type="button" class="btn btn-outline nav-link"
+                                        data-target="marketplace">Cancel</button>
                                     <button type="submit" class="btn btn-primary btn-lg" id="post-gig-submit-btn">
                                         <i class="ri-flashlight-line"></i> Publish Gig to Campus
                                     </button>
@@ -826,15 +903,19 @@
                             <!-- CHAT HEADER -->
                             <div class="chat-header" id="chat-header-info">
                                 <div class="chat-user-snippet">
-                                    <button class="icon-btn mobile-only" id="back-to-convos-btn"><i class="ri-arrow-left-line"></i></button>
-                                    <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=120&q=80" alt="Avatar" class="avatar-sm" id="chat-partner-avatar">
+                                    <button class="icon-btn mobile-only" id="back-to-convos-btn"><i
+                                            class="ri-arrow-left-line"></i></button>
+                                    <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=120&q=80"
+                                        alt="Avatar" class="avatar-sm" id="chat-partner-avatar">
                                     <div>
                                         <h4 id="chat-partner-name">Select a conversation</h4>
-                                        <span class="chat-gig-tag" id="chat-gig-title-tag">Gig: Lab Report Delivery</span>
+                                        <span class="chat-gig-tag" id="chat-gig-title-tag">Gig: Lab Report
+                                            Delivery</span>
                                     </div>
                                 </div>
                                 <div class="chat-header-actions" id="chat-header-actions">
-                                    <button class="btn btn-sm btn-outline" id="chat-view-gig-btn"><i class="ri-external-link-line"></i> View Gig Details</button>
+                                    <button class="btn btn-sm btn-outline" id="chat-view-gig-btn"><i
+                                            class="ri-external-link-line"></i> View Gig Details</button>
                                 </div>
                             </div>
 
@@ -848,8 +929,11 @@
 
                             <!-- CHAT INPUT BAR -->
                             <form id="chat-send-form" class="chat-input-bar">
-                                <button type="button" class="chat-icon-btn" id="chat-attach-btn" title="Attach preview file"><i class="ri-attachment-2"></i></button>
-                                <input type="text" id="chat-input-field" placeholder="Type your message here... (e.g. 'I'm outside Hostel 4 now')" autocomplete="off">
+                                <button type="button" class="chat-icon-btn" id="chat-attach-btn"
+                                    title="Attach preview file"><i class="ri-attachment-2"></i></button>
+                                <input type="text" id="chat-input-field"
+                                    placeholder="Type your message here... (e.g. 'I'm outside Hostel 4 now')"
+                                    autocomplete="off">
                                 <button type="submit" class="btn btn-primary send-msg-btn" id="chat-send-btn">
                                     <i class="ri-send-plane-2-fill"></i>
                                 </button>
@@ -937,14 +1021,17 @@
                             <p>Stay updated on gig requests, messages, completion approvals, and payments</p>
                         </div>
                         <div class="header-actions">
-                            <button class="btn btn-outline btn-sm" id="mark-all-read-btn"><i class="ri-checks-line"></i> Mark All as Read</button>
-                            <button class="btn btn-link btn-sm danger" id="clear-all-notifs-btn"><i class="ri-delete-bin-line"></i> Clear All</button>
+                            <button class="btn btn-outline btn-sm" id="mark-all-read-btn"><i class="ri-checks-line"></i>
+                                Mark All as Read</button>
+                            <button class="btn btn-link btn-sm danger" id="clear-all-notifs-btn"><i
+                                    class="ri-delete-bin-line"></i> Clear All</button>
                         </div>
                     </div>
 
                     <!-- NOTIFICATION FILTERS -->
                     <div class="notif-filter-chips">
-                        <button class="notif-chip active" data-notif-cat="all">All (<span id="notif-count-all">0</span>)</button>
+                        <button class="notif-chip active" data-notif-cat="all">All (<span
+                                id="notif-count-all">0</span>)</button>
                         <button class="notif-chip" data-notif-cat="gig">Gigs</button>
                         <button class="notif-chip" data-notif-cat="payment">Payments</button>
                         <button class="notif-chip" data-notif-cat="message">Messages</button>
@@ -963,16 +1050,21 @@
                         <div class="profile-banner"></div>
                         <div class="profile-meta-row">
                             <div class="profile-avatar-wrapper">
-                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80" alt="Student Profile" id="profile-page-avatar">
-                                <span class="verification-badge-floating" title="Verified Campus Student"><i class="ri-checkbox-circle-fill"></i></span>
+                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80"
+                                    alt="Student Profile" id="profile-page-avatar">
+                                <span class="verification-badge-floating" title="Verified Campus Student"><i
+                                        class="ri-checkbox-circle-fill"></i></span>
                             </div>
                             <div class="profile-info-block">
                                 <div class="name-title-row">
                                     <h2 id="profile-page-name">Nithyashri R</h2>
-                                    <span class="badge badge-success"><i class="ri-shield-check-fill"></i> Verified Student</span>
+                                    <span class="badge badge-success"><i class="ri-shield-check-fill"></i> Verified
+                                        Student</span>
                                 </div>
-                                <p class="dept-year" id="profile-page-dept">School of Computing, SASTRA • 3rd Year (Junior)</p>
-                                <span class="campus-name" id="profile-page-campus"><i class="ri-building-4-line"></i> SASTRA Deemed University, Thanjavur</span>
+                                <p class="dept-year" id="profile-page-dept">School of Computing, SASTRA • 3rd Year
+                                    (Junior)</p>
+                                <span class="campus-name" id="profile-page-campus"><i class="ri-building-4-line"></i>
+                                    SASTRA Deemed University, Thanjavur</span>
                             </div>
                             <div class="profile-stats-summary">
                                 <div class="mini-stat">
@@ -994,7 +1086,8 @@
                     <!-- PROFILE TABS -->
                     <div class="profile-tabs-container">
                         <button class="profile-tab active" data-prof-tab="overview">Overview & Bio</button>
-                        <button class="profile-tab" data-prof-tab="reviews">Ratings & Reviews (<span id="profile-reviews-count">18</span>)</button>
+                        <button class="profile-tab" data-prof-tab="reviews">Ratings & Reviews (<span
+                                id="profile-reviews-count">18</span>)</button>
                         <button class="profile-tab" data-prof-tab="edit">Edit Profile & UPI</button>
                         <button class="profile-tab" data-prof-tab="preferences">Account Settings</button>
                     </div>
@@ -1006,8 +1099,10 @@
                             <div class="profile-two-col">
                                 <div class="content-card">
                                     <h3>About Student</h3>
-                                    <p id="profile-page-bio" class="bio-text">Final year CS undergrad passionate about mobile dev and UI design. Available for lab setup help, printing runs around Block B, and coding tutoring.</p>
-                                    
+                                    <p id="profile-page-bio" class="bio-text">Final year CS undergrad passionate about
+                                        mobile dev and UI design. Available for lab setup help, printing runs around
+                                        Block B, and coding tutoring.</p>
+
                                     <h4 class="mt-4">Skills & Strengths</h4>
                                     <div class="skills-tags-holder" id="profile-skills-tags">
                                         <span class="skill-tag">Python & C++</span>
@@ -1055,9 +1150,21 @@
                                     <p>Based on 18 student reviews</p>
                                 </div>
                                 <div class="reviews-breakdown">
-                                    <div class="bar-row"><span>5 Stars</span> <div class="bar-bg"><div class="bar-fill" style="width: 90%;"></div></div> <span>16</span></div>
-                                    <div class="bar-row"><span>4 Stars</span> <div class="bar-bg"><div class="bar-fill" style="width: 10%;"></div></div> <span>2</span></div>
-                                    <div class="bar-row"><span>3 Stars</span> <div class="bar-bg"><div class="bar-fill" style="width: 0%;"></div></div> <span>0</span></div>
+                                    <div class="bar-row"><span>5 Stars</span>
+                                        <div class="bar-bg">
+                                            <div class="bar-fill" style="width: 90%;"></div>
+                                        </div> <span>16</span>
+                                    </div>
+                                    <div class="bar-row"><span>4 Stars</span>
+                                        <div class="bar-bg">
+                                            <div class="bar-fill" style="width: 10%;"></div>
+                                        </div> <span>2</span>
+                                    </div>
+                                    <div class="bar-row"><span>3 Stars</span>
+                                        <div class="bar-bg">
+                                            <div class="bar-fill" style="width: 0%;"></div>
+                                        </div> <span>0</span>
+                                    </div>
                                 </div>
                             </div>
 
@@ -1070,7 +1177,9 @@
                         <div id="prof-tab-edit" class="prof-tab-pane hidden">
                             <div class="content-card form-card">
                                 <h3>Edit Profile & Gig Preferences</h3>
-                                <p class="text-muted mb-3" style="font-size:0.88rem;">Updating your skills and preferences will automatically recalibrate your <strong>Smart AI Gig Matches</strong>.</p>
+                                <p class="text-muted mb-3" style="font-size:0.88rem;">Updating your skills and
+                                    preferences will automatically recalibrate your <strong>Smart AI Gig
+                                        Matches</strong>.</p>
                                 <form id="edit-profile-form">
                                     <div class="form-grid-2">
                                         <div class="form-group">
@@ -1079,25 +1188,31 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="edit-dept">Department & Year</label>
-                                            <input type="text" id="edit-dept" value="School of Computing • 3rd Year" required>
+                                            <input type="text" id="edit-dept" value="School of Computing • 3rd Year"
+                                                required>
                                         </div>
                                     </div>
 
                                     <div class="form-group">
                                         <label for="edit-bio">Bio & Campus Introduction</label>
-                                        <textarea id="edit-bio" rows="3">Undergrad student at SASTRA Deemed University, Thanjavur. Available for lab setup help, printing runs, and coding tutoring.</textarea>
+                                        <textarea id="edit-bio"
+                                            rows="3">Undergrad student at SASTRA Deemed University, Thanjavur. Available for lab setup help, printing runs, and coding tutoring.</textarea>
                                     </div>
 
                                     <div class="form-group">
                                         <label for="edit-skills">Skills & Expertise (Comma Separated)</label>
-                                        <input type="text" id="edit-skills" value="Python & C++, Fast Delivery, Linear Algebra, Web Development">
-                                        <small class="hint">E.g. Python & C++, Fast Delivery, Linear Algebra, DSLR Photography</small>
+                                        <input type="text" id="edit-skills"
+                                            value="Python & C++, Fast Delivery, Linear Algebra, Web Development">
+                                        <small class="hint">E.g. Python & C++, Fast Delivery, Linear Algebra, DSLR
+                                            Photography</small>
                                     </div>
 
                                     <div class="form-grid-2">
                                         <div class="form-group">
-                                            <label for="edit-categories">Preferred Gig Categories (Comma Separated)</label>
-                                            <input type="text" id="edit-categories" value="Printing, Academic Help, Technical Help">
+                                            <label for="edit-categories">Preferred Gig Categories (Comma
+                                                Separated)</label>
+                                            <input type="text" id="edit-categories"
+                                                value="Printing, Academic Help, Technical Help">
                                         </div>
                                         <div class="form-group">
                                             <label for="edit-availability">Availability Schedule</label>
@@ -1118,10 +1233,12 @@
 
                                     <div class="form-group">
                                         <label for="edit-upi">UPI Payout ID (For receiving payments)</label>
-                                        <input type="text" id="edit-upi" value="nithyashri@upi" placeholder="username@upi">
+                                        <input type="text" id="edit-upi" value="nithyashri@upi"
+                                            placeholder="username@upi">
                                     </div>
 
-                                    <button type="submit" class="btn btn-primary"><i class="ri-save-line"></i> Save Profile & Update Matches</button>
+                                    <button type="submit" class="btn btn-primary"><i class="ri-save-line"></i> Save
+                                        Profile & Update Matches</button>
                                 </form>
                             </div>
                         </div>
@@ -1178,8 +1295,11 @@
             <form id="submit-work-form">
                 <input type="hidden" id="submit-work-gig-id">
                 <div class="form-group">
-                    <label for="submit-work-notes">Completion Notes / Delivery Details <span class="required">*</span></label>
-                    <textarea id="submit-work-notes" rows="4" placeholder="e.g. 'Delivered to Hostel 4, Room 302 desk. Lab report printed in color with blue cover.'" required></textarea>
+                    <label for="submit-work-notes">Completion Notes / Delivery Details <span
+                            class="required">*</span></label>
+                    <textarea id="submit-work-notes" rows="4"
+                        placeholder="e.g. 'Delivered to Hostel 4, Room 302 desk. Lab report printed in color with blue cover.'"
+                        required></textarea>
                 </div>
                 <div class="form-group">
                     <label for="submit-work-link">Optional Link (Google Drive / GitHub / Drive Photo)</label>
@@ -1187,7 +1307,8 @@
                 </div>
                 <div class="form-actions-row">
                     <button type="button" class="btn btn-outline" id="cancel-submit-work">Cancel</button>
-                    <button type="submit" class="btn btn-success"><i class="ri-send-plane-fill"></i> Submit for Requester Approval</button>
+                    <button type="submit" class="btn btn-success"><i class="ri-send-plane-fill"></i> Submit for
+                        Requester Approval</button>
                 </div>
             </form>
         </div>
@@ -1203,7 +1324,7 @@
             </div>
             <form id="rate-worker-form">
                 <input type="hidden" id="rate-gig-id">
-                
+
                 <div class="form-group text-center">
                     <label>Overall Star Rating</label>
                     <div class="star-rating-picker" id="star-picker">
@@ -1218,17 +1339,21 @@
 
                 <div class="form-group">
                     <label for="review-text-input">Written Feedback / Review</label>
-                    <textarea id="review-text-input" rows="3" placeholder="e.g. 'Super fast delivery! Notes were neatly printed and delivered right on time.'" required></textarea>
+                    <textarea id="review-text-input" rows="3"
+                        placeholder="e.g. 'Super fast delivery! Notes were neatly printed and delivered right on time.'"
+                        required></textarea>
                 </div>
 
                 <div class="escrow-release-alert">
                     <i class="ri-coins-line"></i>
-                    <span>This will release <strong id="release-amount-text">₹350</strong> directly to the worker's wallet.</span>
+                    <span>This will release <strong id="release-amount-text">₹350</strong> directly to the worker's
+                        wallet.</span>
                 </div>
 
                 <div class="form-actions-row">
                     <button type="button" class="btn btn-outline" id="cancel-rate-modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary"><i class="ri-shield-check-line"></i> Confirm & Release Payout</button>
+                    <button type="submit" class="btn btn-primary"><i class="ri-shield-check-line"></i> Confirm & Release
+                        Payout</button>
                 </div>
             </form>
         </div>
@@ -1238,7 +1363,7 @@
     <div id="upi-payment-modal" class="modal-backdrop hidden">
         <div class="modal-card">
             <button class="modal-close-btn" id="close-upi-modal"><i class="ri-close-line"></i></button>
-            
+
             <div class="modal-header">
                 <h3 id="upi-modal-title"><i class="ri-qr-code-line"></i> Instant UPI Payment</h3>
                 <p id="upi-modal-subtitle">Add funds to your Escrow balance using UPI</p>
@@ -1251,7 +1376,8 @@
                     <label for="upi-amount-input">Amount (₹ INR) <span class="required">*</span></label>
                     <div class="input-prefix-wrapper">
                         <span class="prefix">₹</span>
-                        <input type="number" id="upi-amount-input" placeholder="500" min="50" max="20000" step="50" required value="500">
+                        <input type="number" id="upi-amount-input" placeholder="500" min="50" max="20000" step="50"
+                            required value="500">
                     </div>
                 </div>
 
@@ -1305,7 +1431,7 @@
             <div class="modal-header">
                 <h3><i class="ri-filter-3-line"></i> Filter Campus Gigs</h3>
             </div>
-            
+
             <div class="filter-modal-body">
                 <div class="form-group">
                     <label>Reward Range (₹)</label>
@@ -1344,6 +1470,38 @@
         </div>
     </div>
 
+    <!-- 5.5 GIG APPLICATION MODAL -->
+    <div id="apply-gig-modal" class="modal-backdrop hidden">
+        <div class="modal-card modal-md">
+            <button class="modal-close-btn" id="close-apply-modal"><i class="ri-close-line"></i></button>
+            <div class="modal-header">
+                <h3><i class="ri-send-plane-fill text-primary"></i> Apply for Campus Gig</h3>
+                <p id="apply-modal-gig-title" class="text-primary font-weight-bold mt-1" style="font-size:0.95rem">Gig Title Preview</p>
+            </div>
+            <form id="apply-gig-form" class="mt-3">
+                <input type="hidden" id="apply-gig-id">
+                <div class="form-group">
+                    <label for="apply-message">Short Message to Gig Poster <span class="required">*</span></label>
+                    <textarea id="apply-message" rows="3" placeholder="Introduce yourself, explain your experience or equipment, and share your estimated completion timeline..." required></textarea>
+                </div>
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label for="apply-time">Estimated Completion Time <span class="required">*</span></label>
+                        <input type="text" id="apply-time" placeholder="e.g. 45 mins, 2 hours" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="apply-skills-note">Relevant Skills / Equipment</label>
+                        <input type="text" id="apply-skills-note" placeholder="e.g. Printer Access, Fast Delivery">
+                    </div>
+                </div>
+                <div class="form-actions-row mt-4">
+                    <button type="button" class="btn btn-outline" id="cancel-apply-btn">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="ri-send-plane-2-fill"></i> Submit Application</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- 6. GENERIC CONFIRMATION MODAL -->
     <div id="confirm-modal" class="modal-backdrop hidden">
         <div class="modal-card modal-sm text-center">
@@ -1367,25 +1525,35 @@
                 </div>
                 <h3 class="mt-2">Verify SASTRA Email</h3>
                 <p class="text-muted" style="font-size:0.85rem">We sent a 6-digit verification code to</p>
-                <strong id="otp-target-email" class="text-primary d-block mt-1" style="font-size:0.95rem">regno@sastra.ac.in</strong>
+                <strong id="otp-target-email" class="text-primary d-block mt-1"
+                    style="font-size:0.95rem">regno@sastra.ac.in</strong>
             </div>
 
             <form id="otp-form">
                 <div class="otp-input-container mb-3">
-                    <input type="text" maxlength="1" class="otp-digit" data-index="0" autofocus autocomplete="off" inputmode="numeric">
-                    <input type="text" maxlength="1" class="otp-digit" data-index="1" autocomplete="off" inputmode="numeric">
-                    <input type="text" maxlength="1" class="otp-digit" data-index="2" autocomplete="off" inputmode="numeric">
-                    <input type="text" maxlength="1" class="otp-digit" data-index="3" autocomplete="off" inputmode="numeric">
-                    <input type="text" maxlength="1" class="otp-digit" data-index="4" autocomplete="off" inputmode="numeric">
-                    <input type="text" maxlength="1" class="otp-digit" data-index="5" autocomplete="off" inputmode="numeric">
+                    <input type="text" maxlength="1" class="otp-digit" data-index="0" autofocus autocomplete="off"
+                        inputmode="numeric">
+                    <input type="text" maxlength="1" class="otp-digit" data-index="1" autocomplete="off"
+                        inputmode="numeric">
+                    <input type="text" maxlength="1" class="otp-digit" data-index="2" autocomplete="off"
+                        inputmode="numeric">
+                    <input type="text" maxlength="1" class="otp-digit" data-index="3" autocomplete="off"
+                        inputmode="numeric">
+                    <input type="text" maxlength="1" class="otp-digit" data-index="4" autocomplete="off"
+                        inputmode="numeric">
+                    <input type="text" maxlength="1" class="otp-digit" data-index="5" autocomplete="off"
+                        inputmode="numeric">
                 </div>
 
-                <div id="otp-error-msg" class="alert alert-danger py-2 px-3 mb-3 hidden" style="font-size:0.82rem"></div>
+                <div id="otp-error-msg" class="alert alert-danger py-2 px-3 mb-3 hidden" style="font-size:0.82rem">
+                </div>
 
                 <div class="otp-timer-row mb-4 text-center">
-                    <span class="text-muted" style="font-size:0.82rem">Code expires in: <strong id="otp-timer-display" class="text-danger">01:00</strong></span>
+                    <span class="text-muted" style="font-size:0.82rem">Code expires in: <strong id="otp-timer-display"
+                            class="text-danger">01:00</strong></span>
                     <div class="mt-1">
-                        <button type="button" class="btn btn-link btn-xs" id="resend-otp-btn" disabled>Resend OTP Code</button>
+                        <button type="button" class="btn btn-link btn-xs" id="resend-otp-btn" disabled>Resend OTP
+                            Code</button>
                     </div>
                 </div>
 
@@ -1399,4 +1567,5 @@
     <!-- MAIN SCRIPT -->
     <script src="java.js"></script>
 </body>
+
 </html>

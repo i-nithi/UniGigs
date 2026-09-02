@@ -348,11 +348,53 @@
         }
     ];
 
+    const SEED_APPLICATIONS = [
+        {
+            id: 'app_1',
+            gigId: 'gig_1',
+            applicantId: 'usr_2',
+            message: 'I am available right now and have access to a high-speed color printer in Hostel 3. I can print, spiral bind with a clear cover, and deliver to Central Library desk by 2 PM.',
+            estimatedTime: '1 hour',
+            skillsNote: 'Printer Access, Fast Delivery',
+            status: 'pending',
+            createdAt: '2026-08-29T10:30:00Z'
+        },
+        {
+            id: 'app_2',
+            gigId: 'gig_1',
+            applicantId: 'usr_3',
+            message: 'I have lectures near Tech Park library lab. Can pick up PDF, print 60 pages in high quality, and drop off directly at library.',
+            estimatedTime: '45 mins',
+            skillsNote: 'Fast Delivery, Campus Errands',
+            status: 'pending',
+            createdAt: '2026-08-29T11:00:00Z'
+        },
+        {
+            id: 'app_3',
+            gigId: 'gig_5',
+            applicantId: 'usr_1',
+            message: 'I have a Sony A7III Mirrorless camera with prime lenses. I cover IEEE & TEDx events at SASTRA regularly. Raw files + Lightroom touchups included.',
+            estimatedTime: '2 hours',
+            skillsNote: 'DSLR Photography, Event Management',
+            status: 'pending',
+            createdAt: '2026-08-29T12:15:00Z'
+        }
+    ];
+
+    function calculateTrustScore(user) {
+        if (!user) return 85;
+        const ratingScore = Math.round((user.rating || 4.8) * 15);
+        const gigsScore = Math.min(15, (user.completedGigsCount || 5) * 1.2);
+        const verifiedBonus = user.isVerified ? 10 : 0;
+        return Math.min(99, Math.max(78, Math.round(ratingScore + gigsScore + verifiedBonus)));
+    }
+
     // 2. STATE MANAGER
     let state = {
         currentUser: null,
         users: [],
         gigs: [],
+        applications: [],
         messages: [],
         notifications: [],
         transactions: [],
@@ -374,6 +416,7 @@
     function loadState() {
         const storedUsers = localStorage.getItem('unigigs_users');
         const storedGigs = localStorage.getItem('unigigs_gigs');
+        const storedApps = localStorage.getItem('unigigs_applications');
         const storedMsgs = localStorage.getItem('unigigs_messages');
         const storedNotifs = localStorage.getItem('unigigs_notifications');
         const storedTxns = localStorage.getItem('unigigs_transactions');
@@ -384,6 +427,7 @@
             // Seed initial data
             localStorage.setItem('unigigs_users', JSON.stringify(SEED_USERS));
             localStorage.setItem('unigigs_gigs', JSON.stringify(SEED_GIGS));
+            localStorage.setItem('unigigs_applications', JSON.stringify(SEED_APPLICATIONS));
             localStorage.setItem('unigigs_messages', JSON.stringify(SEED_MESSAGES));
             localStorage.setItem('unigigs_notifications', JSON.stringify(SEED_NOTIFICATIONS));
             localStorage.setItem('unigigs_transactions', JSON.stringify(SEED_TRANSACTIONS));
@@ -392,6 +436,7 @@
 
             state.users = SEED_USERS;
             state.gigs = SEED_GIGS;
+            state.applications = SEED_APPLICATIONS;
             state.messages = SEED_MESSAGES;
             state.notifications = SEED_NOTIFICATIONS;
             state.transactions = SEED_TRANSACTIONS;
@@ -400,6 +445,7 @@
         } else {
             state.users = JSON.parse(storedUsers);
             state.gigs = JSON.parse(storedGigs);
+            state.applications = JSON.parse(storedApps || JSON.stringify(SEED_APPLICATIONS));
             state.messages = JSON.parse(storedMsgs || '[]');
             state.notifications = JSON.parse(storedNotifs || '[]');
             state.transactions = JSON.parse(storedTxns || '[]');
@@ -451,6 +497,7 @@
     function saveState() {
         localStorage.setItem('unigigs_users', JSON.stringify(state.users));
         localStorage.setItem('unigigs_gigs', JSON.stringify(state.gigs));
+        localStorage.setItem('unigigs_applications', JSON.stringify(state.applications));
         localStorage.setItem('unigigs_messages', JSON.stringify(state.messages));
         localStorage.setItem('unigigs_notifications', JSON.stringify(state.notifications));
         localStorage.setItem('unigigs_transactions', JSON.stringify(state.transactions));
@@ -591,7 +638,7 @@
         const matchedSkills = [];
         if (gigSkills.length > 0) {
             gigSkills.forEach(req => {
-                const hasMatch = userSkills.some(userSkill => 
+                const hasMatch = userSkills.some(userSkill =>
                     userSkill.includes(req) || req.includes(userSkill) ||
                     (userSkill.includes('c++') && req.includes('c++')) ||
                     (userSkill.includes('python') && req.includes('python')) ||
@@ -671,8 +718,8 @@
         document.getElementById('dash-pending-payouts').textContent = `₹${user.pendingEscrow}`;
 
         // Active gigs where current user is poster or worker
-        const activeGigs = state.gigs.filter(g => 
-            (g.postedBy === user.id || g.assignedWorker === user.id) && 
+        const activeGigs = state.gigs.filter(g =>
+            (g.postedBy === user.id || g.assignedWorker === user.id) &&
             ['accepted', 'in_progress', 'submitted'].includes(g.status)
         );
 
@@ -779,8 +826,8 @@
     }
 
     function createMatchedGigCardHTML(gig, matchInfo) {
-        const skillsList = (gig.requiredSkills && gig.requiredSkills.length > 0) 
-            ? gig.requiredSkills 
+        const skillsList = (gig.requiredSkills && gig.requiredSkills.length > 0)
+            ? gig.requiredSkills
             : ['Campus Task', 'Fast Delivery'];
 
         return `
@@ -866,9 +913,9 @@
         // Search Query
         if (state.searchQuery.trim() !== '') {
             const q = state.searchQuery.toLowerCase();
-            filtered = filtered.filter(g => 
-                g.title.toLowerCase().includes(q) || 
-                g.description.toLowerCase().includes(q) || 
+            filtered = filtered.filter(g =>
+                g.title.toLowerCase().includes(q) ||
+                g.description.toLowerCase().includes(q) ||
                 g.location.toLowerCase().includes(q)
             );
         }
@@ -969,6 +1016,8 @@
         const isPoster = state.currentUser && gig.postedBy === state.currentUser.id;
         const isWorker = state.currentUser && gig.assignedWorker === state.currentUser.id;
 
+        const myApp = state.currentUser ? state.applications.find(a => a.gigId === gig.id && a.applicantId === state.currentUser.id && a.status !== 'withdrawn') : null;
+
         const modalBody = document.getElementById('gig-modal-body');
 
         // Render Stepper HTML
@@ -983,10 +1032,27 @@
                         <button class="btn btn-danger btn-cancel-gig" data-gig-id="${gig.id}"><i class="ri-delete-bin-line"></i> Cancel Gig & Refund Escrow</button>
                     `;
                 } else {
-                    actionButtonsHTML = `
-                        <button class="btn btn-primary btn-lg btn-accept-gig" data-gig-id="${gig.id}"><i class="ri-flashlight-line"></i> Accept Gig & Start Working</button>
-                        <button class="btn btn-outline btn-open-chat" data-user-id="${poster.id}" data-gig-id="${gig.id}"><i class="ri-chat-3-line"></i> Chat with Requester</button>
-                    `;
+                    if (!myApp) {
+                        actionButtonsHTML = `
+                            <button class="btn btn-primary btn-lg btn-open-apply-modal" data-gig-id="${gig.id}"><i class="ri-send-plane-fill"></i> Apply for Gig</button>
+                            <button class="btn btn-outline btn-open-chat" data-user-id="${poster.id}" data-gig-id="${gig.id}"><i class="ri-chat-3-line"></i> Chat with Requester</button>
+                        `;
+                    } else if (myApp.status === 'pending') {
+                        actionButtonsHTML = `
+                            <div class="alert alert-info py-2 px-3 font-weight-bold mb-0 me-2" style="background-color:var(--primary-light); color:var(--primary); border-radius:8px; display:inline-flex; align-items:center; gap:6px;">
+                                <i class="ri-checkbox-circle-line" style="font-size:1.1rem"></i> Application Submitted
+                            </div>
+                            <button class="btn btn-outline-danger btn-withdraw-app" data-app-id="${myApp.id}" data-gig-id="${gig.id}"><i class="ri-close-circle-line"></i> Withdraw Application</button>
+                            <button class="btn btn-outline btn-open-chat" data-user-id="${poster.id}" data-gig-id="${gig.id}"><i class="ri-chat-3-line"></i> Chat</button>
+                        `;
+                    } else if (myApp.status === 'rejected') {
+                        actionButtonsHTML = `
+                            <div class="alert alert-danger py-2 px-3 font-weight-bold mb-0 me-2" style="border-radius:8px; display:inline-flex; align-items:center; gap:6px;">
+                                <i class="ri-error-warning-line"></i> Application Declined by Poster
+                            </div>
+                            <button class="btn btn-outline btn-open-chat" data-user-id="${poster.id}" data-gig-id="${gig.id}"><i class="ri-chat-3-line"></i> Chat</button>
+                        `;
+                    }
                 }
             } else if (gig.status === 'accepted' || gig.status === 'in_progress') {
                 if (isWorker) {
@@ -1018,6 +1084,75 @@
                     <div class="badge badge-success p-2" style="font-size:0.9rem"><i class="ri-checkbox-circle-fill"></i> Gig Completed & Payout Released</div>
                 `;
             }
+        }
+
+        // Applications section HTML for posters
+        let applicationsSectionHTML = '';
+        if (isPoster && gig.status === 'available') {
+            const gigApps = state.applications.filter(a => a.gigId === gig.id && a.status !== 'withdrawn');
+            applicationsSectionHTML = `
+                <div class="applications-section mt-4 p-3" style="background:var(--bg-input); border-radius:12px; border:1px solid var(--border-color)">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h4 class="mb-0" style="font-size:1.05rem"><i class="ri-user-shared-line text-primary"></i> Received Applications (${gigApps.length})</h4>
+                        <span class="text-muted" style="font-size:0.8rem">Review student profiles and select worker</span>
+                    </div>
+                    ${gigApps.length === 0 ? `
+                        <div class="text-center py-4 text-muted">
+                            <i class="ri-inbox-archive-line" style="font-size:2rem; opacity:0.5"></i>
+                            <p class="mb-0 mt-2" style="font-size:0.88rem">No applications received yet. Interested campus students will appear here!</p>
+                        </div>
+                    ` : `
+                        <div class="applicants-list-grid d-flex flex-column gap-3">
+                            ${gigApps.map(app => {
+                                const applicant = state.users.find(u => u.id === app.applicantId) || { name: 'Student', rating: 4.8, completedGigsCount: 3, avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80', dept: 'SASTRA Student', skills: ['Campus Delivery'] };
+                                const trustScore = calculateTrustScore(applicant);
+                                return `
+                                    <div class="applicant-card p-3" style="background:var(--bg-card); border-radius:10px; border:1px solid var(--border-color); box-shadow:var(--shadow-sm)">
+                                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+                                            <div class="d-flex align-items-center gap-3">
+                                                <img src="${applicant.avatar}" alt="${applicant.name}" style="width:46px; height:46px; border-radius:50%; object-fit:cover">
+                                                <div>
+                                                    <strong style="font-size:0.98rem">${escapeHTML(applicant.name)}</strong>
+                                                    <div class="text-muted" style="font-size:0.78rem">${escapeHTML(applicant.dept || 'School of Computing')}</div>
+                                                    <div class="d-flex align-items-center gap-2 mt-1" style="font-size:0.78rem">
+                                                        <span class="text-warning" style="font-weight:700">★ ${applicant.rating || '4.9'}</span>
+                                                        <span class="text-muted">•</span>
+                                                        <span class="text-muted">${applicant.completedGigsCount || 5} Completed Gigs</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <span class="badge badge-trust"><i class="ri-shield-check-fill"></i> ${trustScore} Trust Score</span>
+                                        </div>
+
+                                        <div class="app-message-box p-2.5 my-2" style="background:rgba(99,102,241,0.06); border-left:3px solid var(--primary); border-radius:6px; font-size:0.86rem; color:var(--text-primary)">
+                                            <strong>Message:</strong> "${escapeHTML(app.message)}"
+                                        </div>
+
+                                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mt-2 pt-2" style="border-top:1px dashed var(--border-color)">
+                                            <div style="font-size:0.78rem" class="text-muted">
+                                                <i class="ri-time-line text-warning"></i> Estimated time: <strong class="text-primary">${escapeHTML(app.estimatedTime)}</strong>
+                                                ${app.skillsNote ? `<span class="ms-2">• Relevant Skills: <span class="skill-tag-sm">${escapeHTML(app.skillsNote)}</span></span>` : ''}
+                                            </div>
+
+                                            <div class="applicant-actions d-flex gap-2 align-items-center">
+                                                ${app.status === 'pending' ? `
+                                                    <button class="btn btn-xs btn-outline btn-view-applicant-profile" data-user-id="${applicant.id}"><i class="ri-user-3-line"></i> Profile</button>
+                                                    <button class="btn btn-xs btn-outline-danger btn-reject-applicant" data-gig-id="${gig.id}" data-app-id="${app.id}"><i class="ri-close-line"></i> Reject</button>
+                                                    <button class="btn btn-sm btn-primary btn-select-worker" data-gig-id="${gig.id}" data-app-id="${app.id}" data-applicant-id="${applicant.id}"><i class="ri-checkbox-circle-fill"></i> Select Worker</button>
+                                                ` : app.status === 'accepted' ? `
+                                                    <span class="badge badge-success"><i class="ri-checkbox-circle-fill"></i> Selected Worker</span>
+                                                ` : `
+                                                    <span class="badge badge-danger">Declined</span>
+                                                `}
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    `}
+                </div>
+            `;
         }
 
         modalBody.innerHTML = `
@@ -1062,7 +1197,7 @@
                             <img src="${poster.avatar}" alt="${poster.name}" style="width:42px; height:42px; border-radius:50%; object-fit:cover">
                             <div>
                                 <strong>${escapeHTML(poster.name)}</strong>
-                                <div style="font-size:0.78rem" class="text-muted">${escapeHTML(poster.dept || 'CS Dept')}</div>
+                                <div style="font-size:0.78rem" class="text-muted">${escapeHTML(poster.dept || 'School of Computing')}</div>
                             </div>
                         </div>
                     </div>
@@ -1082,6 +1217,8 @@
                         `}
                     </div>
                 </div>
+
+                ${applicationsSectionHTML}
             </div>
 
             <div class="modal-footer-actions d-flex gap-2 justify-content-end mt-4">
@@ -1243,7 +1380,7 @@
         if (!state.currentUser) return;
 
         const user = state.currentUser;
-        
+
         // Find all conversations involving current user
         const convosMap = {};
         state.messages.forEach(m => {
@@ -1707,8 +1844,8 @@
         const sastraEmail = formatSastraEmail(regNo);
         const pass = passInput ? passInput.value : '';
 
-        const found = state.users.find(u => 
-            (u.regNo && u.regNo.toLowerCase() === regNo) || 
+        const found = state.users.find(u =>
+            (u.regNo && u.regNo.toLowerCase() === regNo) ||
             (u.email && (u.email.toLowerCase() === sastraEmail || extractRegNo(u.email) === regNo))
         );
 
@@ -1779,8 +1916,8 @@
         const regNo = regValidation.regNo;
         const sastraEmail = formatSastraEmail(regNo);
 
-        const existing = state.users.find(u => 
-            (u.regNo && u.regNo.toLowerCase() === regNo) || 
+        const existing = state.users.find(u =>
+            (u.regNo && u.regNo.toLowerCase() === regNo) ||
             (u.email && u.email.toLowerCase() === sastraEmail)
         );
         if (existing) {
@@ -2190,6 +2327,13 @@
         document.getElementById('close-gig-modal-btn')?.addEventListener('click', () => {
             document.getElementById('gig-details-modal').classList.add('hidden');
         });
+        document.getElementById('close-apply-modal')?.addEventListener('click', () => {
+            document.getElementById('apply-gig-modal')?.classList.add('hidden');
+        });
+        document.getElementById('cancel-apply-btn')?.addEventListener('click', () => {
+            document.getElementById('apply-gig-modal')?.classList.add('hidden');
+        });
+        document.getElementById('apply-gig-form')?.addEventListener('submit', handleApplySubmit);
         document.getElementById('close-upi-modal')?.addEventListener('click', () => {
             document.getElementById('upi-payment-modal').classList.add('hidden');
         });
@@ -2318,6 +2462,68 @@
         });
     }
 
+    function handleApplySubmit(e) {
+        e.preventDefault();
+        if (!state.currentUser) {
+            showToast('Please sign in to apply for campus gigs.', 'warning');
+            switchView('auth');
+            return;
+        }
+
+        const gigId = document.getElementById('apply-gig-id').value;
+        const message = document.getElementById('apply-message').value.trim();
+        const estimatedTime = document.getElementById('apply-time').value.trim();
+        const skillsNote = document.getElementById('apply-skills-note').value.trim();
+
+        if (!message || !estimatedTime) {
+            showToast('Please provide a message and estimated completion time.', 'warning');
+            return;
+        }
+
+        const gig = state.gigs.find(g => g.id === gigId);
+        if (!gig) return;
+
+        // Prevent duplicate application
+        const existing = state.applications.find(a => a.gigId === gigId && a.applicantId === state.currentUser.id && a.status === 'pending');
+        if (existing) {
+            showToast('You have already submitted an application for this gig.', 'info');
+            document.getElementById('apply-gig-modal').classList.add('hidden');
+            openGigDetailsModal(gigId);
+            return;
+        }
+
+        const newApp = {
+            id: 'app_' + Date.now(),
+            gigId: gigId,
+            applicantId: state.currentUser.id,
+            message: message,
+            estimatedTime: estimatedTime,
+            skillsNote: skillsNote || (state.currentUser.skills ? state.currentUser.skills[0] : 'Campus Errand'),
+            status: 'pending',
+            createdAt: new Date().toISOString()
+        };
+
+        state.applications.unshift(newApp);
+
+        // Notify Poster
+        state.notifications.unshift({
+            id: 'notif_' + Date.now(),
+            userId: gig.postedBy,
+            type: 'gig',
+            title: 'New Gig Application Received!',
+            message: `${state.currentUser.name} applied for your gig "${gig.title}".`,
+            timestamp: 'Just now',
+            isRead: false,
+            link: 'my-gigs'
+        });
+
+        saveState();
+        showToast('Application submitted to gig poster!', 'success');
+        document.getElementById('apply-gig-form').reset();
+        document.getElementById('apply-gig-modal').classList.add('hidden');
+        openGigDetailsModal(gigId);
+    }
+
     function bindCardEvents() {
         // View Details Button
         document.querySelectorAll('.btn-view-details').forEach(btn => {
@@ -2347,18 +2553,102 @@
     }
 
     function bindModalEvents() {
-        // Accept Gig Button
-        document.querySelector('.btn-accept-gig')?.addEventListener('click', e => {
-            const gigId = e.target.closest('button').getAttribute('data-gig-id');
-            const gig = state.gigs.find(g => g.id === gigId);
-            if (gig && state.currentUser) {
-                gig.assignedWorker = state.currentUser.id;
-                gig.status = 'in_progress';
-                saveState();
-                showToast('Gig accepted! You can now start working and chat with requester.', 'success');
-                document.getElementById('gig-details-modal').classList.add('hidden');
-                switchView('my-gigs');
-            }
+        // Open Apply Modal Button
+        document.querySelectorAll('.btn-open-apply-modal').forEach(btn => {
+            btn.addEventListener('click', e => {
+                const gigId = e.target.closest('button').getAttribute('data-gig-id');
+                const gig = state.gigs.find(g => g.id === gigId);
+                if (gig) {
+                    document.getElementById('apply-gig-id').value = gigId;
+                    document.getElementById('apply-modal-gig-title').textContent = gig.title;
+                    document.getElementById('apply-gig-modal').classList.remove('hidden');
+                }
+            });
+        });
+
+        // Withdraw Application Button
+        document.querySelectorAll('.btn-withdraw-app').forEach(btn => {
+            btn.addEventListener('click', e => {
+                const appId = e.target.closest('button').getAttribute('data-app-id');
+                const gigId = e.target.closest('button').getAttribute('data-gig-id');
+                const app = state.applications.find(a => a.id === appId);
+                if (app) {
+                    app.status = 'withdrawn';
+                    saveState();
+                    showToast('Application withdrawn successfully.', 'info');
+                    openGigDetailsModal(gigId);
+                }
+            });
+        });
+
+        // Select Worker Button (Poster Action)
+        document.querySelectorAll('.btn-select-worker').forEach(btn => {
+            btn.addEventListener('click', e => {
+                const gigId = e.target.closest('button').getAttribute('data-gig-id');
+                const appId = e.target.closest('button').getAttribute('data-app-id');
+                const applicantId = e.target.closest('button').getAttribute('data-applicant-id');
+
+                const gig = state.gigs.find(g => g.id === gigId);
+                const selectedApp = state.applications.find(a => a.id === appId);
+                const selectedUser = state.users.find(u => u.id === applicantId);
+
+                if (gig && selectedApp && selectedUser) {
+                    selectedApp.status = 'accepted';
+
+                    // Reject all other pending apps for this gig
+                    state.applications.forEach(a => {
+                        if (a.gigId === gigId && a.id !== appId && a.status === 'pending') {
+                            a.status = 'rejected';
+                        }
+                    });
+
+                    gig.assignedWorker = applicantId;
+                    gig.status = 'in_progress';
+
+                    // Create Notification for Selected Student Worker
+                    state.notifications.unshift({
+                        id: 'notif_' + Date.now(),
+                        userId: applicantId,
+                        type: 'gig',
+                        title: 'Selected for Gig!',
+                        message: `Congratulations! You were selected by ${state.currentUser ? state.currentUser.name : 'poster'} for "${gig.title}". You can now start working!`,
+                        timestamp: 'Just now',
+                        isRead: false,
+                        link: 'my-gigs'
+                    });
+
+                    saveState();
+                    showToast(`Worker selected! ${selectedUser.name} assigned to gig.`, 'success');
+                    openGigDetailsModal(gigId);
+                    renderApp();
+                }
+            });
+        });
+
+        // Reject Applicant Button (Poster Action)
+        document.querySelectorAll('.btn-reject-applicant').forEach(btn => {
+            btn.addEventListener('click', e => {
+                const appId = e.target.closest('button').getAttribute('data-app-id');
+                const gigId = e.target.closest('button').getAttribute('data-gig-id');
+                const app = state.applications.find(a => a.id === appId);
+                if (app) {
+                    app.status = 'rejected';
+                    saveState();
+                    showToast('Applicant declined.', 'info');
+                    openGigDetailsModal(gigId);
+                }
+            });
+        });
+
+        // View Applicant Profile Button
+        document.querySelectorAll('.btn-view-applicant-profile').forEach(btn => {
+            btn.addEventListener('click', e => {
+                const userId = e.target.closest('button').getAttribute('data-user-id');
+                const user = state.users.find(u => u.id === userId);
+                if (user) {
+                    showToast(`Applicant Profile: ${user.name} (${user.dept}) • ★ ${user.rating} (${user.completedGigsCount} Gigs)`, 'info');
+                }
+            });
         });
 
         // Cancel Gig Button
