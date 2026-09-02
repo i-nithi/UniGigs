@@ -1,5 +1,7 @@
 from fastapi import FastAPI
+from fastapi.openapi.utils import get_openapi
 from app.config import settings
+from app.routers import auth
 
 app = FastAPI(
     title=settings.APP_NAME,
@@ -7,7 +9,11 @@ app = FastAPI(
     version="1.0.0"
 )
 
-@app.get("/")
+# Include Auth Router
+app.include_router(auth.router)
+
+
+@app.get("/", tags=["Health"])
 def root():
     return {
         "status": "ok",
@@ -15,6 +21,7 @@ def root():
         "environment": settings.ENVIRONMENT
     }
 
-@app.get("/health")
+
+@app.get("/health", tags=["Health"])
 def health_check():
     return {"status": "healthy"}

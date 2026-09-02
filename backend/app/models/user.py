@@ -14,6 +14,7 @@ class User(Base):
     registration_number = Column(String(50), unique=True, index=True, nullable=False)
     name = Column(String(100), nullable=False)
     email = Column(String(150), unique=True, index=True, nullable=False)
+    hashed_password = Column(String(255), nullable=False)
     department = Column(String(100), nullable=True)
     year = Column(String(20), nullable=True)
     profile_image = Column(String(255), nullable=True)

@@ -7,8 +7,12 @@ class Settings(BaseSettings):
     """
     APP_NAME: str = "UniGigs Backend"
     ENVIRONMENT: str = "development"
-    SECRET_KEY: str = "unigigs_default_secret_key"
+    SECRET_KEY: str = "unigigs_dev_secret_key_change_in_production"
     
+    # JWT Security Settings
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
+
     # PostgreSQL Database Connection URL
     DATABASE_URL: str = "postgresql://postgres:postgres@localhost:5432/unigigs"
 
