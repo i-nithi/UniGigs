@@ -1,0 +1,1 @@
+# Core Enum definitions package
