@@ -1,7 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
-from app.routers import auth, users, gigs, applications, payment, wallet, transactions, notifications
+from app.routers import auth, users, gigs, applications, payment, wallet, transactions, notifications, reviews
 
 app = FastAPI(
     title=settings.APP_NAME,
@@ -9,7 +9,16 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# CORS Middleware Configuration for local development
+# Security Response Headers Middleware
+@app.middleware("http")
+async def add_security_headers(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    return response
+
+# CORS Middleware Configuration for local development & staging
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -34,6 +43,7 @@ app.include_router(payment.router)
 app.include_router(wallet.router)
 app.include_router(transactions.router)
 app.include_router(notifications.router)
+app.include_router(reviews.router)
 
 
 @app.get("/", tags=["Health"])

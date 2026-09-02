@@ -11,6 +11,12 @@ from app.services.notification_service import create_notification
 def create_application(db: Session, gig_id: int, applicant_id: int, create_data: ApplicationCreateRequest) -> Application:
     gig = get_gig_by_id(db, gig_id)
 
+    if gig.status not in (GigStatus.OPEN, GigStatus.APPLICATIONS_OPEN):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Applications are closed for this gig."
+        )
+
     if gig.poster_id == applicant_id:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
