@@ -465,6 +465,28 @@
                                 </div>
                             </div>
 
+                            <!-- BEST MATCHES FOR YOU (SMART AI MATCHING) -->
+                            <div class="content-card best-matches-card">
+                                <div class="card-header flex-header-wrap">
+                                    <div>
+                                        <h3><i class="ri-sparkles-fill highlight-icon text-accent"></i> Best Matches for You</h3>
+                                        <p class="card-subtitle-sm">Smart AI recommendations tailored to your skills, department & payout preferences</p>
+                                    </div>
+                                    <div class="header-sort-controls">
+                                        <label for="dash-match-sort" class="sort-label"><i class="ri-sort-desc"></i> Sort:</label>
+                                        <select id="dash-match-sort" class="select-sm">
+                                            <option value="best-match" selected>Best Match</option>
+                                            <option value="highest-pay">Highest Pay</option>
+                                            <option value="nearest">Nearest</option>
+                                            <option value="newest">Newest</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="best-matches-grid" id="dash-best-matches-container">
+                                    <!-- Dynamic Smart Matched Cards render here -->
+                                </div>
+                            </div>
+
                             <!-- RECOMMENDED / URGENT GIGS NEARBY -->
                             <div class="content-card">
                                 <div class="card-header">
@@ -548,7 +570,8 @@
                             <div class="market-sort-select">
                                 <label for="market-sort-by">Sort By:</label>
                                 <select id="market-sort-by">
-                                    <option value="newest">Newest First</option>
+                                    <option value="best-match">Best Match Score ✨</option>
+                                    <option value="newest" selected>Newest First</option>
                                     <option value="reward-high">Highest Reward (₹)</option>
                                     <option value="reward-low">Lowest Reward (₹)</option>
                                     <option value="deadline">Urgent Deadline</option>
@@ -1046,7 +1069,8 @@
                         <!-- EDIT PROFILE TAB -->
                         <div id="prof-tab-edit" class="prof-tab-pane hidden">
                             <div class="content-card form-card">
-                                <h3>Edit Profile Information</h3>
+                                <h3>Edit Profile & Gig Preferences</h3>
+                                <p class="text-muted mb-3" style="font-size:0.88rem;">Updating your skills and preferences will automatically recalibrate your <strong>Smart AI Gig Matches</strong>.</p>
                                 <form id="edit-profile-form">
                                     <div class="form-grid-2">
                                         <div class="form-group">
@@ -1065,8 +1089,31 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="edit-skills">Skills (Comma Separated)</label>
+                                        <label for="edit-skills">Skills & Expertise (Comma Separated)</label>
                                         <input type="text" id="edit-skills" value="Python & C++, Fast Delivery, Linear Algebra, Web Development">
+                                        <small class="hint">E.g. Python & C++, Fast Delivery, Linear Algebra, DSLR Photography</small>
+                                    </div>
+
+                                    <div class="form-grid-2">
+                                        <div class="form-group">
+                                            <label for="edit-categories">Preferred Gig Categories (Comma Separated)</label>
+                                            <input type="text" id="edit-categories" value="Printing, Academic Help, Technical Help">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="edit-availability">Availability Schedule</label>
+                                            <input type="text" id="edit-availability" value="Evenings & Weekends">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-grid-2">
+                                        <div class="form-group">
+                                            <label for="edit-reward-min">Target Min Reward (₹)</label>
+                                            <input type="number" id="edit-reward-min" value="150" min="50" step="10">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="edit-reward-max">Target Max Reward (₹)</label>
+                                            <input type="number" id="edit-reward-max" value="1000" min="100" step="50">
+                                        </div>
                                     </div>
 
                                     <div class="form-group">
@@ -1074,7 +1121,7 @@
                                         <input type="text" id="edit-upi" value="nithyashri@upi" placeholder="username@upi">
                                     </div>
 
-                                    <button type="submit" class="btn btn-primary"><i class="ri-save-line"></i> Save Profile Changes</button>
+                                    <button type="submit" class="btn btn-primary"><i class="ri-save-line"></i> Save Profile & Update Matches</button>
                                 </form>
                             </div>
                         </div>

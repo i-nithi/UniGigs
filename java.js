@@ -18,6 +18,11 @@
             campus: 'SASTRA Deemed University, Thanjavur',
             bio: 'Undergrad student at SASTRA Deemed University, Thanjavur. Passionate about software engineering, UI design, academic help, and campus activities.',
             skills: ['Python & C++', 'Fast Delivery', 'Linear Algebra', 'Web Development'],
+            preferredCategories: ['Printing', 'Academic Help', 'Technical Help'],
+            preferredRewardMin: 150,
+            preferredRewardMax: 1000,
+            availability: 'Evenings & Weekends',
+            preferredLocations: ['Central Library & Reading Hall', 'Tech Park & Computer Labs'],
             avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
             walletBalance: 1200,
             pendingEscrow: 650,
@@ -39,6 +44,11 @@
             campus: 'SASTRA Deemed University, Thanjavur',
             bio: 'Math enthusiast at SASTRA. Love solving calculus problems, tutoring for mid-terms, and managing event logistics.',
             skills: ['Calculus & Algebra', 'Event Management', 'LaTeX Formatting'],
+            preferredCategories: ['Academic Help', 'Events', 'Printing'],
+            preferredRewardMin: 200,
+            preferredRewardMax: 800,
+            availability: 'Weekdays 4 PM - 9 PM',
+            preferredLocations: ['Tech Park & Computer Labs', 'Science Block A'],
             avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=200&q=80',
             walletBalance: 850,
             pendingEscrow: 450,
@@ -60,6 +70,11 @@
             campus: 'SASTRA Deemed University, Thanjavur',
             bio: 'Robotics enthusiast and tech troubleshooter. I help with hardware debugging, microcontrollers, and campus food pickups.',
             skills: ['Arduino & Hardware', 'Tech Repair', 'Quick Delivery'],
+            preferredCategories: ['Technical Help', 'Food', 'Errands'],
+            preferredRewardMin: 100,
+            preferredRewardMax: 600,
+            availability: 'Anytime / Flexible',
+            preferredLocations: ['Hostel 4 / Block B', 'Main Gate / Off-Campus Delivery'],
             avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80',
             walletBalance: 400,
             pendingEscrow: 0,
@@ -81,6 +96,11 @@
             campus: 'SASTRA Deemed University, Thanjavur',
             bio: 'Freshman student ready to help with library errands, printout pickups, and hostel deliveries.',
             skills: ['Campus Errands', 'Fast Runner', 'Note Taking'],
+            preferredCategories: ['Delivery', 'Printing', 'Errands'],
+            preferredRewardMin: 80,
+            preferredRewardMax: 400,
+            availability: 'Mornings & Breaks',
+            preferredLocations: ['Central Library & Reading Hall', 'Main Gate / Off-Campus Delivery'],
             avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80',
             walletBalance: 150,
             pendingEscrow: 0,
@@ -107,6 +127,8 @@
             status: 'available', // available, accepted, in_progress, submitted, completed, cancelled
             submissionDetails: null,
             requirements: ['Access to high quality printer', 'Must finish before 3 PM'],
+            requiredSkills: ['Printer Access', 'Fast Delivery', 'Document Binding'],
+            estimatedDuration: '45 mins',
             createdAt: '2026-08-29T10:00:00Z',
             savedBy: ['usr_1']
         },
@@ -123,6 +145,8 @@
             status: 'in_progress',
             submissionDetails: null,
             requirements: ['Has bicycle/scooter preferred', 'Hot delivery'],
+            requiredSkills: ['Fast Delivery', 'Campus Errands'],
+            estimatedDuration: '30 mins',
             createdAt: '2026-08-29T21:00:00Z',
             savedBy: []
         },
@@ -142,6 +166,8 @@
                 link: 'https://drive.google.com/file/d/math_notes_sample'
             },
             requirements: ['Strong math grade', 'Patient tutor'],
+            requiredSkills: ['Linear Algebra', 'Calculus & Algebra', 'Python & C++'],
+            estimatedDuration: '2 hours',
             createdAt: '2026-08-28T14:00:00Z',
             savedBy: ['usr_2']
         },
@@ -158,6 +184,8 @@
             status: 'available',
             submissionDetails: null,
             requirements: ['Punctual student'],
+            requiredSkills: ['Campus Errands', 'Fast Delivery'],
+            estimatedDuration: '40 mins',
             createdAt: '2026-08-29T11:20:00Z',
             savedBy: []
         },
@@ -174,6 +202,8 @@
             status: 'available',
             submissionDetails: null,
             requirements: ['Own DSLR/Mirrorless camera', 'Basic Lightroom editing'],
+            requiredSkills: ['DSLR Photography', 'Event Management'],
+            estimatedDuration: '2.5 hours',
             createdAt: '2026-08-29T12:00:00Z',
             savedBy: ['usr_1']
         },
@@ -190,6 +220,8 @@
             status: 'available',
             submissionDetails: null,
             requirements: ['Mac OS & Android Studio experience'],
+            requiredSkills: ['Web Development', 'Python & C++', 'Tech Repair'],
+            estimatedDuration: '30 mins',
             createdAt: '2026-08-29T09:15:00Z',
             savedBy: []
         },
@@ -206,6 +238,8 @@
             status: 'available',
             submissionDetails: null,
             requirements: ['ID card for security gate entry'],
+            requiredSkills: ['Fast Delivery', 'Campus Errands'],
+            estimatedDuration: '20 mins',
             createdAt: '2026-08-29T13:45:00Z',
             savedBy: []
         },
@@ -224,6 +258,8 @@
                 notes: 'Assembled study table cleanly in room 204. Checked desk stability.'
             },
             requirements: ['Physical lifting'],
+            requiredSkills: ['Campus Errands', 'Physical Assembly'],
+            estimatedDuration: '1 hour',
             createdAt: '2026-08-26T10:00:00Z',
             savedBy: []
         }
@@ -543,6 +579,86 @@
         }
     }
 
+    // 2.5 SMART GIG MATCHING ALGORITHM ENGINE (100 Points Total)
+    function calculateGigMatchScore(user, gig) {
+        if (!user || !gig) return { score: 75, reason: 'Matches your campus profile', matchedSkills: [] };
+
+        const userSkills = (user.skills || []).map(s => s.toLowerCase().trim());
+        const gigSkills = (gig.requiredSkills || []).map(s => s.toLowerCase().trim());
+
+        // 1. Skill Overlap (40%)
+        let skillScore = 0;
+        const matchedSkills = [];
+        if (gigSkills.length > 0) {
+            gigSkills.forEach(req => {
+                const hasMatch = userSkills.some(userSkill => 
+                    userSkill.includes(req) || req.includes(userSkill) ||
+                    (userSkill.includes('c++') && req.includes('c++')) ||
+                    (userSkill.includes('python') && req.includes('python')) ||
+                    (userSkill.includes('delivery') && req.includes('delivery')) ||
+                    (userSkill.includes('algebra') && req.includes('algebra')) ||
+                    (userSkill.includes('errand') && req.includes('errand'))
+                );
+                if (hasMatch) matchedSkills.push(req);
+            });
+            const ratio = matchedSkills.length / Math.max(1, gigSkills.length);
+            skillScore = Math.min(40, Math.round(ratio * 40));
+        } else {
+            skillScore = 20; // Default baseline score
+        }
+
+        // 2. Category Preference (20%)
+        let categoryScore = 5;
+        const prefCats = (user.preferredCategories || ['Printing', 'Academic Help', 'Technical Help', 'Food', 'Errands']).map(c => c.toLowerCase());
+        if (prefCats.some(c => c === gig.category.toLowerCase())) {
+            categoryScore = 20;
+        } else if (gig.postedBy !== user.id) {
+            categoryScore = 12;
+        }
+
+        // 3. Reward Preference (15%)
+        let rewardScore = 5;
+        const minRew = user.preferredRewardMin || 100;
+        const maxRew = user.preferredRewardMax || 1200;
+        if (gig.reward >= minRew && gig.reward <= maxRew) {
+            rewardScore = 15;
+        } else if (gig.reward >= minRew * 0.7 && gig.reward <= maxRew * 1.3) {
+            rewardScore = 10;
+        }
+
+        // 4. Availability Compatibility (15%)
+        let availabilityScore = 15; // Student schedule matches deadline timeframe
+
+        // 5. Location Compatibility (10%)
+        let locationScore = 5;
+        const prefLocs = (user.preferredLocations || ['Central Library & Reading Hall', 'Tech Park & Computer Labs', 'Hostel 4 / Block B']).map(l => l.toLowerCase());
+        if (prefLocs.some(l => gig.location.toLowerCase().includes(l) || l.includes(gig.location.toLowerCase()))) {
+            locationScore = 10;
+        }
+
+        const totalScore = Math.min(99, Math.max(65, skillScore + categoryScore + rewardScore + availabilityScore + locationScore));
+
+        // Generate Human-Readable Reason
+        let reason = '';
+        if (matchedSkills.length > 0) {
+            const skillName = matchedSkills[0].split(' ')[0];
+            const upperSkill = skillName.charAt(0).toUpperCase() + skillName.slice(1);
+            reason = `Matches your ${upperSkill} skills and preferred reward range`;
+        } else if (categoryScore === 20) {
+            reason = `Matches your preferred ${gig.category} category and campus location`;
+        } else if (gig.reward >= 400) {
+            reason = `High payout (₹${gig.reward}) matching your target reward preferences`;
+        } else {
+            reason = `Fits your campus location and schedule availability`;
+        }
+
+        return {
+            score: totalScore,
+            reason: reason,
+            matchedSkills: matchedSkills
+        };
+    }
+
     // 6. DASHBOARD RENDER
     function renderDashboard() {
         if (!state.currentUser) return;
@@ -574,6 +690,9 @@
         } else {
             activeContainer.innerHTML = activeGigs.map(g => createActiveGigCardHTML(g)).join('');
         }
+
+        // Render Best Matches Section
+        renderBestMatchesSection();
 
         // Recommended Gigs
         const recommended = state.gigs.filter(g => g.status === 'available' && g.postedBy !== user.id).slice(0, 3);
@@ -612,6 +731,89 @@
         `).join('');
 
         bindCardEvents();
+    }
+
+    function renderBestMatchesSection() {
+        if (!state.currentUser) return;
+        const container = document.getElementById('dash-best-matches-container');
+        if (!container) return;
+
+        const availableGigs = state.gigs.filter(g => g.status === 'available' && g.postedBy !== state.currentUser.id);
+
+        if (availableGigs.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state-sm text-center py-4">
+                    <p class="text-muted">No open campus gigs to match right now. Check back soon!</p>
+                </div>
+            `;
+            return;
+        }
+
+        // Calculate Match info for each available gig
+        const matchedList = availableGigs.map(gig => {
+            const matchInfo = calculateGigMatchScore(state.currentUser, gig);
+            return { gig, matchInfo };
+        });
+
+        // Sort matched list based on user preference dropdown (dash-match-sort)
+        const sortVal = document.getElementById('dash-match-sort')?.value || 'best-match';
+        if (sortVal === 'best-match') {
+            matchedList.sort((a, b) => b.matchInfo.score - a.matchInfo.score);
+        } else if (sortVal === 'highest-pay') {
+            matchedList.sort((a, b) => b.gig.reward - a.gig.reward);
+        } else if (sortVal === 'nearest') {
+            matchedList.sort((a, b) => {
+                const userLocs = (state.currentUser.preferredLocations || []).join(' ').toLowerCase();
+                const aMatch = userLocs.includes(a.gig.location.toLowerCase()) ? 1 : 0;
+                const bMatch = userLocs.includes(b.gig.location.toLowerCase()) ? 1 : 0;
+                return bMatch - aMatch;
+            });
+        } else if (sortVal === 'newest') {
+            matchedList.sort((a, b) => new Date(b.gig.createdAt) - new Date(a.gig.createdAt));
+        }
+
+        // Display top 3 to 5 matched gigs
+        const topMatches = matchedList.slice(0, 4);
+
+        container.innerHTML = topMatches.map(item => createMatchedGigCardHTML(item.gig, item.matchInfo)).join('');
+    }
+
+    function createMatchedGigCardHTML(gig, matchInfo) {
+        const skillsList = (gig.requiredSkills && gig.requiredSkills.length > 0) 
+            ? gig.requiredSkills 
+            : ['Campus Task', 'Fast Delivery'];
+
+        return `
+            <div class="gig-card matched-gig-card" data-gig-id="${gig.id}">
+                <div class="gig-card-header">
+                    <span class="badge badge-match"><i class="ri-sparkles-fill"></i> ${matchInfo.score}% Match</span>
+                    <span class="gig-reward-amount">₹${gig.reward}</span>
+                </div>
+
+                <h4 class="gig-card-title mt-2">${escapeHTML(gig.title)}</h4>
+
+                <div class="required-skills-tags mt-2 mb-2">
+                    ${skillsList.map(s => `<span class="skill-tag-sm"><i class="ri-checkbox-circle-line"></i> ${escapeHTML(s)}</span>`).join('')}
+                </div>
+
+                <div class="gig-meta-tags">
+                    <span class="meta-pill"><i class="ri-map-pin-line"></i> ${escapeHTML(gig.location)}</span>
+                    <span class="meta-pill duration"><i class="ri-time-line"></i> ${escapeHTML(gig.estimatedDuration || '30 mins')}</span>
+                </div>
+
+                <div class="match-reason-box mt-3 mb-3">
+                    <i class="ri-pulse-fill text-accent"></i>
+                    <span>${escapeHTML(matchInfo.reason)}</span>
+                </div>
+
+                <div class="gig-card-footer">
+                    <span class="gig-cat-badge">${escapeHTML(gig.category)}</span>
+                    <button class="btn btn-sm btn-primary btn-view-details" data-gig-id="${gig.id}">
+                        <i class="ri-eye-line"></i> View Details & Apply
+                    </button>
+                </div>
+            </div>
+        `;
     }
 
     function createActiveGigCardHTML(gig) {
@@ -685,7 +887,13 @@
         }
 
         // Sorting
-        if (state.sortBy === 'newest') {
+        if (state.sortBy === 'best-match') {
+            filtered.sort((a, b) => {
+                const scoreA = state.currentUser ? calculateGigMatchScore(state.currentUser, a).score : 70;
+                const scoreB = state.currentUser ? calculateGigMatchScore(state.currentUser, b).score : 70;
+                return scoreB - scoreA;
+            });
+        } else if (state.sortBy === 'newest') {
             filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         } else if (state.sortBy === 'reward-high') {
             filtered.sort((a, b) => b.reward - a.reward);
@@ -1263,6 +1471,28 @@
         document.getElementById('profile-page-email').textContent = user.email;
         document.getElementById('profile-page-upi').textContent = user.upiId || 'Not connected';
 
+        // Render Skills Tags
+        const skillsContainer = document.getElementById('profile-skills-tags');
+        if (skillsContainer && user.skills) {
+            skillsContainer.innerHTML = user.skills.map(s => `<span class="skill-tag">${escapeHTML(s)}</span>`).join('');
+        }
+
+        // Pre-fill Edit Profile form fields
+        const editSkills = document.getElementById('edit-skills');
+        if (editSkills && user.skills) editSkills.value = user.skills.join(', ');
+
+        const editCats = document.getElementById('edit-categories');
+        if (editCats) editCats.value = (user.preferredCategories || ['Printing', 'Academic Help', 'Technical Help']).join(', ');
+
+        const editAvail = document.getElementById('edit-availability');
+        if (editAvail) editAvail.value = user.availability || 'Evenings & Weekends';
+
+        const editMin = document.getElementById('edit-reward-min');
+        if (editMin) editMin.value = user.preferredRewardMin || 150;
+
+        const editMax = document.getElementById('edit-reward-max');
+        if (editMax) editMax.value = user.preferredRewardMax || 1000;
+
         // Render Reviews
         const userReviews = state.reviews.filter(r => r.targetUserId === user.id);
         const reviewsContainer = document.getElementById('profile-reviews-list');
@@ -1294,9 +1524,25 @@
         state.currentUser.bio = document.getElementById('edit-bio').value.trim();
         state.currentUser.upiId = document.getElementById('edit-upi').value.trim();
 
+        // Read skills & match preferences
+        const rawSkills = document.getElementById('edit-skills')?.value || '';
+        state.currentUser.skills = rawSkills.split(',').map(s => s.trim()).filter(Boolean);
+
+        const rawCats = document.getElementById('edit-categories')?.value || '';
+        state.currentUser.preferredCategories = rawCats.split(',').map(c => c.trim()).filter(Boolean);
+
+        const minRew = parseInt(document.getElementById('edit-reward-min')?.value, 10);
+        const maxRew = parseInt(document.getElementById('edit-reward-max')?.value, 10);
+        if (!isNaN(minRew)) state.currentUser.preferredRewardMin = minRew;
+        if (!isNaN(maxRew)) state.currentUser.preferredRewardMax = maxRew;
+
+        const avail = document.getElementById('edit-availability')?.value.trim();
+        if (avail) state.currentUser.availability = avail;
+
         saveState();
-        showToast('Profile updated successfully!', 'success');
+        showToast('Profile & Smart Match preferences saved!', 'success');
         renderProfile();
+        renderBestMatchesSection();
     }
 
     // 15. SASTRA AUTHENTICATION & OTP VERIFICATION ENGINE
@@ -1888,6 +2134,11 @@
         document.getElementById('market-sort-by')?.addEventListener('change', e => {
             state.sortBy = e.target.value;
             renderMarketplace();
+        });
+
+        // Dashboard Smart Match Sort Dropdown
+        document.getElementById('dash-match-sort')?.addEventListener('change', () => {
+            renderBestMatchesSection();
         });
 
         // Category Chips
