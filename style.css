@@ -87,6 +87,75 @@ body.light-theme {
 
 html {
     scroll-behavior: smooth;
+    overflow-x: hidden !important;
+    width: 100%;
+}
+
+body {
+    overflow-x: hidden !important;
+    width: 100%;
+}
+
+/* Initials Avatar Component Styles */
+.avatar-circle {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 50% !important;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%) !important;
+    color: #000000 !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    user-select: none !important;
+    letter-spacing: 0.5px !important;
+    flex-shrink: 0 !important;
+    box-shadow: 0 2px 6px rgba(132, 204, 22, 0.25) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.avatar-sm {
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 0.75rem !important;
+}
+
+.avatar-md {
+    width: 40px !important;
+    height: 40px !important;
+    font-size: 0.9rem !important;
+}
+
+.avatar-lg {
+    width: 64px !important;
+    height: 64px !important;
+    font-size: 1.4rem !important;
+}
+
+.avatar-xl {
+    width: 80px !important;
+    height: 80px !important;
+    font-size: 1.8rem !important;
+}
+
+/* Sidebar Drawer Backdrop Overlay */
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 998;
+    opacity: 1;
+    transition: opacity 0.25s ease-in-out;
+}
+
+.sidebar-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+    display: none;
 }
 
 body {
@@ -2451,7 +2520,26 @@ input.has-error {
 
 @media (max-width: 768px) {
     .app-sidebar {
-        display: none;
+        display: flex !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 280px !important;
+        max-width: 85vw !important;
+        height: 100vh !important;
+        z-index: 999 !important;
+        transform: translateX(-100%) !important;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        box-shadow: 4px 0 25px rgba(0, 0, 0, 0.6) !important;
+        background-color: var(--bg-sidebar) !important;
+    }
+
+    .app-sidebar.sidebar-open {
+        transform: translateX(0) !important;
+    }
+
+    .campus-badge {
+        display: none !important;
     }
 
     .mobile-bottom-nav {

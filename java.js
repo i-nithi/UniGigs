@@ -583,7 +583,10 @@
             authButtons.classList.add('hidden');
 
             document.getElementById('header-wallet-amount').textContent = `₹${state.currentUser.walletBalance}`;
-            document.getElementById('header-user-avatar').src = state.currentUser.avatar;
+            const headerAvatar = document.getElementById('header-user-avatar');
+            if (headerAvatar) {
+                headerAvatar.textContent = getInitials(state.currentUser.name);
+            }
             document.getElementById('dropdown-user-name').textContent = state.currentUser.name;
             document.getElementById('dropdown-user-email').textContent = state.currentUser.email;
 
@@ -2133,7 +2136,10 @@
             if (navLink) {
                 e.preventDefault();
                 const target = navLink.getAttribute('data-target');
-                if (target) switchView(target);
+                if (target) {
+                    toggleMobileSidebar(false);
+                    switchView(target);
+                }
             }
         });
 
@@ -2147,10 +2153,20 @@
             document.getElementById('tab-signup-btn')?.click();
         });
 
-        // Mobile Sidebar Toggle
+        // Mobile Sidebar Toggle Drawer & Backdrop Overlay
         document.getElementById('sidebar-toggle-btn')?.addEventListener('click', e => {
             e.stopPropagation();
-            document.getElementById('app-sidebar')?.classList.toggle('active');
+            toggleMobileSidebar();
+        });
+
+        document.getElementById('sidebar-overlay')?.addEventListener('click', () => {
+            toggleMobileSidebar(false);
+        });
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') {
+                toggleMobileSidebar(false);
+            }
         });
 
         // Global Search Bar & Clear
@@ -2938,6 +2954,23 @@
             case 'completed': return '<span class="badge badge-success">Completed</span>';
             default: return `<span class="badge badge-primary">${status}</span>`;
         }
+    }
+
+    function getInitials(name) {
+        if (!name || typeof name !== 'string') return 'U';
+        const parts = name.trim().split(/\s+/).filter(Boolean);
+        if (parts.length === 0) return 'U';
+        if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
+        return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+    }
+
+    function renderAvatarHTML(name, sizeClass = 'avatar-md', imageUrl = null) {
+        const initials = getInitials(name);
+        const cleanName = escapeHTML(name || 'User');
+        if (imageUrl && typeof imageUrl === 'string' && imageUrl.startsWith('http') && !imageUrl.includes('User Avatar')) {
+            return `<img src="${escapeHTML(imageUrl)}" alt="${cleanName} profile picture" class="${sizeClass}" style="border-radius:50%; object-fit:cover;">`;
+        }
+        return `<div class="avatar-circle ${sizeClass}" aria-label="${cleanName}">${initials}</div>`;
     }
 
     function formatDeadline(isoString) {

@@ -20,6 +20,9 @@
 
 <body class="light-theme">
 
+    <!-- Sidebar Overlay Backdrop for Mobile Drawer -->
+    <div id="sidebar-overlay" class="sidebar-overlay hidden" aria-hidden="true"></div>
+
     <!-- Toast Notification Container -->
     <div id="toast-container" class="toast-container" aria-live="polite"></div>
 
@@ -29,7 +32,7 @@
         <!-- HEADER BAR -->
         <header id="main-header" class="main-header">
             <div class="header-left">
-                <button id="sidebar-toggle-btn" class="icon-btn mobile-only" aria-label="Toggle navigation menu">
+                <button id="sidebar-toggle-btn" class="icon-btn mobile-only" aria-label="Toggle navigation menu" aria-expanded="false">
                     <i class="ri-menu-line"></i>
                 </button>
                 <a href="#dashboard" class="logo-brand nav-link" data-target="dashboard">
@@ -79,8 +82,7 @@
                     </button>
 
                     <div class="user-avatar-menu" id="user-avatar-trigger">
-                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80"
-                            alt="User Avatar" class="header-avatar" id="header-user-avatar">
+                        <div id="header-user-avatar" class="avatar-circle avatar-md">NR</div>
                         <span class="status-indicator online"></span>
                         <div class="dropdown-menu hidden" id="avatar-dropdown">
                             <div class="dropdown-header">
