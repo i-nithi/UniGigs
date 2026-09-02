@@ -711,7 +711,21 @@
         if (!state.currentUser) return;
 
         const user = state.currentUser;
-        document.getElementById('dash-greeting-text').textContent = `Welcome back, ${user.name.split(' ')[0]}! 👋`;
+        const hour = new Date().getHours();
+        let greetingTime = "Good evening";
+        if (hour < 12) greetingTime = "Good morning";
+        else if (hour < 17) greetingTime = "Good afternoon";
+
+        const firstName = user.name.split(' ')[0];
+        const greetingElem = document.getElementById('dash-greeting-text');
+        if (greetingElem) greetingElem.textContent = `${greetingTime}, ${firstName} 👋`;
+
+        // Calculate potential earnings from available gigs
+        const availableGigs = state.gigs.filter(g => g.status === 'available' && g.postedBy !== user.id);
+        const potentialEarnings = availableGigs.reduce((sum, g) => sum + g.reward, 0);
+        const potentialElem = document.getElementById('dash-potential-earnings');
+        if (potentialElem) potentialElem.textContent = `₹${potentialEarnings.toLocaleString()}`;
+
         document.getElementById('dash-total-earnings').textContent = `₹${user.totalEarned}`;
         document.getElementById('dash-card-wallet-bal').textContent = `₹${user.walletBalance}`;
         document.getElementById('dash-completed-count').textContent = user.completedGigsCount;

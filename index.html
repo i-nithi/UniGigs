@@ -40,6 +40,13 @@
                     <span class="campus-badge" id="header-campus-tag"><i class="ri-building-4-line"></i> SASTRA Deemed
                         University, Thanjavur</span>
                 </a>
+                <nav class="header-desktop-nav logged-in-only hidden">
+                    <a href="#dashboard" class="top-nav-link nav-link active" data-target="dashboard"><i class="ri-dashboard-3-line"></i> Dashboard</a>
+                    <a href="#marketplace" class="top-nav-link nav-link" data-target="marketplace"><i class="ri-compass-3-line"></i> Find Gigs</a>
+                    <a href="#post-gig" class="top-nav-link nav-link post-highlight" data-target="post-gig"><i class="ri-add-circle-fill"></i> Post a Gig</a>
+                    <a href="#my-gigs" class="top-nav-link nav-link" data-target="my-gigs"><i class="ri-task-line"></i> My Gigs</a>
+                    <a href="#payments" class="top-nav-link nav-link" data-target="payments"><i class="ri-wallet-3-line"></i> Wallet</a>
+                </nav>
             </div>
 
             <div class="header-center">
@@ -197,9 +204,9 @@
                     <i class="ri-add-line"></i>
                     <span>Post</span>
                 </a>
-                <a href="#messages" class="mobile-nav-item nav-link" data-target="messages">
-                    <i class="ri-chat-3-line"></i>
-                    <span>Chat</span>
+                <a href="#my-gigs" class="mobile-nav-item nav-link" data-target="my-gigs">
+                    <i class="ri-task-line"></i>
+                    <span>My Gigs</span>
                 </a>
                 <a href="#profile" class="mobile-nav-item nav-link" data-target="profile">
                     <i class="ri-user-3-line"></i>
@@ -439,17 +446,33 @@
                                         class="ri-shield-check-fill"></i> Verified Student</span>
                                 <span class="timestamp-tag" id="dash-current-date">Today, 29 Aug</span>
                             </div>
-                            <h1 id="dash-greeting-text">Welcome back, Nithyashri! 👋</h1>
-                            <p>Here is what is happening across campus today. You have <strong
+                            <h1 id="dash-greeting-text">Good evening, Nithyashri 👋</h1>
+                            <p>Turn spare time into campus cash. You have <strong
                                     id="dash-active-count-text">2 active gigs</strong> in progress.</p>
                         </div>
                         <div class="hero-actions">
-                            <button class="btn btn-primary nav-link" data-target="post-gig">
-                                <i class="ri-add-line"></i> Post New Task
+                            <button class="btn btn-primary nav-link" data-target="marketplace">
+                                <i class="ri-compass-line"></i> Find Gigs
                             </button>
-                            <button class="btn btn-outline-light nav-link" data-target="marketplace">
-                                <i class="ri-compass-line"></i> Browse Gigs
+                            <button class="btn btn-outline-light nav-link" data-target="post-gig">
+                                <i class="ri-add-line"></i> Post a Gig
                             </button>
+                        </div>
+                    </div>
+
+                    <!-- OPPORTUNITY BANNER -->
+                    <div class="dash-opportunity-card">
+                        <div>
+                            <span class="badge badge-primary"><i class="ri-pulse-line"></i> Campus Earnings Opportunity</span>
+                            <h3 style="margin-top: 6px; font-size: 1.25rem;">Earn from your skills today</h3>
+                            <p class="text-muted" style="font-size: 0.85rem;">Discover high-paying tasks matching your C++ and Web Design profile.</p>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 16px;">
+                            <div style="text-align: right;">
+                                <span style="font-size: 0.76rem; color: var(--text-muted); text-transform: uppercase;">Available Payouts</span>
+                                <div class="opportunity-badge-val" id="dash-potential-earnings">₹1,240</div>
+                            </div>
+                            <button class="btn btn-primary nav-link" data-target="marketplace">Find Work →</button>
                         </div>
                     </div>
 
@@ -530,7 +553,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="best-matches-grid" id="dash-best-matches-container">
+                                <div class="best-matches-scroll-container" id="dash-best-matches-container">
                                     <!-- Dynamic Smart Matched Cards render here -->
                                 </div>
                             </div>

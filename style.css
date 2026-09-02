@@ -4,75 +4,68 @@
 
 /* 1. CSS VARIABLES & THEME TOKENS */
 :root {
-    /* Brand Palette */
-    --primary-hsl: 245, 82%, 63%;
-    --primary: hsl(var(--primary-hsl));
-    --primary-hover: hsl(245, 82%, 55%);
-    --primary-light: hsl(245, 82%, 96%);
-    --primary-glow: rgba(99, 102, 241, 0.25);
+    /* Brand Palette - Deep Midnight Navy & Electric Lime */
+    --primary-hsl: 160, 84%, 39%;
+    --primary: #10b981;
+    --primary-hover: #059669;
+    --primary-light: rgba(16, 185, 129, 0.12);
+    --primary-glow: rgba(16, 185, 129, 0.3);
 
-    --accent-hsl: 165, 85%, 42%;
-    --accent: hsl(var(--accent-hsl));
-    --accent-light: hsl(165, 85%, 95%);
+    --accent-hsl: 142, 71%, 45%;
+    --accent: #22c55e;
+    --accent-light: rgba(34, 197, 94, 0.15);
 
     --warning-hsl: 38, 92%, 50%;
-    --warning: hsl(var(--warning-hsl));
-    --warning-light: hsl(38, 92%, 95%);
+    --warning: #f59e0b;
+    --warning-light: rgba(245, 158, 11, 0.15);
 
     --danger-hsl: 350, 89%, 60%;
-    --danger: hsl(var(--danger-hsl));
-    --danger-light: hsl(350, 89%, 95%);
+    --danger: #ef4444;
+    --danger-light: rgba(239, 68, 68, 0.15);
 
-    --info-hsl: 200, 95%, 48%;
-    --info: hsl(var(--info-hsl));
+    --info-hsl: 217, 91%, 60%;
+    --info: #3b82f6;
 
-    /* Light Theme (Default) */
-    --bg-main: #f8fafc;
-    --bg-surface: #ffffff;
-    --bg-card: #ffffff;
-    --bg-input: #f1f5f9;
-    --border-color: #e2e8f0;
-    --border-hover: #cbd5e1;
-
-    --text-primary: #0f172a;
-    --text-secondary: #475569;
-    --text-muted: #94a3b8;
-    --text-inverse: #ffffff;
-
-    --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06);
-    --shadow-md: 0 4px 14px rgba(15, 23, 42, 0.08);
-    --shadow-lg: 0 10px 30px rgba(15, 23, 42, 0.12);
-    --shadow-glow: 0 8px 25px var(--primary-glow);
-
-    --radius-sm: 8px;
-    --radius-md: 12px;
-    --radius-lg: 18px;
-    --radius-full: 9999px;
-
-    --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    --header-height: 70px;
-    --sidebar-width: 260px;
-    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Dark Theme Overrides */
-body.dark-theme {
+    /* Theme Tokens - Default Deep Midnight Navy */
     --bg-main: #0b0f19;
     --bg-surface: #111827;
-    --bg-card: #1f2937;
-    --bg-input: #374151;
-    --border-color: #374151;
-    --border-hover: #4b5563;
+    --bg-card: #151d30;
+    --bg-card-hover: #1c2742;
+    --bg-input: #1e293b;
+    --border-color: rgba(255, 255, 255, 0.08);
+    --border-hover: rgba(255, 255, 255, 0.18);
 
-    --text-primary: #f9fafb;
-    --text-secondary: #d1d5db;
-    --text-muted: #9ca3af;
+    --text-primary: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --text-muted: #94a3b8;
+    --text-inverse: #0b0f19;
 
     --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
     --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.4);
     --shadow-lg: 0 12px 35px rgba(0, 0, 0, 0.5);
-    --primary-light: rgba(99, 102, 241, 0.15);
-    --accent-light: rgba(20, 184, 166, 0.15);
+    --shadow-glow: 0 8px 25px var(--primary-glow);
+
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-full: 9999px;
+
+    --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --header-height: 70px;
+    --sidebar-width: 250px;
+    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Light Theme Overrides */
+body.light-theme {
+    --bg-main: #0f172a;
+    --bg-surface: #1e293b;
+    --bg-card: #1e293b;
+    --bg-input: #334155;
+    --border-color: rgba(255, 255, 255, 0.12);
+    --text-primary: #ffffff;
+    --text-secondary: #cbd5e1;
+    --text-muted: #94a3b8;
 }
 
 /* 2. BASE & RESET */
