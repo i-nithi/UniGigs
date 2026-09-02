@@ -46,6 +46,11 @@ def signup_student(db: Session, signup_data: UserSignupRequest) -> User:
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
+
+    # Auto-provision simulated wallet with 10,000 credits
+    from app.services.wallet_service import get_or_create_wallet
+    get_or_create_wallet(db, new_user.id)
+
     return new_user
 
 

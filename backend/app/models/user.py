@@ -45,15 +45,11 @@ class User(Base):
         back_populates="applicant",
         cascade="all, delete-orphan"
     )
-    sent_transactions = relationship(
+    transactions = relationship(
         "Transaction",
-        foreign_keys="Transaction.sender_id",
-        back_populates="sender"
-    )
-    received_transactions = relationship(
-        "Transaction",
-        foreign_keys="Transaction.receiver_id",
-        back_populates="receiver"
+        foreign_keys="Transaction.user_id",
+        back_populates="user",
+        cascade="all, delete-orphan"
     )
     reviews_given = relationship(
         "Review",

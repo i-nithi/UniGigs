@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session, joinedload
 from fastapi import HTTPException, status
 from app.models.gig import Gig
 from app.models.application import Application
-from app.core.enums import GigStatus, ApplicationStatus
+from app.core.enums import GigStatus, ApplicationStatus, EscrowStatus
 from app.core.lifecycle import validate_transition
 from app.schemas.gig import WorkSubmissionRequest
 from app.services.gig_service import get_gig_by_id
@@ -64,7 +64,7 @@ def submit_work(db: Session, gig_id: int, current_user_id: int, submission_data:
 def complete_gig(db: Session, gig_id: int, current_user_id: int) -> Gig:
     """
     Transitions Gig status from WORK_SUBMITTED to COMPLETED.
-    Authorization: Gig Poster ONLY.
+    Authorization: Gig Poster ONLY. Auto-releases escrow payment if locked.
     """
     gig = get_gig_by_id(db, gig_id)
 
@@ -88,6 +88,14 @@ def complete_gig(db: Session, gig_id: int, current_user_id: int) -> Gig:
 
     db.add(gig)
     db.commit()
+
+    # Automatically release escrow payment if active locked escrow exists
+    from app.services.escrow_service import release_payment
+    from app.models.escrow import Escrow
+    escrow = db.query(Escrow).filter(Escrow.gig_id == gig.id).first()
+    if escrow and escrow.status == EscrowStatus.LOCKED:
+        release_payment(db, gig_id, current_user_id)
+
     db.refresh(gig)
 
     return db.query(Gig).options(joinedload(Gig.poster)).filter(Gig.id == gig.id).first()
@@ -96,7 +104,7 @@ def complete_gig(db: Session, gig_id: int, current_user_id: int) -> Gig:
 def cancel_gig(db: Session, gig_id: int, current_user_id: int) -> Gig:
     """
     Transitions Gig status to CANCELLED.
-    Authorization: Gig Poster ONLY. Allowed in OPEN, APPLICATIONS_OPEN, WORKER_SELECTED.
+    Authorization: Gig Poster ONLY. Auto-refunds escrow payment if locked.
     """
     gig = get_gig_by_id(db, gig_id)
 
@@ -120,6 +128,14 @@ def cancel_gig(db: Session, gig_id: int, current_user_id: int) -> Gig:
 
     db.add(gig)
     db.commit()
+
+    # Automatically refund escrow payment if active locked escrow exists
+    from app.services.escrow_service import refund_payment
+    from app.models.escrow import Escrow
+    escrow = db.query(Escrow).filter(Escrow.gig_id == gig.id).first()
+    if escrow and escrow.status == EscrowStatus.LOCKED:
+        refund_payment(db, gig_id, current_user_id)
+
     db.refresh(gig)
 
     return db.query(Gig).options(joinedload(Gig.poster)).filter(Gig.id == gig.id).first()

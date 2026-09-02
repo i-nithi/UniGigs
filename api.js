@@ -123,6 +123,23 @@ const GigAPI = {
     cancelGig: (gigId) => apiFetch(`/gigs/${gigId}/cancel`, { method: 'POST' })
 };
 
+// Payment & Wallet API Service Wrapper
+const PaymentAPI = {
+    getWallet: () => apiFetch('/wallet'),
+    getTransactions: (params = {}) => {
+        const query = new URLSearchParams();
+        Object.keys(params).forEach(key => {
+            if (params[key] !== undefined && params[key] !== null) {
+                query.append(key, params[key]);
+            }
+        });
+        const queryString = query.toString();
+        return apiFetch(`/transactions${queryString ? '?' + queryString : ''}`);
+    },
+    lockPayment: (gigId) => apiFetch('/payment/lock', { method: 'POST', body: JSON.stringify({ gig_id: Number(gigId) }) }),
+    releasePayment: (gigId) => apiFetch('/payment/release', { method: 'POST', body: JSON.stringify({ gig_id: Number(gigId) }) })
+};
+
 // Export to window scope
 window.API_BASE_URL = API_BASE_URL;
 window.getAuthToken = getAuthToken;
@@ -131,3 +148,4 @@ window.removeAuthToken = removeAuthToken;
 window.apiFetch = apiFetch;
 window.UserAPI = UserAPI;
 window.GigAPI = GigAPI;
+window.PaymentAPI = PaymentAPI;

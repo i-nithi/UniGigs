@@ -1138,7 +1138,7 @@
                     `;
                 } else if (isPoster) {
                     actionButtonsHTML = `
-                        <div class="alert alert-info py-2 px-3 font-weight-bold mb-2" style="border-radius:8px;">Worker Selected - Awaiting Worker to Start</div>
+                        <button class="btn btn-warning btn-lg btn-trigger-lock-payment mb-2" data-gig-id="${gig.id}"><i class="ri-lock-line"></i> Lock ₹${gig.reward} in Simulated Escrow</button>
                         <button class="btn btn-danger btn-cancel-gig" data-gig-id="${gig.id}"><i class="ri-close-circle-line"></i> Cancel Gig</button>
                     `;
                 }
@@ -2869,6 +2869,25 @@
                             showToast(err.message || 'Failed to confirm completion.', 'error');
                             return;
                         }
+                    }
+                }
+            });
+        });
+
+        // Lock Payment Button (Poster Action)
+        document.querySelectorAll('.btn-trigger-lock-payment').forEach(btn => {
+            btn.addEventListener('click', async e => {
+                const gigId = e.target.closest('button').getAttribute('data-gig-id');
+                if (window.PaymentAPI && window.getAuthToken && window.getAuthToken()) {
+                    try {
+                        await window.PaymentAPI.lockPayment(gigId);
+                        showToast('Payment locked in simulated escrow successfully!', 'success');
+                        openGigDetailsModal(gigId);
+                        renderMarketplace();
+                        return;
+                    } catch (err) {
+                        showToast(err.message || 'Failed to lock payment in escrow.', 'error');
+                        return;
                     }
                 }
             });

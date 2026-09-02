@@ -24,11 +24,22 @@ class ApplicationStatus(str, Enum):
     WITHDRAWN = "WITHDRAWN"
 
 
+class EscrowStatus(str, Enum):
+    """
+    Status of locked escrow funds.
+    """
+    LOCKED = "LOCKED"
+    RELEASED = "RELEASED"
+    REFUNDED = "REFUNDED"
+    CANCELLED = "CANCELLED"
+
+
 class TransactionStatus(str, Enum):
     """
     Status of simulated escrow and wallet transaction.
     """
     PENDING = "PENDING"
+    COMPLETED = "COMPLETED"
     LOCKED_IN_ESCROW = "LOCKED_IN_ESCROW"
     RELEASED = "RELEASED"
     REFUNDED = "REFUNDED"
@@ -39,6 +50,9 @@ class TransactionType(str, Enum):
     """
     Type of financial movement in UniGigs platform.
     """
+    ESCROW_LOCK = "ESCROW_LOCK"
+    ESCROW_RELEASE = "ESCROW_RELEASE"
+    ESCROW_REFUND = "ESCROW_REFUND"
     PAYMENT = "PAYMENT"
     REFUND = "REFUND"
     PAYOUT = "PAYOUT"
