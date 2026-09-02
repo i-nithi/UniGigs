@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Optional
-from pydantic import BaseModel, EmailStr, Field, field_validator
+from pydantic import BaseModel, Field, field_validator
 
 class UserSignupRequest(BaseModel):
     """
@@ -44,9 +44,34 @@ class UserLoginRequest(BaseModel):
         return clean_email
 
 
+class UserUpdateRequest(BaseModel):
+    """
+    Schema for updating student editable profile attributes.
+    Supports partial updates.
+    """
+    name: Optional[str] = Field(None, min_length=1, max_length=100)
+    department: Optional[str] = Field(None, max_length=100)
+    year: Optional[str] = Field(None, max_length=20)
+    profile_image: Optional[str] = Field(None, max_length=255)
+    bio: Optional[str] = Field(None, max_length=500)
+    skills: Optional[list[str]] = Field(None, max_length=15)
+
+    @field_validator("skills")
+    @classmethod
+    def validate_skills(cls, v: Optional[list[str]]) -> Optional[list[str]]:
+        if v is not None:
+            clean_skills = []
+            for s in v:
+                skill_str = s.strip()
+                if skill_str and len(skill_str) <= 50:
+                    clean_skills.append(skill_str)
+            return clean_skills
+        return v
+
+
 class UserResponse(BaseModel):
     """
-    Safe public/profile user representation. Hashed passwords and secrets are NEVER returned.
+    Basic safe user representation.
     """
     id: int
     name: str
@@ -56,11 +81,57 @@ class UserResponse(BaseModel):
     year: Optional[str] = None
     profile_image: Optional[str] = None
     bio: Optional[str] = None
+    skills: Optional[list[str]] = []
     is_verified: bool
     trust_score: int
     average_rating: float
     completed_gigs_count: int
     created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class CurrentUserProfileResponse(BaseModel):
+    """
+    Complete private profile model for the currently authenticated user.
+    """
+    id: int
+    name: str
+    registration_number: str
+    email: str
+    department: Optional[str] = None
+    year: Optional[str] = None
+    profile_image: Optional[str] = None
+    bio: Optional[str] = None
+    skills: Optional[list[str]] = []
+    is_verified: bool
+    trust_score: int
+    average_rating: float
+    completed_gigs_count: int
+    created_at: datetime
+    updated_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class PublicUserProfileResponse(BaseModel):
+    """
+    Public student profile model for viewing other students across campus.
+    NEVER exposes email, registration_number, or hashed_password.
+    """
+    id: int
+    name: str
+    department: Optional[str] = None
+    year: Optional[str] = None
+    profile_image: Optional[str] = None
+    bio: Optional[str] = None
+    skills: Optional[list[str]] = []
+    is_verified: bool
+    trust_score: int
+    average_rating: float
+    completed_gigs_count: int
 
     class Config:
         from_attributes = True

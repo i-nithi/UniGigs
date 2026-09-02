@@ -1660,19 +1660,43 @@
         `).join('');
     }
 
-    function handleEditProfileSubmit(e) {
+    async function handleEditProfileSubmit(e) {
         e.preventDefault();
         if (!state.currentUser) return;
 
-        state.currentUser.name = document.getElementById('edit-name').value.trim();
-        state.currentUser.dept = document.getElementById('edit-dept').value.trim();
-        state.currentUser.bio = document.getElementById('edit-bio').value.trim();
-        state.currentUser.upiId = document.getElementById('edit-upi').value.trim();
-
-        // Read skills & match preferences
+        const name = document.getElementById('edit-name').value.trim();
+        const dept = document.getElementById('edit-dept').value.trim();
+        const bio = document.getElementById('edit-bio').value.trim();
         const rawSkills = document.getElementById('edit-skills')?.value || '';
-        state.currentUser.skills = rawSkills.split(',').map(s => s.trim()).filter(Boolean);
+        const skills = rawSkills.split(',').map(s => s.trim()).filter(Boolean);
 
+        // If backend auth token is present, update via PUT /users/me
+        if (window.getAuthToken && window.getAuthToken()) {
+            try {
+                const updatedUser = await window.UserAPI.updateProfile({
+                    name: name,
+                    department: dept,
+                    bio: bio,
+                    skills: skills
+                });
+                
+                state.currentUser.name = updatedUser.name;
+                state.currentUser.dept = updatedUser.department || dept;
+                state.currentUser.bio = updatedUser.bio || bio;
+                state.currentUser.skills = updatedUser.skills || skills;
+            } catch (err) {
+                console.warn('API update failed, saving locally:', err.message);
+                showToast(err.message || 'Profile update failed. Please check your details.', 'error');
+                return;
+            }
+        } else {
+            state.currentUser.name = name;
+            state.currentUser.dept = dept;
+            state.currentUser.bio = bio;
+            state.currentUser.skills = skills;
+        }
+
+        state.currentUser.upiId = document.getElementById('edit-upi').value.trim();
         const rawCats = document.getElementById('edit-categories')?.value || '';
         state.currentUser.preferredCategories = rawCats.split(',').map(c => c.trim()).filter(Boolean);
 
@@ -1685,7 +1709,7 @@
         if (avail) state.currentUser.availability = avail;
 
         saveState();
-        showToast('Profile & Smart Match preferences saved!', 'success');
+        showToast('Profile updated successfully!', 'success');
         renderProfile();
         renderBestMatchesSection();
     }
@@ -2740,9 +2764,33 @@
     }
 
     // 18. INIT
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
         loadState();
         bindGlobalEvents();
+
+        // Check if JWT token exists and fetch current user profile from backend API
+        if (window.getAuthToken && window.getAuthToken()) {
+            try {
+                const apiUser = await window.UserAPI.getMe();
+                if (apiUser && state.currentUser) {
+                    state.currentUser.id = apiUser.id;
+                    state.currentUser.name = apiUser.name;
+                    state.currentUser.email = apiUser.email;
+                    state.currentUser.regNo = apiUser.registration_number;
+                    if (apiUser.department) state.currentUser.dept = apiUser.department;
+                    if (apiUser.year) state.currentUser.year = apiUser.year;
+                    if (apiUser.bio) state.currentUser.bio = apiUser.bio;
+                    if (apiUser.skills && apiUser.skills.length > 0) state.currentUser.skills = apiUser.skills;
+                    state.currentUser.trustScore = apiUser.trust_score || 85;
+                    state.currentUser.rating = apiUser.average_rating || 5.0;
+                    state.currentUser.completedGigsCount = apiUser.completed_gigs_count || 0;
+                    saveState();
+                }
+            } catch (err) {
+                console.log('Backend sync status:', err.message);
+            }
+        }
+
         switchView('dashboard');
     });
 
