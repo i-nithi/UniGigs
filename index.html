@@ -438,181 +438,175 @@
 
                 <!-- 2. DASHBOARD VIEW -->
                 <section id="dashboard-view" class="view-section active">
-                    <!-- DASHBOARD HERO BANNER -->
-                    <div class="dashboard-hero">
-                        <div class="hero-text">
-                            <div class="welcome-tag">
-                                <span class="badge badge-success" id="dash-verification-pill"><i
-                                        class="ri-shield-check-fill"></i> Verified Student</span>
-                                <span class="timestamp-tag" id="dash-current-date">Today, 29 Aug</span>
-                            </div>
-                            <h1 id="dash-greeting-text">Good evening, Nithyashri 👋</h1>
-                            <p>Turn spare time into campus cash. You have <strong
-                                    id="dash-active-count-text">2 active gigs</strong> in progress.</p>
-                        </div>
-                        <div class="hero-actions">
-                            <button class="btn btn-primary nav-link" data-target="marketplace">
-                                <i class="ri-compass-line"></i> Find Gigs
-                            </button>
-                            <button class="btn btn-outline-light nav-link" data-target="post-gig">
-                                <i class="ri-add-line"></i> Post a Gig
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- OPPORTUNITY BANNER -->
-                    <div class="dash-opportunity-card">
-                        <div>
-                            <span class="badge badge-primary"><i class="ri-pulse-line"></i> Campus Earnings Opportunity</span>
-                            <h3 style="margin-top: 6px; font-size: 1.25rem;">Earn from your skills today</h3>
-                            <p class="text-muted" style="font-size: 0.85rem;">Discover high-paying tasks matching your C++ and Web Design profile.</p>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 16px;">
-                            <div style="text-align: right;">
-                                <span style="font-size: 0.76rem; color: var(--text-muted); text-transform: uppercase;">Available Payouts</span>
-                                <div class="opportunity-badge-val" id="dash-potential-earnings">₹1,240</div>
-                            </div>
-                            <button class="btn btn-primary nav-link" data-target="marketplace">Find Work →</button>
-                        </div>
-                    </div>
-
-                    <!-- STATS GRID -->
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-icon earnings"><i class="ri-money-rupee-circle-line"></i></div>
-                            <div class="stat-info">
-                                <span class="stat-label">Total Earnings</span>
-                                <h3 class="stat-value" id="dash-total-earnings">₹4,250</h3>
-                                <span class="stat-subtext positive"><i class="ri-arrow-up-line"></i> ₹850 this
-                                    week</span>
-                            </div>
-                        </div>
-
-                        <div class="stat-card">
-                            <div class="stat-icon active-gig"><i class="ri-flashlight-line"></i></div>
-                            <div class="stat-info">
-                                <span class="stat-label">Active Gigs</span>
-                                <h3 class="stat-value" id="dash-active-gigs-count">2</h3>
-                                <span class="stat-subtext">1 Posted • 1 Working</span>
-                            </div>
-                        </div>
-
-                        <div class="stat-card">
-                            <div class="stat-icon completed"><i class="ri-checkbox-circle-line"></i></div>
-                            <div class="stat-info">
-                                <span class="stat-label">Completed Tasks</span>
-                                <h3 class="stat-value" id="dash-completed-count">14</h3>
-                                <span class="stat-subtext">100% Completion rate</span>
-                            </div>
-                        </div>
-
-                        <div class="stat-card">
-                            <div class="stat-icon pending"><i class="ri-time-line"></i></div>
-                            <div class="stat-info">
-                                <span class="stat-label">Pending Escrow</span>
-                                <h3 class="stat-value" id="dash-pending-payouts">₹650</h3>
-                                <span class="stat-subtext text-muted">Protected in Escrow</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- DASHBOARD MAIN TWO COLUMNS -->
-                    <div class="dashboard-columns">
-                        <!-- LEFT COLUMN: QUICK ACTIONS + ACTIVE GIGS -->
-                        <div class="dash-left">
-
-                            <!-- ACTIVE & MY GIGS SNAPSHOT CARD -->
-                            <div class="content-card">
-                                <div class="card-header">
-                                    <h3><i class="ri-time-fill highlight-icon"></i> Your Active Campus Tasks</h3>
-                                    <a href="#my-gigs" class="card-link nav-link" data-target="my-gigs">View All My Gigs
-                                        →</a>
+                    <!-- 3-COLUMN LAYOUT GRID (Left: Center Content, Right: User Profile & Quick Actions) -->
+                    <div class="dashboard-grid-3col">
+                        <!-- CENTER COLUMN -->
+                        <div class="dash-center-col">
+                            <!-- PURPLE HERO BANNER -->
+                            <div class="dashboard-hero-purple">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <span class="hero-top-badge"><i class="ri-user-heart-line"></i> Built by students, for students</span>
+                                    <span class="timestamp-tag" id="dash-current-date" style="font-size:0.78rem; opacity:0.8">Today, 29 Aug</span>
                                 </div>
-                                <div class="active-gigs-list" id="dash-active-gigs-container">
-                                    <!-- Dynamic Active Gigs render here -->
+                                <h1 id="dash-greeting-text">Good evening, <span class="text-lime">Nithyashri</span> 👋</h1>
+                                <p>Turn your skills into real campus cash.</p>
+
+                                <div class="hero-stats-row">
+                                    <div class="hero-stat-pill">
+                                        <strong id="dash-total-earnings">₹4,250</strong>
+                                        <span>Total Earnings</span>
+                                    </div>
+                                    <div class="hero-stat-pill">
+                                        <strong id="dash-active-gigs-count">2</strong>
+                                        <span>Active Gigs</span>
+                                    </div>
+                                    <div class="hero-stat-pill">
+                                        <strong id="dash-completed-count">14</strong>
+                                        <span>Completed Tasks</span>
+                                    </div>
                                 </div>
                             </div>
 
-                            <!-- BEST MATCHES FOR YOU (SMART AI MATCHING) -->
+                            <!-- BEST MATCHES FOR YOU -->
                             <div class="content-card best-matches-card">
                                 <div class="card-header flex-header-wrap">
                                     <div>
-                                        <h3><i class="ri-sparkles-fill highlight-icon text-accent"></i> Best Matches for
-                                            You</h3>
-                                        <p class="card-subtitle-sm">Smart AI recommendations tailored to your skills,
-                                            department & payout preferences</p>
+                                        <h3><i class="ri-flashlight-fill highlight-icon text-accent"></i> Best matches for you</h3>
+                                        <p class="card-subtitle-sm">Gigs picked based on your skills, interests and location</p>
                                     </div>
-                                    <div class="header-sort-controls">
-                                        <label for="dash-match-sort" class="sort-label"><i class="ri-sort-desc"></i>
-                                            Sort:</label>
-                                        <select id="dash-match-sort" class="select-sm">
-                                            <option value="best-match" selected>Best Match</option>
-                                            <option value="highest-pay">Highest Pay</option>
-                                            <option value="nearest">Nearest</option>
-                                            <option value="newest">Newest</option>
-                                        </select>
-                                    </div>
+                                    <a href="#marketplace" class="card-link nav-link" data-target="marketplace">View all →</a>
                                 </div>
                                 <div class="best-matches-scroll-container" id="dash-best-matches-container">
                                     <!-- Dynamic Smart Matched Cards render here -->
                                 </div>
                             </div>
 
-                            <!-- RECOMMENDED / URGENT GIGS NEARBY -->
+                            <!-- QUICK GIGS NEAR YOU -->
                             <div class="content-card">
                                 <div class="card-header">
-                                    <h3><i class="ri-fire-fill highlight-icon"></i> Recommended Gigs Near You</h3>
-                                    <a href="#marketplace" class="card-link nav-link" data-target="marketplace">Explore
-                                        Marketplace →</a>
+                                    <div>
+                                        <h3><i class="ri-map-pin-2-fill highlight-icon"></i> Quick gigs near you</h3>
+                                        <p class="card-subtitle-sm">Small tasks. Quick money.</p>
+                                    </div>
+                                    <a href="#marketplace" class="card-link nav-link" data-target="marketplace">View all →</a>
                                 </div>
                                 <div class="gigs-grid-mini" id="dash-recommended-gigs">
-                                    <!-- Dynamic recommended cards -->
+                                    <!-- Dynamic quick gigs -->
                                 </div>
                             </div>
 
+                            <!-- RECENT ACTIVITY -->
+                            <div class="content-card">
+                                <div class="card-header">
+                                    <h3><i class="ri-history-line highlight-icon"></i> Recent activity</h3>
+                                </div>
+                                <div class="active-gigs-list" id="dash-active-gigs-container">
+                                    <!-- Dynamic Active Gigs render here -->
+                                </div>
+                            </div>
                         </div>
 
-                        <!-- RIGHT COLUMN: NOTIFICATIONS SNAPSHOT + RECENT ACTIVITY + PROFILE CARD -->
-                        <div class="dash-right">
-
-                            <!-- QUICK WALLET / ESCROW SNAPSHOT -->
-                            <div class="content-card wallet-quick-card">
-                                <div class="wallet-balance-row">
+                        <!-- RIGHT SIDEBAR COLUMN -->
+                        <div class="dash-right-col">
+                            <!-- PROFILE SUMMARY CARD -->
+                            <div class="content-card">
+                                <div class="d-flex align-items-center gap-3 mb-3">
+                                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" alt="Avatar" style="width:50px; height:50px; border-radius:50%; object-fit:cover; border:2px solid var(--primary)">
                                     <div>
-                                        <span class="label">Escrow Wallet Balance</span>
-                                        <h2 id="dash-card-wallet-bal">₹1,200</h2>
+                                        <strong style="font-size:1.05rem" id="dash-profile-name">Nithyashri R <i class="ri-checkbox-circle-fill text-success"></i></strong>
+                                        <p class="text-muted mb-0" style="font-size:0.8rem" id="dash-profile-dept">CSE • Year 2</p>
                                     </div>
-                                    <button class="btn btn-sm btn-light nav-link" data-target="payments">
-                                        <i class="ri-add-line"></i> Add Funds
-                                    </button>
                                 </div>
-                                <div class="upi-tag">
-                                    <i class="ri-qr-code-line"></i> Instant UPI Withdrawals (GPay, PhonePe, Paytm)
+                                <div class="d-flex align-items-center justify-content-between text-muted mb-1" style="font-size:0.78rem">
+                                    <span>Trust Score <strong>94/100</strong></span>
+                                    <span>⭐ <strong>4.9</strong> (28 reviews)</span>
+                                </div>
+                                <div class="milestone-progress-bar">
+                                    <div class="milestone-progress-fill" style="width: 94%"></div>
                                 </div>
                             </div>
 
-                            <!-- RECENT NOTIFICATIONS WIDGET -->
+                            <!-- QUICK ACTIONS CARD -->
                             <div class="content-card">
-                                <div class="card-header">
-                                    <h3><i class="ri-notification-3-fill highlight-icon"></i> Recent Alerts</h3>
-                                    <a href="#notifications" class="card-link nav-link" data-target="notifications">All
-                                        Notifications</a>
-                                </div>
-                                <div class="notif-widget-list" id="dash-notif-widget">
-                                    <!-- Dynamic list -->
+                                <h3 style="font-size:1rem"><i class="ri-flashlight-fill text-accent"></i> Quick actions</h3>
+                                <div class="quick-actions-list">
+                                    <div class="quick-action-item nav-link" data-target="marketplace">
+                                        <div class="quick-action-left">
+                                            <div class="quick-action-icon"><i class="ri-search-line"></i></div>
+                                            <div class="quick-action-text">
+                                                <strong>Find Gigs</strong>
+                                                <span>Discover work near you</span>
+                                            </div>
+                                        </div>
+                                        <i class="ri-arrow-right-s-line chevron"></i>
+                                    </div>
+                                    <div class="quick-action-item nav-link" data-target="post-gig">
+                                        <div class="quick-action-left">
+                                            <div class="quick-action-icon"><i class="ri-checkbox-circle-line"></i></div>
+                                            <div class="quick-action-text">
+                                                <strong>Post a Gig</strong>
+                                                <span>Get your task done</span>
+                                            </div>
+                                        </div>
+                                        <i class="ri-arrow-right-s-line chevron"></i>
+                                    </div>
+                                    <div class="quick-action-item nav-link" data-target="payments">
+                                        <div class="quick-action-left">
+                                            <div class="quick-action-icon"><i class="ri-wallet-3-line"></i></div>
+                                            <div class="quick-action-text">
+                                                <strong>View Wallet</strong>
+                                                <span>Check earnings & escrow</span>
+                                            </div>
+                                        </div>
+                                        <i class="ri-arrow-right-s-line chevron"></i>
+                                    </div>
+                                    <div class="quick-action-item nav-link" data-target="profile">
+                                        <div class="quick-action-left">
+                                            <div class="quick-action-icon"><i class="ri-user-3-line"></i></div>
+                                            <div class="quick-action-text">
+                                                <strong>Edit Profile</strong>
+                                                <span>Showcase your skills</span>
+                                            </div>
+                                        </div>
+                                        <i class="ri-arrow-right-s-line chevron"></i>
+                                    </div>
                                 </div>
                             </div>
 
-                            <!-- TOP RATED CAMPUS WORKERS -->
+                            <!-- YOUR ACTIVITY CARD -->
                             <div class="content-card">
-                                <div class="card-header">
-                                    <h3><i class="ri-medal-fill highlight-icon"></i> Top Campus Hustlers</h3>
+                                <h3 style="font-size:1rem; margin-bottom:14px">Your activity</h3>
+                                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px">
+                                    <div class="hero-stat-pill" style="padding:10px 12px">
+                                        <strong style="font-size:1.1rem" id="side-active-count">2</strong>
+                                        <span>Active Gigs</span>
+                                    </div>
+                                    <div class="hero-stat-pill" style="padding:10px 12px">
+                                        <strong style="font-size:1.1rem">5</strong>
+                                        <span>Applications</span>
+                                    </div>
+                                    <div class="hero-stat-pill" style="padding:10px 12px">
+                                        <strong style="font-size:1.1rem" id="side-completed-count">14</strong>
+                                        <span>Completed</span>
+                                    </div>
+                                    <div class="hero-stat-pill" style="padding:10px 12px">
+                                        <strong style="font-size:1.1rem" id="side-total-earned">₹4,250</strong>
+                                        <span>Total Earned</span>
+                                    </div>
                                 </div>
-                                <div class="top-workers-list" id="dash-top-workers">
-                                    <!-- Dynamic list of workers -->
+
+                                <div class="milestone-box">
+                                    <div class="milestone-title">Next milestone</div>
+                                    <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:6px">Complete 6 more gigs to reach ⭐ Super Contributor</p>
+                                    <div class="milestone-progress-bar">
+                                        <div class="milestone-progress-fill" style="width: 70%"></div>
+                                    </div>
+                                    <div class="milestone-footer">
+                                        <span>⭐ Super Contributor</span>
+                                        <strong>14 / 20</strong>
+                                    </div>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </section>
@@ -1586,6 +1580,11 @@
             </form>
         </div>
     </div>
+
+    <!-- FLOATING LIME POST GIG CTA BUTTON -->
+    <button class="floating-post-btn nav-link" data-target="post-gig" id="floating-post-gig-btn">
+        <i class="ri-add-line" style="font-size:1.2rem; font-weight:800"></i> Post a Gig
+    </button>
 
     <!-- MAIN SCRIPT -->
     <script src="java.js"></script>

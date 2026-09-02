@@ -846,33 +846,27 @@
 
         return `
             <div class="gig-card matched-gig-card" data-gig-id="${gig.id}">
-                <div class="gig-card-header">
+                <div class="gig-card-header mb-2">
                     <span class="badge badge-match"><i class="ri-sparkles-fill"></i> ${matchInfo.score}% Match</span>
-                    <span class="gig-reward-amount">₹${gig.reward}</span>
+                    <span class="badge" style="background:var(--purple-chip); color:var(--purple-chip-text); border:1px solid rgba(192,132,252,0.3)"><i class="ri-user-3-line"></i> ${escapeHTML(gig.category)}</span>
                 </div>
 
-                <h4 class="gig-card-title mt-2">${escapeHTML(gig.title)}</h4>
+                <h4 class="gig-card-title">${escapeHTML(gig.title)}</h4>
+                <p class="gig-card-desc mb-2" style="font-size:0.82rem">${escapeHTML(gig.description)}</p>
 
-                <div class="required-skills-tags mt-2 mb-2">
-                    ${skillsList.map(s => `<span class="skill-tag-sm"><i class="ri-checkbox-circle-line"></i> ${escapeHTML(s)}</span>`).join('')}
+                <div class="d-flex align-items-center gap-3 my-2" style="font-size:0.85rem">
+                    <span class="gig-reward-amount" style="font-size:1.2rem">₹${gig.reward}</span>
+                    <span class="text-muted"><i class="ri-time-line"></i> ${escapeHTML(gig.estimatedDuration || '2 hours')}</span>
+                    <span class="text-muted"><i class="ri-map-pin-line"></i> ${escapeHTML(gig.location)}</span>
                 </div>
 
-                <div class="gig-meta-tags">
-                    <span class="meta-pill"><i class="ri-map-pin-line"></i> ${escapeHTML(gig.location)}</span>
-                    <span class="meta-pill duration"><i class="ri-time-line"></i> ${escapeHTML(gig.estimatedDuration || '30 mins')}</span>
+                <div class="required-skills-tags my-2">
+                    ${skillsList.map(s => `<span class="skill-tag-sm">${escapeHTML(s)}</span>`).join('')}
                 </div>
 
-                <div class="match-reason-box mt-3 mb-3">
-                    <i class="ri-pulse-fill text-accent"></i>
-                    <span>${escapeHTML(matchInfo.reason)}</span>
-                </div>
-
-                <div class="gig-card-footer">
-                    <span class="gig-cat-badge">${escapeHTML(gig.category)}</span>
-                    <button class="btn btn-sm btn-primary btn-view-details" data-gig-id="${gig.id}">
-                        <i class="ri-eye-line"></i> View Details & Apply
-                    </button>
-                </div>
+                <button class="btn btn-sm btn-primary btn-block btn-view-details mt-2" data-gig-id="${gig.id}">
+                    <i class="ri-eye-line"></i> View Gig
+                </button>
             </div>
         `;
     }
