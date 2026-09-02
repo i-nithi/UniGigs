@@ -64,6 +64,7 @@ def upgrade() -> None:
             nullable=False,
             server_default='OPEN'
         ),
+        sa.Column('is_deleted', sa.Boolean(), nullable=False, server_default=sa.text('false')),
         sa.Column('poster_id', sa.Integer(), nullable=False),
         sa.Column('selected_worker_id', sa.Integer(), nullable=True),
         sa.Column('created_at', sa.DateTime(timezone=True), nullable=False),

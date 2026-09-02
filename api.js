@@ -50,8 +50,12 @@ async function apiFetch(endpoint, options = {}) {
         // Handle 401 Unauthorized (Expired or invalid token)
         if (response.status === 401) {
             removeAuthToken();
-            // Dispatch a custom auth error event for UI listeners
             window.dispatchEvent(new CustomEvent('unigigs:unauthorized'));
+        }
+
+        // 204 No Content response handling
+        if (response.status === 204) {
+            return null;
         }
 
         const data = await response.json().catch(() => ({}));
@@ -86,10 +90,38 @@ const UserAPI = {
     getPublicProfile: (userId) => apiFetch(`/users/${userId}`)
 };
 
-// Export to window scope for easy usage in java.js
+// Gig API Service Wrapper
+const GigAPI = {
+    // Fetch paginated Gigs with query params (search, category, location, min/max reward, sort, page, limit)
+    getGigs: (params = {}) => {
+        const query = new URLSearchParams();
+        Object.keys(params).forEach(key => {
+            if (params[key] !== undefined && params[key] !== null && params[key] !== '' && params[key] !== 'all') {
+                query.append(key, params[key]);
+            }
+        });
+        const queryString = query.toString();
+        return apiFetch(`/gigs${queryString ? '?' + queryString : ''}`);
+    },
+
+    // Fetch full detail for a specific Gig
+    getGigDetails: (gigId) => apiFetch(`/gigs/${gigId}`),
+
+    // Post a new Gig (authenticated poster)
+    createGig: (gigData) => apiFetch('/gigs', { method: 'POST', body: JSON.stringify(gigData) }),
+
+    // Update existing Gig (poster only)
+    updateGig: (gigId, updateData) => apiFetch(`/gigs/${gigId}`, { method: 'PUT', body: JSON.stringify(updateData) }),
+
+    // Soft-delete Gig (poster only)
+    deleteGig: (gigId) => apiFetch(`/gigs/${gigId}`, { method: 'DELETE' })
+};
+
+// Export to window scope
 window.API_BASE_URL = API_BASE_URL;
 window.getAuthToken = getAuthToken;
 window.setAuthToken = setAuthToken;
 window.removeAuthToken = removeAuthToken;
 window.apiFetch = apiFetch;
 window.UserAPI = UserAPI;
+window.GigAPI = GigAPI;

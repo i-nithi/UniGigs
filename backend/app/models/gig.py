@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from sqlalchemy import Column, Integer, String, Text, Float, DateTime, ForeignKey, Enum as SqlEnum, CheckConstraint, JSON
+from sqlalchemy import Column, Integer, String, Text, Float, Boolean, DateTime, ForeignKey, Enum as SqlEnum, CheckConstraint, JSON
 from sqlalchemy.orm import relationship
 from app.database import Base
 from app.core.enums import GigStatus
@@ -20,6 +20,7 @@ class Gig(Base):
     deadline = Column(DateTime(timezone=True), nullable=True)
     required_skills = Column(JSON, default=list, nullable=True)
     status = Column(SqlEnum(GigStatus), default=GigStatus.OPEN, nullable=False, index=True)
+    is_deleted = Column(Boolean, default=False, nullable=False, index=True)
 
     poster_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     selected_worker_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True)
@@ -40,4 +41,4 @@ class Gig(Base):
     reviews = relationship("Review", back_populates="gig")
 
     def __repr__(self):
-        return f"<Gig(id={self.id}, title='{self.title}', reward={self.reward_amount}, status='{self.status}')>"
+        return f"<Gig(id={self.id}, title='{self.title}', reward={self.reward_amount}, status='{self.status}', deleted={self.is_deleted})>"

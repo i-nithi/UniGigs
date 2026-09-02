@@ -910,64 +910,110 @@
     }
 
     // 7. MARKETPLACE RENDER
-    function renderMarketplace() {
+    async function renderMarketplace() {
         let filtered = state.gigs;
 
-        // Category Filter
-        if (state.selectedCategory !== 'all') {
-            filtered = filtered.filter(g => g.category.toLowerCase() === state.selectedCategory.toLowerCase());
-        }
+        // If Backend API is available, fetch real Gigs from PostgreSQL
+        if (window.GigAPI) {
+            try {
+                let apiSort = 'newest';
+                if (state.sortBy === 'reward-high') apiSort = 'highest_pay';
+                if (state.sortBy === 'reward-low') apiSort = 'lowest_pay';
+                if (state.sortBy === 'deadline') apiSort = 'deadline';
+                if (state.sortBy === 'oldest') apiSort = 'oldest';
 
-        // Search Query
-        if (state.searchQuery.trim() !== '') {
-            const q = state.searchQuery.toLowerCase();
-            filtered = filtered.filter(g =>
-                g.title.toLowerCase().includes(q) ||
-                g.description.toLowerCase().includes(q) ||
-                g.location.toLowerCase().includes(q)
-            );
-        }
+                const response = await window.GigAPI.getGigs({
+                    search: state.searchQuery,
+                    category: state.selectedCategory,
+                    location: state.locationFilter !== 'all' ? state.locationFilter : '',
+                    maximum_reward: state.rewardRangeMax,
+                    sort: apiSort,
+                    page: 1,
+                    limit: 50
+                });
 
-        // Reward Range
-        filtered = filtered.filter(g => g.reward <= state.rewardRangeMax);
+                if (response && response.items) {
+                    filtered = response.items.map(g => ({
+                        id: g.id,
+                        title: g.title,
+                        description: g.description || '',
+                        category: g.category,
+                        reward: g.reward_amount,
+                        location: g.location,
+                        estimatedDuration: g.estimated_duration || '2 hours',
+                        deadline: g.deadline,
+                        requiredSkills: g.required_skills || [],
+                        status: String(g.status).toLowerCase(),
+                        postedBy: g.poster ? g.poster.id : null,
+                        posterName: g.poster ? g.poster.name : 'Campus Student',
+                        posterRating: g.poster ? g.poster.average_rating : 5.0,
+                        posterTrustScore: g.poster ? g.poster.trust_score : 85,
+                        posterVerified: g.poster ? g.poster.is_verified : true,
+                        createdAt: g.created_at
+                    }));
+                }
+            } catch (err) {
+                console.log('Backend Gigs fetch fallback to local state:', err.message);
+            }
+        } else {
+            // Category Filter
+            if (state.selectedCategory !== 'all') {
+                filtered = filtered.filter(g => g.category.toLowerCase() === state.selectedCategory.toLowerCase());
+            }
 
-        // Location Filter
-        if (state.locationFilter !== 'all') {
-            filtered = filtered.filter(g => g.location.toLowerCase().includes(state.locationFilter.toLowerCase()));
-        }
+            // Search Query
+            if (state.searchQuery.trim() !== '') {
+                const q = state.searchQuery.toLowerCase();
+                filtered = filtered.filter(g =>
+                    g.title.toLowerCase().includes(q) ||
+                    g.description.toLowerCase().includes(q) ||
+                    g.location.toLowerCase().includes(q)
+                );
+            }
 
-        // Status Filter
-        if (state.statusFilter === 'available') {
-            filtered = filtered.filter(g => g.status === 'available');
-        }
+            // Reward Range
+            filtered = filtered.filter(g => g.reward <= state.rewardRangeMax);
 
-        // Sorting
-        if (state.sortBy === 'best-match') {
-            filtered.sort((a, b) => {
-                const scoreA = state.currentUser ? calculateGigMatchScore(state.currentUser, a).score : 70;
-                const scoreB = state.currentUser ? calculateGigMatchScore(state.currentUser, b).score : 70;
-                return scoreB - scoreA;
-            });
-        } else if (state.sortBy === 'newest') {
-            filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        } else if (state.sortBy === 'reward-high') {
-            filtered.sort((a, b) => b.reward - a.reward);
-        } else if (state.sortBy === 'reward-low') {
-            filtered.sort((a, b) => a.reward - b.reward);
-        } else if (state.sortBy === 'deadline') {
-            filtered.sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
+            // Location Filter
+            if (state.locationFilter !== 'all') {
+                filtered = filtered.filter(g => g.location.toLowerCase().includes(state.locationFilter.toLowerCase()));
+            }
+
+            // Status Filter
+            if (state.statusFilter === 'available') {
+                filtered = filtered.filter(g => g.status === 'available');
+            }
+
+            // Sorting
+            if (state.sortBy === 'best-match') {
+                filtered.sort((a, b) => {
+                    const scoreA = state.currentUser ? calculateGigMatchScore(state.currentUser, a).score : 70;
+                    const scoreB = state.currentUser ? calculateGigMatchScore(state.currentUser, b).score : 70;
+                    return scoreB - scoreA;
+                });
+            } else if (state.sortBy === 'newest') {
+                filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            } else if (state.sortBy === 'reward-high') {
+                filtered.sort((a, b) => b.reward - a.reward);
+            } else if (state.sortBy === 'reward-low') {
+                filtered.sort((a, b) => a.reward - b.reward);
+            } else if (state.sortBy === 'deadline') {
+                filtered.sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
+            }
         }
 
         const grid = document.getElementById('marketplace-gigs-grid');
         const emptyState = document.getElementById('marketplace-empty-state');
 
-        if (filtered.length === 0) {
-            grid.classList.add('hidden');
-            emptyState.classList.remove('hidden');
+        if (!filtered || filtered.length === 0) {
+            if (grid) grid.classList.add('hidden');
+            if (emptyState) emptyState.classList.remove('hidden');
         } else {
-            grid.classList.remove('hidden');
-            emptyState.classList.add('hidden');
-            grid.innerHTML = filtered.map(g => createFullGigCardHTML(g)).join('');
+            if (grid) {
+                grid.classList.remove('hidden');
+                grid.innerHTML = filtered.map(g => createFullGigCardHTML(g)).join('');
+            }
+            if (emptyState) emptyState.classList.add('hidden');
         }
 
         bindCardEvents();
@@ -1015,14 +1061,43 @@
     }
 
     // 8. GIG DETAILS MODAL RENDER & LIFECYCLE ACTIONS
-    function openGigDetailsModal(gigId) {
-        const gig = state.gigs.find(g => g.id === gigId);
+    async function openGigDetailsModal(gigId) {
+        let gig = state.gigs.find(g => String(g.id) === String(gigId));
+
+        if (window.GigAPI) {
+            try {
+                const apiGig = await window.GigAPI.getGigDetails(gigId);
+                if (apiGig) {
+                    gig = {
+                        id: apiGig.id,
+                        title: apiGig.title,
+                        description: apiGig.description || '',
+                        category: apiGig.category,
+                        reward: apiGig.reward_amount,
+                        location: apiGig.location,
+                        estimatedDuration: apiGig.estimated_duration || '2 hours',
+                        deadline: apiGig.deadline,
+                        requiredSkills: apiGig.required_skills || [],
+                        status: String(apiGig.status).toLowerCase(),
+                        postedBy: apiGig.poster ? apiGig.poster.id : null,
+                        posterName: apiGig.poster ? apiGig.poster.name : 'Campus Student',
+                        posterRating: apiGig.poster ? apiGig.poster.average_rating : 5.0,
+                        posterTrustScore: apiGig.poster ? apiGig.poster.trust_score : 85,
+                        posterVerified: apiGig.poster ? apiGig.poster.is_verified : true,
+                        createdAt: apiGig.created_at
+                    };
+                }
+            } catch (err) {
+                console.log('Backend fetch gig details error:', err.message);
+            }
+        }
+
         if (!gig) return;
 
-        const poster = state.users.find(u => u.id === gig.postedBy) || state.currentUser;
-        const worker = gig.assignedWorker ? state.users.find(u => u.id === gig.assignedWorker) : null;
-        const isPoster = state.currentUser && gig.postedBy === state.currentUser.id;
-        const isWorker = state.currentUser && gig.assignedWorker === state.currentUser.id;
+        const poster = (state.users.find(u => String(u.id) === String(gig.postedBy))) || { name: gig.posterName || 'Campus Student', rating: gig.posterRating || 4.9, id: gig.postedBy };
+        const worker = gig.assignedWorker ? state.users.find(u => String(u.id) === String(gig.assignedWorker)) : null;
+        const isPoster = state.currentUser && String(gig.postedBy) === String(state.currentUser.id);
+        const isWorker = state.currentUser && String(gig.assignedWorker) === String(state.currentUser.id);
 
         const myApp = state.currentUser ? state.applications.find(a => a.gigId === gig.id && a.applicantId === state.currentUser.id && a.status !== 'withdrawn') : null;
 
@@ -1277,7 +1352,7 @@
         }
     }
 
-    function handlePostGigSubmit(e) {
+    async function handlePostGigSubmit(e) {
         e.preventDefault();
         if (!state.currentUser) {
             showToast('Please sign in to post a campus gig.', 'error');
@@ -1292,13 +1367,39 @@
         const reward = parseInt(document.getElementById('gig-post-reward').value, 10);
         const deadline = document.getElementById('gig-post-deadline').value;
 
+        // If backend auth token is present, post via API
+        if (window.getAuthToken && window.getAuthToken()) {
+            try {
+                const createdGig = await window.GigAPI.createGig({
+                    title: title,
+                    description: description,
+                    category: category,
+                    reward_amount: reward,
+                    location: location,
+                    estimated_duration: "2 hours",
+                    deadline: deadline ? new Date(deadline).toISOString() : null,
+                    required_skills: ["Campus verified student"]
+                });
+
+                showToast(`Gig "${createdGig.title}" posted successfully to PostgreSQL backend!`, 'success');
+                document.getElementById('post-gig-form').reset();
+                switchView('marketplace');
+                renderMarketplace();
+                return;
+            } catch (err) {
+                console.warn('Backend create Gig error:', err.message);
+                showToast(err.message || 'Failed to post Gig. Please check your details.', 'error');
+                return;
+            }
+        }
+
         if (reward > state.currentUser.walletBalance) {
             showToast(`Insufficient Escrow Balance! You need ₹${reward} in your wallet to post this gig.`, 'warning');
             switchView('payments');
             return;
         }
 
-        // Deduct Escrow
+        // Deduct Escrow locally
         state.currentUser.walletBalance -= reward;
         state.currentUser.pendingEscrow += reward;
 
@@ -2683,12 +2784,29 @@
             });
         });
 
-        // Cancel Gig Button
+        // Cancel / Delete Gig Button
         document.querySelectorAll('.btn-cancel-gig').forEach(btn => {
-            btn.addEventListener('click', e => {
+            btn.addEventListener('click', async e => {
                 const gigId = e.target.closest('button').getAttribute('data-gig-id');
-                const gig = state.gigs.find(g => g.id === gigId);
-                if (gig && state.currentUser && gig.postedBy === state.currentUser.id) {
+
+                if (window.GigAPI && window.getAuthToken && window.getAuthToken()) {
+                    if (confirm('Are you sure you want to delete this gig? This action cannot be undone.')) {
+                        try {
+                            await window.GigAPI.deleteGig(gigId);
+                            showToast('Gig deleted successfully from PostgreSQL backend!', 'success');
+                            document.getElementById('gig-details-modal')?.classList.add('hidden');
+                            renderMarketplace();
+                            return;
+                        } catch (err) {
+                            showToast(err.message || 'Failed to delete gig.', 'error');
+                            return;
+                        }
+                    }
+                    return;
+                }
+
+                const gig = state.gigs.find(g => String(g.id) === String(gigId));
+                if (gig && state.currentUser && String(gig.postedBy) === String(state.currentUser.id)) {
                     gig.status = 'cancelled';
                     state.currentUser.walletBalance += gig.reward;
                     state.currentUser.pendingEscrow = Math.max(0, state.currentUser.pendingEscrow - gig.reward);
