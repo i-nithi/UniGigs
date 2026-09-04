@@ -729,10 +729,17 @@
         const potentialElem = document.getElementById('dash-potential-earnings');
         if (potentialElem) potentialElem.textContent = `₹${potentialEarnings.toLocaleString()}`;
 
-        document.getElementById('dash-total-earnings').textContent = `₹${user.totalEarned}`;
-        document.getElementById('dash-card-wallet-bal').textContent = `₹${user.walletBalance}`;
-        document.getElementById('dash-completed-count').textContent = user.completedGigsCount;
-        document.getElementById('dash-pending-payouts').textContent = `₹${user.pendingEscrow}`;
+        const totalEarningsEl = document.getElementById('dash-total-earnings');
+        if (totalEarningsEl) totalEarningsEl.textContent = `₹${user.totalEarned}`;
+
+        const cardWalletBalEl = document.getElementById('dash-card-wallet-bal');
+        if (cardWalletBalEl) cardWalletBalEl.textContent = `₹${user.walletBalance}`;
+
+        const completedCountEl = document.getElementById('dash-completed-count');
+        if (completedCountEl) completedCountEl.textContent = user.completedGigsCount;
+
+        const pendingPayoutsEl = document.getElementById('dash-pending-payouts');
+        if (pendingPayoutsEl) pendingPayoutsEl.textContent = `₹${user.pendingEscrow}`;
 
         // Active gigs where current user is poster or worker
         const activeGigs = state.gigs.filter(g =>
@@ -740,19 +747,24 @@
             ['accepted', 'in_progress', 'submitted'].includes(g.status)
         );
 
-        document.getElementById('dash-active-gigs-count').textContent = activeGigs.length;
-        document.getElementById('dash-active-count-text').textContent = `${activeGigs.length} active gig${activeGigs.length === 1 ? '' : 's'}`;
+        const activeGigsCountEl = document.getElementById('dash-active-gigs-count');
+        if (activeGigsCountEl) activeGigsCountEl.textContent = activeGigs.length;
+
+        const activeCountTextEl = document.getElementById('dash-active-count-text');
+        if (activeCountTextEl) activeCountTextEl.textContent = `${activeGigs.length} active gig${activeGigs.length === 1 ? '' : 's'}`;
 
         const activeContainer = document.getElementById('dash-active-gigs-container');
-        if (activeGigs.length === 0) {
-            activeContainer.innerHTML = `
-                <div class="empty-state-sm text-center py-4">
-                    <p class="text-muted">You have no active gigs in progress right now.</p>
-                    <a href="#marketplace" class="btn btn-sm btn-outline mt-2 nav-link" data-target="marketplace">Find a Gig to Earn</a>
-                </div>
-            `;
-        } else {
-            activeContainer.innerHTML = activeGigs.map(g => createActiveGigCardHTML(g)).join('');
+        if (activeContainer) {
+            if (activeGigs.length === 0) {
+                activeContainer.innerHTML = `
+                    <div class="empty-state-sm text-center py-4">
+                        <p class="text-muted">You have no active gigs in progress right now.</p>
+                        <a href="#marketplace" class="btn btn-sm btn-outline mt-2 nav-link" data-target="marketplace">Find a Gig to Earn</a>
+                    </div>
+                `;
+            } else {
+                activeContainer.innerHTML = activeGigs.map(g => createActiveGigCardHTML(g)).join('');
+            }
         }
 
         // Render Best Matches Section
@@ -761,38 +773,44 @@
         // Recommended Gigs
         const recommended = state.gigs.filter(g => g.status === 'available' && g.postedBy !== user.id).slice(0, 3);
         const recContainer = document.getElementById('dash-recommended-gigs');
-        recContainer.innerHTML = recommended.map(g => createMiniGigCardHTML(g)).join('');
+        if (recContainer) {
+            recContainer.innerHTML = recommended.map(g => createMiniGigCardHTML(g)).join('');
+        }
 
         // Recent Notifications Widget
         const notifWidget = document.getElementById('dash-notif-widget');
-        const userNotifs = state.notifications.filter(n => n.userId === user.id).slice(0, 3);
-        if (userNotifs.length === 0) {
-            notifWidget.innerHTML = `<p class="text-muted text-center py-2" style="font-size:0.85rem">No recent notifications</p>`;
-        } else {
-            notifWidget.innerHTML = userNotifs.map(n => `
-                <div class="notif-item-sm ${!n.isRead ? 'unread' : ''}" onclick="window.UniGigs.switchView('${n.link}')">
-                    <i class="ri-notification-badge-line text-primary"></i>
-                    <div>
-                        <strong>${escapeHTML(n.title)}</strong>
-                        <p>${escapeHTML(n.message)}</p>
+        if (notifWidget) {
+            const userNotifs = state.notifications.filter(n => n.userId === user.id).slice(0, 3);
+            if (userNotifs.length === 0) {
+                notifWidget.innerHTML = `<p class="text-muted text-center py-2" style="font-size:0.85rem">No recent notifications</p>`;
+            } else {
+                notifWidget.innerHTML = userNotifs.map(n => `
+                    <div class="notif-item-sm ${!n.isRead ? 'unread' : ''}" onclick="window.UniGigs.switchView('${n.link}')">
+                        <i class="ri-notification-badge-line text-primary"></i>
+                        <div>
+                            <strong>${escapeHTML(n.title)}</strong>
+                            <p>${escapeHTML(n.message)}</p>
+                        </div>
                     </div>
-                </div>
-            `).join('');
+                `).join('');
+            }
         }
 
         // Top Campus Workers
         const topWorkers = state.users.slice(0, 3);
         const topContainer = document.getElementById('dash-top-workers');
-        topContainer.innerHTML = topWorkers.map(w => `
-            <div class="top-worker-card">
-                <img src="${w.avatar}" alt="${w.name}">
-                <div class="worker-meta">
-                    <strong>${escapeHTML(w.name)}</strong>
-                    <span class="text-muted">${escapeHTML(w.dept)}</span>
-                    <span class="rating">★ ${w.rating} (${w.reviewCount} reviews)</span>
+        if (topContainer) {
+            topContainer.innerHTML = topWorkers.map(w => `
+                <div class="top-worker-card">
+                    <img src="${w.avatar}" alt="${w.name}">
+                    <div class="worker-meta">
+                        <strong>${escapeHTML(w.name)}</strong>
+                        <span class="text-muted">${escapeHTML(w.dept)}</span>
+                        <span class="rating">★ ${w.rating} (${w.reviewCount} reviews)</span>
+                    </div>
                 </div>
-            </div>
-        `).join('');
+            `).join('');
+        }
 
         bindCardEvents();
     }
@@ -1636,15 +1654,39 @@
     }
 
     // 12. PAYMENTS & UPI ESCROW RENDER
-    function renderPayments() {
+    function renderPayments(filterType = 'all') {
         if (!state.currentUser) return;
 
-        document.getElementById('payment-page-balance').textContent = `₹${state.currentUser.walletBalance}`;
-        document.getElementById('payment-page-earned').textContent = `₹${state.currentUser.totalEarned}`;
-        document.getElementById('payment-page-pending').textContent = `₹${state.currentUser.pendingEscrow}`;
+        const balEl = document.getElementById('payment-page-balance');
+        if (balEl) balEl.textContent = `₹${state.currentUser.walletBalance}`;
+
+        const earnedEl = document.getElementById('payment-page-earned');
+        if (earnedEl) earnedEl.textContent = `₹${state.currentUser.totalEarned}`;
+
+        const pendingEl = document.getElementById('payment-page-pending');
+        if (pendingEl) pendingEl.textContent = `₹${state.currentUser.pendingEscrow}`;
 
         const tbody = document.getElementById('transactions-table-body');
-        tbody.innerHTML = state.transactions.map(t => `
+        if (!tbody) return;
+
+        let txs = state.transactions;
+        if (filterType && filterType !== 'all') {
+            txs = txs.filter(t => {
+                const type = (t.type || '').toLowerCase();
+                const filter = filterType.toLowerCase();
+                if (filter === 'earnings') return type.includes('earn') || type.includes('payout') || type.includes('refund');
+                if (filter === 'deposits') return type.includes('deposit');
+                if (filter === 'escrow hold' || filter === 'escrow') return type.includes('escrow') || type.includes('hold');
+                return true;
+            });
+        }
+
+        if (txs.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">No transactions found for filter: ${escapeHTML(filterType)}.</td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = txs.map(t => `
             <tr>
                 <td><strong>${t.id}</strong></td>
                 <td>${t.date}</td>
@@ -1701,16 +1743,23 @@
     }
 
     // 13. NOTIFICATIONS RENDER
-    function renderNotifications() {
+    function renderNotifications(categoryFilter = 'all') {
         if (!state.currentUser) return;
 
-        const userNotifs = state.notifications.filter(n => n.userId === state.currentUser.id);
-        const container = document.getElementById('notifications-full-list');
+        let userNotifs = state.notifications.filter(n => n.userId === state.currentUser.id);
 
-        document.getElementById('notif-count-all').textContent = userNotifs.length;
+        if (categoryFilter && categoryFilter !== 'all') {
+            userNotifs = userNotifs.filter(n => (n.type || 'gig').toLowerCase() === categoryFilter.toLowerCase());
+        }
+
+        const container = document.getElementById('notifications-full-list');
+        const countAllEl = document.getElementById('notif-count-all');
+        if (countAllEl) countAllEl.textContent = userNotifs.length;
+
+        if (!container) return;
 
         if (userNotifs.length === 0) {
-            container.innerHTML = `<div class="empty-state-box text-center py-5"><p class="text-muted">No notifications yet.</p></div>`;
+            container.innerHTML = `<div class="empty-state-box text-center py-5"><p class="text-muted">No notifications found in this category.</p></div>`;
             return;
         }
 
@@ -1965,7 +2014,7 @@
 
     async function verifyOTP(enteredCode) {
         const errorBox = document.getElementById('otp-error-msg');
-        const verifyBtn = document.getElementById('otp-submit-btn');
+        const verifyBtn = document.getElementById('submit-otp-btn') || document.getElementById('otp-submit-btn');
 
         if (verifyBtn) {
             verifyBtn.disabled = true;
@@ -2195,8 +2244,49 @@
 
     // 17. EVENT BINDINGS
     function bindGlobalEvents() {
-        // Navigation Links
+        // Navigation Links & Universal Click Delegation
         document.addEventListener('click', e => {
+            // Bookmark toggle button
+            const bookmarkBtn = e.target.closest('.bookmark-btn');
+            if (bookmarkBtn) {
+                e.stopPropagation();
+                e.preventDefault();
+                const id = bookmarkBtn.getAttribute('data-gig-id');
+                if (id) {
+                    if (state.savedGigIds.includes(id)) {
+                        state.savedGigIds = state.savedGigIds.filter(gId => gId !== id);
+                        showToast('Gig removed from bookmarks', 'info');
+                    } else {
+                        state.savedGigIds.push(id);
+                        showToast('Gig saved to bookmarks!', 'success');
+                    }
+                    saveState();
+                    renderApp();
+                }
+                return;
+            }
+
+            // View Details button
+            const viewDetailsBtn = e.target.closest('.btn-view-details');
+            if (viewDetailsBtn) {
+                e.stopPropagation();
+                e.preventDefault();
+                const id = viewDetailsBtn.getAttribute('data-gig-id');
+                if (id) openGigDetailsModal(id);
+                return;
+            }
+
+            // Any Gig Card Click
+            const gigCard = e.target.closest('.gig-card[data-gig-id]');
+            if (gigCard && !e.target.closest('button') && !e.target.closest('a')) {
+                const gigId = gigCard.getAttribute('data-gig-id');
+                if (gigId) {
+                    openGigDetailsModal(gigId);
+                    return;
+                }
+            }
+
+            // Nav Links
             const navLink = e.target.closest('.nav-link');
             if (navLink) {
                 e.preventDefault();
@@ -2644,26 +2734,89 @@
                 btn.classList.add('active');
                 const tab = btn.getAttribute('data-prof-tab');
                 document.querySelectorAll('.prof-tab-pane').forEach(pane => pane.classList.add('hidden'));
-                document.getElementById(`prof-tab-${tab}`).classList.remove('hidden');
+                const targetPane = document.getElementById(`prof-tab-${tab}`);
+                if (targetPane) targetPane.classList.remove('hidden');
             });
+        });
+
+        // Transaction Filter Tabs (Payments View)
+        document.querySelectorAll('.filter-tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const filterType = btn.getAttribute('data-tx-filter');
+                renderPayments(filterType);
+            });
+        });
+
+        // Notification Category Chips (Notifications View)
+        document.querySelectorAll('.notif-chip').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.notif-chip').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const cat = btn.getAttribute('data-notif-cat');
+                renderNotifications(cat);
+            });
+        });
+
+        // Notification Header Action Buttons
+        document.getElementById('mark-all-read-btn')?.addEventListener('click', () => {
+            if (state.currentUser) {
+                state.notifications.forEach(n => {
+                    if (n.userId === state.currentUser.id) n.isRead = true;
+                });
+                saveState();
+                renderNotifications();
+                showToast('All notifications marked as read.', 'info');
+            }
+        });
+
+        document.getElementById('clear-all-notifs-btn')?.addEventListener('click', () => {
+            if (state.currentUser) {
+                state.notifications = state.notifications.filter(n => n.userId !== state.currentUser.id);
+                saveState();
+                renderNotifications();
+                showToast('Notifications cleared.', 'info');
+            }
+        });
+
+        // Mobile Chat Navigation & Attachment Buttons
+        document.getElementById('back-to-convos-btn')?.addEventListener('click', () => {
+            const listPanel = document.querySelector('.chat-sidebar-panel') || document.getElementById('conversations-list-container')?.parentElement;
+            const mainPanel = document.getElementById('chat-main-panel');
+            if (listPanel) listPanel.classList.remove('hidden-mobile');
+            if (mainPanel) mainPanel.classList.add('hidden-mobile');
+        });
+
+        document.getElementById('chat-attach-btn')?.addEventListener('click', () => {
+            showToast('Select a document or image to share in conversation.', 'info');
         });
 
         // UPI Modal Openers
         document.getElementById('open-upi-deposit-modal')?.addEventListener('click', () => {
-            document.getElementById('upi-modal-title').innerHTML = '<i class="ri-qr-code-line"></i> Add Escrow Funds';
-            document.getElementById('upi-action-type').value = 'deposit';
-            document.getElementById('upi-payment-modal').classList.remove('hidden');
+            const modalTitle = document.getElementById('upi-modal-title');
+            const actionType = document.getElementById('upi-action-type');
+            if (modalTitle) modalTitle.innerHTML = '<i class="ri-qr-code-line"></i> Add Escrow Funds';
+            if (actionType) actionType.value = 'deposit';
+            document.getElementById('upi-payment-modal')?.classList.remove('hidden');
         });
 
         document.getElementById('open-upi-withdraw-modal')?.addEventListener('click', () => {
-            document.getElementById('upi-modal-title').innerHTML = '<i class="ri-bank-card-line"></i> Withdraw Earnings to UPI';
-            document.getElementById('upi-action-type').value = 'withdraw';
-            document.getElementById('upi-payment-modal').classList.remove('hidden');
+            const modalTitle = document.getElementById('upi-modal-title');
+            const actionType = document.getElementById('upi-action-type');
+            if (modalTitle) modalTitle.innerHTML = '<i class="ri-bank-card-line"></i> Withdraw Earnings to UPI';
+            if (actionType) actionType.value = 'withdraw';
+            document.getElementById('upi-payment-modal')?.classList.remove('hidden');
+        });
+
+        // Filter Modal Opener Button
+        document.getElementById('open-filter-modal-btn')?.addEventListener('click', () => {
+            document.getElementById('filter-modal')?.classList.remove('hidden');
         });
 
         // Modal Close & Cancel Buttons
         document.getElementById('close-gig-modal-btn')?.addEventListener('click', () => {
-            document.getElementById('gig-details-modal').classList.add('hidden');
+            document.getElementById('gig-details-modal')?.classList.add('hidden');
         });
         document.getElementById('close-apply-modal')?.addEventListener('click', () => {
             document.getElementById('apply-gig-modal')?.classList.add('hidden');
@@ -2673,13 +2826,13 @@
         });
         document.getElementById('apply-gig-form')?.addEventListener('submit', handleApplySubmit);
         document.getElementById('close-upi-modal')?.addEventListener('click', () => {
-            document.getElementById('upi-payment-modal').classList.add('hidden');
+            document.getElementById('upi-payment-modal')?.classList.add('hidden');
         });
         document.getElementById('close-submit-work-modal')?.addEventListener('click', () => {
-            document.getElementById('submit-work-modal').classList.add('hidden');
+            document.getElementById('submit-work-modal')?.classList.add('hidden');
         });
         document.getElementById('close-rate-worker-modal')?.addEventListener('click', () => {
-            document.getElementById('rate-worker-modal').classList.add('hidden');
+            document.getElementById('rate-worker-modal')?.classList.add('hidden');
         });
         document.getElementById('cancel-submit-work')?.addEventListener('click', () => {
             document.getElementById('submit-work-modal')?.classList.add('hidden');
