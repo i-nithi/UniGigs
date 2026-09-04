@@ -2332,6 +2332,24 @@
         }, 4000);
     }
 
+    function toggleMobileSidebar(forceState) {
+        const sidebar = document.getElementById('app-sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+        if (!sidebar || !overlay) return;
+
+        const isActive = forceState !== undefined ? forceState : !sidebar.classList.contains('active');
+
+        if (isActive) {
+            sidebar.classList.add('active');
+            overlay.classList.remove('hidden');
+            overlay.classList.add('active');
+        } else {
+            sidebar.classList.remove('active');
+            overlay.classList.add('hidden');
+            overlay.classList.remove('active');
+        }
+    }
+
     // 17. EVENT BINDINGS
     function bindGlobalEvents() {
         // Navigation Links & Universal Click Delegation
