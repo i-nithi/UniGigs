@@ -958,8 +958,8 @@
         return `
             <div class="gig-card matched-gig-card" data-gig-id="${gig.id}">
                 <div class="gig-card-header mb-2">
-                    <span class="badge badge-match"><i class="ri-sparkles-fill"></i> ${matchInfo.score}% Match</span>
-                    <span class="badge" style="background:var(--purple-chip); color:var(--purple-chip-text); border:1px solid rgba(192,132,252,0.3)"><i class="ri-user-3-line"></i> ${escapeHTML(gig.category)}</span>
+                    <span class="badge badge-primary"><i class="ri-sparkles-fill"></i> ${matchInfo.score}% Match</span>
+                    <span class="gig-cat-badge"><i class="ri-user-3-line"></i> ${escapeHTML(gig.category)}</span>
                 </div>
 
                 <h4 class="gig-card-title">${escapeHTML(gig.title)}</h4>
@@ -2330,24 +2330,6 @@
             toast.style.opacity = '0';
             setTimeout(() => toast.remove(), 300);
         }, 4000);
-    }
-
-    function toggleMobileSidebar(forceState) {
-        const sidebar = document.getElementById('app-sidebar');
-        const overlay = document.getElementById('sidebar-overlay');
-        if (!sidebar || !overlay) return;
-
-        const isActive = forceState !== undefined ? forceState : !sidebar.classList.contains('active');
-
-        if (isActive) {
-            sidebar.classList.add('active');
-            overlay.classList.remove('hidden');
-            overlay.classList.add('active');
-        } else {
-            sidebar.classList.remove('active');
-            overlay.classList.add('hidden');
-            overlay.classList.remove('active');
-        }
     }
 
     // 17. EVENT BINDINGS

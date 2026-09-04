@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "scroll-experience": {
+      "source": "sickn33/antigravity-awesome-skills",
+      "sourceType": "github",
+      "skillPath": "skills/scroll-experience/SKILL.md",
+      "computedHash": "6002022f40b6f8bbd6f7e93bad13c7dac57034c3411da66ff6990d7c7a9ae445"
+    }
+  }
+}
